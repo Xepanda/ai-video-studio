@@ -1,0 +1,35 @@
+{
+  "project": "demo_showcase",
+  "fps": 30,
+  "totalDurationInFrames": 180,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "ExplainerWhiteboard",
+      "startFrame": 0,
+      "durationInFrames": 90,
+      "audioPath": "",
+      "text": "欢迎来到全链路 AI 视频自动化生产工作室",
+      "emotion": "<|HAPPY|>",
+      "words": [
+        { "text": "欢迎来到", "startFrame": 0, "endFrame": 20, "startMs": 0, "endMs": 660 },
+        { "text": "全链路", "startFrame": 20, "endFrame": 40, "startMs": 660, "endMs": 1330 },
+        { "text": "AI 视频自动化", "startFrame": 40, "endFrame": 65, "startMs": 1330, "endMs": 2160 },
+        { "text": "生产工作室", "startFrame": 65, "endFrame": 90, "startMs": 2160, "endMs": 3000 }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "type": "TerminalCodeDemo",
+      "startFrame": 90,
+      "durationInFrames": 90,
+      "audioPath": "",
+      "text": "代码即视频，毫秒级音画完全同步",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        { "text": "代码即视频", "startFrame": 90, "endFrame": 130, "startMs": 3000, "endMs": 4330 },
+        { "text": "毫秒级音画完全同步", "startFrame": 130, "endFrame": 180, "startMs": 4330, "endMs": 6000 }
+      ]
+    }
+  ]
+}

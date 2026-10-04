@@ -1,0 +1,37 @@
+# Node dependencies
+node_modules/
+dist/
+.remotion/
+
+# Python cache & virtualenvs
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+
+# Model checkpoints & large binary weights (keep folders via .gitkeep)
+models/gpt_sovits/*
+!models/gpt_sovits/.gitkeep
+models/reference_audio/*.wav
+models/reference_audio/*.mp3
+!models/reference_audio/.gitkeep
+
+# Rendered output media
+out/*
+!out/.gitkeep
+
+# Generated audio and video footage cache (keep structure)
+public/audio/*.wav
+public/audio/*.mp3
+!public/audio/.gitkeep
+public/footage/*.mp4
+public/footage/*.mov
+!public/footage/.gitkeep
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
