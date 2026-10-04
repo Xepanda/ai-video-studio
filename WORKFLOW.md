@@ -76,7 +76,9 @@ flowchart TD
 python scripts/pipeline.py --spec my_project.md
 ```
 **流水线自动执行两件事**：
-1. **TTS 生成**：将各分镜文本合成为 `public/audio/scene_01.wav`, `scene_02.wav`...
+1. **TTS 生成**：调用 `scripts/generate_audio.py` 将各分镜文本合成为 `public/audio/scene_01.mp3`, `scene_02.mp3`...
+   * **优先使用专属音色**：已加载 `models/gpt_sovits/` 中的专属音色模型 (`epanda_voice`)；
+   * **自动降级兜底**：若本地/云端 GPT-SoVITS 服务离线，自动无感降级至微软 Edge-TTS (YunxiNeural)，确保流水线不中断。
 2. **SenseVoice 毫秒打点**：利用本地 CPU 上的 SenseVoice-Small 模型，8 秒内解析出每个字词的毫秒起止点与情绪，自动输出 `public/timeline.json`。
 
 ---

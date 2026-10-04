@@ -35,3 +35,7 @@ public/footage/*.mov
 Thumbs.db
 desktop.ini
 *.log
+*.png
+.env
+models/reference_audio/slices/
+

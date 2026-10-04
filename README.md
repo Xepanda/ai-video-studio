@@ -8,6 +8,7 @@
 ## 🌟 核心特色与架构
 
 * **声音先行 (Audio-First)**：以音频的物理毫秒长度决定画面生命周期，彻底杜绝音画错位与抽卡不可控性。
+* **专属真声音色克隆 (GPT-SoVITS)**：支持使用真实个人录音训练出的专属声音模型 (`epanda_voice`)，实现带个人音色与语调节奏的数字分身配音，并支持本地离线与双轨高可用自动降级。
 * **时钟契约 (`timeline.json`)**：Python 极速提取词级时间戳与情绪标签，声明式注入 React 状态机。
 * **Google Flow (Veo) 协同**：内置标准提示词工程模板与 `<BrollVideoPlayer />` 组件，无缝混合电影级 AI 视频。
 * **五重审查门禁 (`AUDIT_CHECKLIST.md`)**：分镜审查 ➔ 声音对齐 ➔ 视觉动效 ➔ 自动化契约校验 (`validator.py`) ➔ 成品验收。
@@ -33,7 +34,12 @@ ai-video-studio/
 │   ├── pixel2motion/              # 矢量动态 SVG
 │   └── gsap/                      # 复杂路径补间
 │
+├── models/                        # 🧠 AI 模型与核心声音资产库
+│   ├── gpt_sovits/                # 专属微调导出的声音权重 (.pth / .ckpt)
+│   └── reference_audio/           # 提示音频 (5s) 与训练切片数据集
+│
 ├── scripts/                       # 🛠️ 自动化 Python 工具中枢
+│   ├── generate_audio.py          # 多服务商配音生成中枢 (GPT-SoVITS / Edge-TTS)
 │   ├── sensevoice_aligner.py      # SenseVoice 毫秒打点与情绪提取
 │   ├── validator.py               # 数据契约自动化审查脚本 (Quality Gate)
 │   └── pipeline.py                # 一键端到端总控流水线
@@ -80,3 +86,22 @@ ai-video-studio/
 python scripts/validator.py
 ```
 快速检测所有音频、视频文件是否存在，帧数是否无损闭环。
+
+---
+
+## 🎙️ 专属个人声音克隆 (GPT-SoVITS)
+
+本项目支持 100% 个人真实的克隆声音配音：
+1. **模型资产**：已训练好的音色权重归档于 `models/gpt_sovits/`：
+   * `epanda_voice_e8_s120.pth` (SoVITS 音色模型)
+   * `epanda_voice-e15.ckpt` (GPT 语言节奏模型)
+   * `models/reference_audio/my_voice_ref_5s.wav` (5s 提示基准音频)
+2. **批量分镜生成**：
+   ```bash
+   python scripts/generate_audio.py --script inputs/script.json
+   ```
+   * 优先调用 `http://127.0.0.1:9880/tts` 进行专属声音合成；
+   * 若服务离线，**自动无缝回退至微软 Edge-TTS (YunxiNeural)**，保障视频流水线永不中断。
+3. **详细训练与微调 SOP**：
+   参见知识库 Wiki：[专属音色克隆与全自动微调训练指南 (GPT-SoVITS + Colab 混合云实战)](../wiki/docs/02-projects/ai-video-automation/06-personal-voice-cloning-gpt-sovits.mdx)。
+

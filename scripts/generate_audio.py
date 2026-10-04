@@ -103,19 +103,47 @@ def synthesize_minimax(text: str, out_path: str, api_key: str, group_id: str, vo
     with open(out_path, "wb") as f:
         f.write(audio_bytes)
 
+def synthesize_gpt_sovits(text: str, out_path: str, api_url: str = "http://127.0.0.1:9880/tts", ref_audio: str = None, prompt_text: str = None, prompt_lang: str = "zh", text_lang: str = "zh"):
+    payload = {
+        "text": text,
+        "text_lang": text_lang,
+        "ref_audio_path": ref_audio,
+        "prompt_text": prompt_text or "",
+        "prompt_lang": prompt_lang,
+        "media_type": "mp3" if out_path.endswith(".mp3") else "wav"
+    }
+    resp = requests.post(api_url, json=payload, timeout=120)
+    if resp.status_code != 200:
+        raise RuntimeError(f"GPT-SoVITS 合成失败 ({resp.status_code}): {resp.text}")
+    with open(out_path, "wb") as f:
+        f.write(resp.content)
+
 async def synthesize_edge_tts(text: str, out_path: str):
     import edge_tts
     communicate = edge_tts.Communicate(text, "zh-CN-YunxiNeural")
     await communicate.save(out_path)
 
 def generate_scene_audio(text: str, out_path: str, env: dict):
-    provider = env.get("TTS_PROVIDER", "siliconflow").lower()
+    provider = env.get("TTS_PROVIDER", "gpt_sovits").lower()
     sf_key = env.get("SILICONFLOW_API_KEY")
     sf_voice = env.get("CUSTOM_VOICE_ID")
     sf_model = env.get("SILICONFLOW_MODEL", "FunAudioLLM/CosyVoice2-0.5B")
 
-    # 1. 优先尝试使用 SiliconFlow 专属音色
-    if provider == "siliconflow":
+    # 0. 优先尝试本地/自建 GPT-SoVITS 专属个人音色
+    if provider in ("gpt_sovits", "gpt-sovits", "sovits"):
+        api_url = env.get("GPT_SOVITS_API_URL", "http://127.0.0.1:9880/tts")
+        ref_audio = env.get("GPT_SOVITS_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
+        prompt_text = env.get("GPT_SOVITS_PROMPT_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
+        try:
+            print(f"    [GPT-SoVITS] 正在使用专属个人克隆音色合成 (服务: {api_url})...")
+            synthesize_gpt_sovits(text, out_path, api_url=api_url, ref_audio=ref_audio, prompt_text=prompt_text)
+            return
+        except Exception as e:
+            print(f"    ⚠️ GPT-SoVITS 服务调用异常 ({e})")
+            print(f"    ➡️ 自动无缝回退至高质量 Edge-TTS 保证视频流水线不中断")
+
+    # 1. 尝试使用 SiliconFlow 专属音色
+    elif provider == "siliconflow":
         if sf_key and not sf_key.startswith("sk-your-") and sf_voice:
             print(f"    [SiliconFlow] 正在使用专属克隆音色: {sf_voice}")
             synthesize_siliconflow(text, out_path, sf_key, sf_voice, sf_model)
