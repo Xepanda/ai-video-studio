@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 scripts/generate_demo_audio.py
-生成工作流介绍视频的配音与 SenseVoice 毫秒级打点契约
+生成全技能大满贯视频的配音与 SenseVoice 毫秒级打点契约
 """
 
 import os
 import sys
 import asyncio
 import edge_tts
-import time
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -23,34 +22,39 @@ VOICE = "zh-CN-YunxiNeural"
 SCENES_SCRIPT = [
     {
         "id": "scene_01",
-        "type": "ExplainerWhiteboard",
-        "text": "欢迎来到 AI Video Studio 全链路视频自动化工作流。传统剪辑费时费力，文生视频乱码不可控。我们采用代码即视频理念，实现程序化精准渲染。"
+        "title": "声音克隆与声纹时钟底座",
+        "text": "第一模块，自声音克隆与毫秒时钟中枢。仅需五秒参考干声，提取个人声纹特征向量，驱动神经网络复刻音色；再由阿里 SenseVoice 毫秒打点，生成唯一时钟契约。"
     },
     {
         "id": "scene_02",
-        "type": "TimelineContract",
-        "text": "核心第一步，声音先行。配音时长决定画面寿命，阿里 SenseVoice 毫秒打点，秒级提取词级时间戳与情绪标签，生成唯一时钟契约 timeline.json。"
+        "title": "科普视频白板手绘",
+        "text": "形态一，科普白板手绘。基于 SVG 虚线偏移模拟真实铅笔笔触，动态手绘擦除，点阵图标瞬间转化为活体矢量描边，打造形象生动的技术图解。"
     },
     {
         "id": "scene_03",
-        "type": "TerminalCodeDemo",
-        "text": "核心第二步，组件化装配与 Google Flow 电影级镜头协同。网页端极速生成概念素材，React 声明式驱动终端打字机与逐字弹跳大字幕。"
+        "title": "项目实战与终端架构",
+        "text": "形态二，项目实战教程。极客打字机毫秒同步敲入命令，输出彩色终端流；架构双卡阻尼对比，配合单片机引脚正弦脉冲流光，直击硬核技术原理。"
     },
     {
         "id": "scene_04",
-        "type": "QualityAudit",
-        "text": "核心第三步，五重质量门禁。自动化校验音频与素材完整性，多核并发无头光栅化压制，音画分毫不差。你的自动化流水线已正式启航！"
+        "title": "实拍视频与硬件混剪",
+        "text": "形态三，实拍视频混剪。金属质感悬浮手机壳画中画，原生嵌入实拍硬件原片；激光扫描线与发光指示引线，毫秒级精准追踪实物元器件。"
+    },
+    {
+        "id": "scene_05",
+        "title": "日常自媒体与 Google Flow 电影镜头",
+        "text": "形态四，日常自媒体与 Google Flow 电影镜头。网页端极速生成 Veo 概念镜头，Remotion 电影级微推慢移，搭配逐字弹跳彩色字幕，七大技能融为一体！"
     }
 ]
 
 async def synthesize_all():
-    print(">>> [1/2] 正在调用 edge-tts 生成 4 段分镜神经配音...")
+    print(">>> 正在为 5 大场景生成神经配音...")
     for scene in SCENES_SCRIPT:
         out_path = os.path.join(AUDIO_DIR, f"{scene['id']}.mp3")
-        print(f"  🎙️ 生成配音: {scene['id']} -> {scene['text'][:20]}...")
-        communicate = edge_tts.Communicate(scene["text"], VOICE, rate="+5%")
+        print(f"  🎙️ 场景 {scene['id']} [{scene['title']}]: {scene['text'][:24]}...")
+        communicate = edge_tts.Communicate(scene["text"], VOICE, rate="+6%")
         await communicate.save(out_path)
-    print(">>> 配音生成完毕！\n")
+    print(">>> 全部 5 段音频生成完毕！\n")
 
 if __name__ == "__main__":
     asyncio.run(synthesize_all())

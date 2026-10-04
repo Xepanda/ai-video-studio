@@ -1,34 +1,248 @@
 {
-  "project": "demo_showcase",
+  "project": "flagship_showcase",
   "fps": 30,
-  "totalDurationInFrames": 180,
+  "totalDurationInFrames": 2032,
   "scenes": [
     {
       "id": "scene_01",
       "type": "ExplainerWhiteboard",
       "startFrame": 0,
-      "durationInFrames": 90,
-      "audioPath": "",
-      "text": "欢迎来到全链路 AI 视频自动化生产工作室",
-      "emotion": "<|HAPPY|>",
+      "durationInFrames": 415,
+      "audioPath": "audio/scene_01.mp3",
+      "text": "第一模块，自生英克隆与毫秒时钟中枢，仅需5秒参考干声，提取个人声纹特征向量，驱动神经网络复刻音色，再由阿里sense voice毫秒打点生成唯一时钟契约。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第一模块，自生英克隆与毫秒时钟中枢，仅需5秒参考干声，提取个人声纹特征向量，驱动神经网络复刻音色，再由阿里sense voice毫秒打点生成唯一时钟契约。",
+      "emotion": "<|NEUTRAL|>",
       "words": [
-        { "text": "欢迎来到", "startFrame": 0, "endFrame": 20, "startMs": 0, "endMs": 660 },
-        { "text": "全链路", "startFrame": 20, "endFrame": 40, "startMs": 660, "endMs": 1330 },
-        { "text": "AI 视频自动化", "startFrame": 40, "endFrame": 65, "startMs": 1330, "endMs": 2160 },
-        { "text": "生产工作室", "startFrame": 65, "endFrame": 90, "startMs": 2160, "endMs": 3000 }
+        {
+          "text": "第一模块",
+          "startFrame": 0,
+          "endFrame": 59,
+          "startMs": 0,
+          "endMs": 1966
+        },
+        {
+          "text": "自生英克隆与毫秒时钟中枢",
+          "startFrame": 59,
+          "endFrame": 118,
+          "startMs": 1966,
+          "endMs": 3933
+        },
+        {
+          "text": "仅需5秒参考干声",
+          "startFrame": 118,
+          "endFrame": 177,
+          "startMs": 3933,
+          "endMs": 5900
+        },
+        {
+          "text": "提取个人声纹特征向量",
+          "startFrame": 177,
+          "endFrame": 236,
+          "startMs": 5900,
+          "endMs": 7866
+        },
+        {
+          "text": "驱动神经网络复刻音色",
+          "startFrame": 236,
+          "endFrame": 295,
+          "startMs": 7866,
+          "endMs": 9833
+        },
+        {
+          "text": "再由阿里sense",
+          "startFrame": 295,
+          "endFrame": 354,
+          "startMs": 9833,
+          "endMs": 11800
+        },
+        {
+          "text": "voice毫秒打点生成唯一时钟契约",
+          "startFrame": 354,
+          "endFrame": 413,
+          "startMs": 11800,
+          "endMs": 13766
+        }
       ]
     },
     {
       "id": "scene_02",
       "type": "TerminalCodeDemo",
-      "startFrame": 90,
-      "durationInFrames": 90,
-      "audioPath": "",
-      "text": "代码即视频，毫秒级音画完全同步",
+      "startFrame": 415,
+      "durationInFrames": 415,
+      "audioPath": "audio/scene_02.mp3",
+      "text": "形态一，科普白板手绘基于SVG虚线偏移，模拟真实铅笔笔触，动态手绘擦除点阵图标瞬间转化为活体矢量描边，打造形象生动的技术图解。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>形态一，科普白板手绘基于SVG虚线偏移，模拟真实铅笔笔触，动态手绘擦除点阵图标瞬间转化为活体矢量描边，打造形象生动的技术图解。",
       "emotion": "<|NEUTRAL|>",
       "words": [
-        { "text": "代码即视频", "startFrame": 90, "endFrame": 130, "startMs": 3000, "endMs": 4330 },
-        { "text": "毫秒级音画完全同步", "startFrame": 130, "endFrame": 180, "startMs": 4330, "endMs": 6000 }
+        {
+          "text": "形态一",
+          "startFrame": 415,
+          "endFrame": 498,
+          "startMs": 13833,
+          "endMs": 16600
+        },
+        {
+          "text": "科普白板手绘基于SVG虚线偏移",
+          "startFrame": 498,
+          "endFrame": 581,
+          "startMs": 16600,
+          "endMs": 19366
+        },
+        {
+          "text": "模拟真实铅笔笔触",
+          "startFrame": 581,
+          "endFrame": 664,
+          "startMs": 19366,
+          "endMs": 22133
+        },
+        {
+          "text": "动态手绘擦除点阵图标瞬间转化为活体矢量描边",
+          "startFrame": 664,
+          "endFrame": 747,
+          "startMs": 22133,
+          "endMs": 24900
+        },
+        {
+          "text": "打造形象生动的技术图解",
+          "startFrame": 747,
+          "endFrame": 830,
+          "startMs": 24900,
+          "endMs": 27666
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "type": "ExplainerWhiteboard",
+      "startFrame": 830,
+      "durationInFrames": 428,
+      "audioPath": "audio/scene_03.mp3",
+      "text": "形态2项目实战教程，即刻打字机毫秒同步敲入命令，输出彩色终端流，架构双卡阻尼对比，配合单片机引角正弦脉冲流光直击硬核技术原理。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>形态2项目实战教程，即刻打字机毫秒同步敲入命令，输出彩色终端流，架构双卡阻尼对比，配合单片机引角正弦脉冲流光直击硬核技术原理。",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "形态2项目实战教程",
+          "startFrame": 830,
+          "endFrame": 915,
+          "startMs": 27666,
+          "endMs": 30500
+        },
+        {
+          "text": "即刻打字机毫秒同步敲入命令",
+          "startFrame": 915,
+          "endFrame": 1000,
+          "startMs": 30500,
+          "endMs": 33333
+        },
+        {
+          "text": "输出彩色终端流",
+          "startFrame": 1000,
+          "endFrame": 1085,
+          "startMs": 33333,
+          "endMs": 36166
+        },
+        {
+          "text": "架构双卡阻尼对比",
+          "startFrame": 1085,
+          "endFrame": 1170,
+          "startMs": 36166,
+          "endMs": 39000
+        },
+        {
+          "text": "配合单片机引角正弦脉冲流光直击硬核技术原理",
+          "startFrame": 1170,
+          "endFrame": 1255,
+          "startMs": 39000,
+          "endMs": 41833
+        }
+      ]
+    },
+    {
+      "id": "scene_04",
+      "type": "TerminalCodeDemo",
+      "startFrame": 1258,
+      "durationInFrames": 379,
+      "audioPath": "audio/scene_04.mp3",
+      "text": "形态3，实拍视频混剪金属质感悬浮手机可画中画原生嵌入实拍硬件原片，激光扫描线与发光指示引线毫秒级精准追踪实物元器件。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>形态3，实拍视频混剪金属质感悬浮手机可画中画原生嵌入实拍硬件原片，激光扫描线与发光指示引线毫秒级精准追踪实物元器件。",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "形态3",
+          "startFrame": 1258,
+          "endFrame": 1384,
+          "startMs": 41933,
+          "endMs": 46133
+        },
+        {
+          "text": "实拍视频混剪金属质感悬浮手机可画中画原生嵌入实拍硬件原片",
+          "startFrame": 1384,
+          "endFrame": 1510,
+          "startMs": 46133,
+          "endMs": 50333
+        },
+        {
+          "text": "激光扫描线与发光指示引线毫秒级精准追踪实物元器件",
+          "startFrame": 1510,
+          "endFrame": 1636,
+          "startMs": 50333,
+          "endMs": 54533
+        }
+      ]
+    },
+    {
+      "id": "scene_05",
+      "type": "ExplainerWhiteboard",
+      "startFrame": 1637,
+      "durationInFrames": 395,
+      "audioPath": "audio/scene_05.mp3",
+      "text": "形态4，日常自媒体与google flow电影镜头网页端极速生成vio概念镜头，remotion电影级微推蔓移，搭配逐字弹跳彩色字幕，七大技能融为一体。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>形态4，日常自媒体与google flow电影镜头网页端极速生成vio概念镜头，remotion电影级微推蔓移，搭配逐字弹跳彩色字幕，七大技能融为一体。",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "形态4",
+          "startFrame": 1637,
+          "endFrame": 1702,
+          "startMs": 54566,
+          "endMs": 56733
+        },
+        {
+          "text": "日常自媒体与google",
+          "startFrame": 1702,
+          "endFrame": 1767,
+          "startMs": 56733,
+          "endMs": 58900
+        },
+        {
+          "text": "flow电影镜头网页端极速生成vio概念镜头",
+          "startFrame": 1767,
+          "endFrame": 1832,
+          "startMs": 58900,
+          "endMs": 61066
+        },
+        {
+          "text": "remotion电影级微推蔓移",
+          "startFrame": 1832,
+          "endFrame": 1897,
+          "startMs": 61066,
+          "endMs": 63233
+        },
+        {
+          "text": "搭配逐字弹跳彩色字幕",
+          "startFrame": 1897,
+          "endFrame": 1962,
+          "startMs": 63233,
+          "endMs": 65400
+        },
+        {
+          "text": "七大技能融为一体",
+          "startFrame": 1962,
+          "endFrame": 2027,
+          "startMs": 65400,
+          "endMs": 67566
+        }
       ]
     }
   ]

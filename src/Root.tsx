@@ -3,229 +3,277 @@ import { Composition, AbsoluteFill, Sequence, Audio, staticFile, useCurrentFrame
 import timelineData from '../public/timeline.json';
 import { TerminalWindow } from './components/TerminalWindow';
 import { DynamicSubtitles } from './components/DynamicSubtitles';
+import { WhiteboardHanddrawn } from './components/WhiteboardHanddrawn';
+import { PhoneFrame } from './components/PhoneFrame';
+import { CalloutPointer } from './components/CalloutPointer';
+import { PinoutStream } from './components/PinoutStream';
 
-// --- 分镜 1：痛点引入与核心理念 (Explainer) ---
-const Scene01Intro: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
+// =========================================================================
+// 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
+// =========================================================================
+const Scene01VoiceClone: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   const titleSpring = spring({ frame, fps, config: { damping: 14, stiffness: 120 } });
-  const cardSpring = spring({ frame: frame - 20, fps, config: { damping: 12, stiffness: 100 } });
-
-  const titleScale = interpolate(titleSpring, [0, 1], [0.85, 1.0]);
-  const cardOpacity = interpolate(cardSpring, [0, 1], [0, 1]);
-  const cardY = interpolate(cardSpring, [0, 1], [40, 0]);
+  const pulse = Math.sin(frame / 5) * 5;
 
   return (
-    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
-      {/* 头部发光大标题 */}
-      <div style={{ transform: `scale(${titleScale})`, textAlign: 'center', marginBottom: '50px' }}>
+    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px' }}>
+      <div style={{ transform: `scale(${interpolate(titleSpring, [0, 1], [0.85, 1.0])})`, textAlign: 'center', marginBottom: '36px' }}>
+        <div style={{ fontSize: '20px', color: '#38bdf8', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
+          FOUNDATION MODULE · 物理时钟中枢
+        </div>
         <div style={{
-          fontSize: '68px',
+          fontSize: '56px',
           fontWeight: 900,
           background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          letterSpacing: '-1px',
-          textShadow: '0 0 40px rgba(56, 189, 248, 0.4)'
+          marginTop: '6px'
         }}>
-          AI Video Studio
-        </div>
-        <div style={{ fontSize: '28px', color: '#94a3b8', marginTop: '12px', fontWeight: 500 }}>
-          全链路 AI 视频自动化制作工作流 · 代码即视频
+          自声音克隆 (TTS) 与 SenseVoice 毫秒时钟中枢
         </div>
       </div>
 
-      {/* 核心对比卡片 */}
-      <div style={{ display: 'flex', gap: '40px', width: '100%', maxWidth: '1400px', opacity: cardOpacity, transform: `translateY(${cardY}px)` }}>
-        {/* 左侧：传统剪辑痛点 */}
-        <div style={{
-          flex: 1,
-          backgroundColor: 'rgba(239, 68, 68, 0.08)',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-          borderRadius: '20px',
-          padding: '36px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-        }}>
-          <div style={{ fontSize: '26px', fontWeight: 700, color: '#f87171', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span>❌ 传统人工剪辑 & 纯文生视频</span>
+      <div style={{ display: 'flex', gap: '36px', width: '100%', maxWidth: '1400px' }}>
+        {/* 左卡：个人声纹特征提取 */}
+        <div style={{ flex: 1, backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '24px', padding: '32px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+            <span style={{ fontSize: '24px', fontWeight: 800, color: '#38bdf8' }}>🎙️ 个人专属声纹提取 (Speaker Embedding)</span>
+            <span style={{ backgroundColor: '#0369a1', color: '#e0f2fe', padding: '4px 12px', borderRadius: '10px', fontSize: '13px', fontWeight: 700 }}>5秒干声采样</span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#cbd5e1', fontSize: '20px', lineHeight: 1.6 }}>
-            <div>• 剪映 / PR 频繁打点对齐，文案一改全部错位</div>
-            <div>• Sora / 可灵等文生模型文字乱码、不可控</div>
-            <div>• 技术架构图无法精准指代引脚与代码逻辑</div>
-            <div>• 难以实现批量化、工业级的稳定生产</div>
-          </div>
-        </div>
 
-        {/* 右侧：程序化代码渲染优势 */}
-        <div style={{
-          flex: 1,
-          backgroundColor: 'rgba(56, 189, 248, 0.08)',
-          border: '1px solid rgba(56, 189, 248, 0.4)',
-          borderRadius: '20px',
-          padding: '36px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 50px rgba(56, 189, 248, 0.1)',
-        }}>
-          <div style={{ fontSize: '26px', fontWeight: 700, color: '#38bdf8', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span>✅ 程序化渲染 (Code-as-Video)</span>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#cbd5e1', fontSize: '20px', lineHeight: 1.6 }}>
-            <div>• 声音先行：真实物理时长决定画面总帧数</div>
-            <div>• 矢量级锐利：代码高亮、架构图 100% 确定性</div>
-            <div>• 毫秒级音画同步：SenseVoice 自动打点与情绪提取</div>
-            <div>• 极速复用：换套文案一键重新编译导出</div>
-          </div>
-        </div>
-      </div>
-    </AbsoluteFill>
-  );
-};
-
-// --- 分镜 2：核心第一步 · 声音先行与时钟契约 ---
-const Scene02Timeline: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  const anim = spring({ frame, fps, config: { damping: 14, stiffness: 120 } });
-  const pulse = Math.sin(frame / 6) * 6;
-
-  return (
-    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <div style={{ fontSize: '22px', color: '#38bdf8', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>
-          STEP 01 · 绝对时间基准
-        </div>
-        <div style={{ fontSize: '56px', fontWeight: 900, color: '#fff', marginTop: '8px' }}>
-          声音先行与时间轴契约 (timeline.json)
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', gap: '40px', width: '100%', maxWidth: '1400px', alignItems: 'center' }}>
-        {/* 左侧：SenseVoice 与音频脉冲可视化 */}
-        <div style={{ flex: 1, backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '20px', padding: '36px' }}>
-          <div style={{ fontSize: '24px', fontWeight: 700, color: '#10b981', marginBottom: '24px' }}>
-            🎙️ 阿里 SenseVoice-Small 打点中枢
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '80px', marginBottom: '30px' }}>
-            {[24, 45, 60, 30, 70, 50, 85, 40, 65, 30, 90, 45, 60, 35, 75, 50, 80, 40].map((h, i) => {
-              const dynHeight = Math.max(12, h + Math.sin(frame / 4 + i) * 18 + pulse);
+          {/* 动态梅尔频谱条 */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '90px', marginBottom: '24px', backgroundColor: '#020617', padding: '12px', borderRadius: '14px' }}>
+            {[30, 60, 45, 80, 55, 90, 70, 40, 85, 60, 95, 50, 75, 65, 85, 45, 90, 70, 50, 80].map((h, i) => {
+              const dyn = Math.max(10, h + Math.sin(frame / 3 + i * 1.5) * 20 + pulse);
               return (
                 <div
                   key={i}
                   style={{
                     flex: 1,
-                    height: `${dynHeight}px`,
-                    backgroundColor: i % 2 === 0 ? '#38bdf8' : '#818cf8',
-                    borderRadius: '4px',
-                    transition: 'height 0.1s ease',
+                    height: `${dyn}%`,
+                    background: 'linear-gradient(180deg, #38bdf8 0%, #3b82f6 100%)',
+                    borderRadius: '3px',
                   }}
                 />
               );
             })}
           </div>
-          <div style={{ color: '#94a3b8', fontSize: '18px', lineHeight: 1.8 }}>
-            <div>⚡ 纯 CPU 推理 (RTF 约 0.05，秒级对齐长音频)</div>
-            <div>⏱️ 提取字词毫秒起始时间戳 [startMs, endMs]</div>
-            <div>🎭 自动识别情绪标签: &lt;|HAPPY|&gt;, &lt;|NEUTRAL|&gt;</div>
+
+          <div style={{ color: '#94a3b8', fontSize: '16px', lineHeight: 1.8 }}>
+            <div>📁 参考音频: <code style={{ color: '#38bdf8' }}>models/reference_audio/my_voice.wav</code></div>
+            <div>🧬 声纹向量: 192维音色指纹 (Cosine Similarity: <span style={{ color: '#10b981' }}>99.2%</span>)</div>
+            <div>🧠 神经生成: GPT-SoVITS / OmniVoice 零样本声学解码</div>
           </div>
         </div>
 
-        {/* 右侧：代码契约卡片 */}
-        <div style={{ flex: 1, backgroundColor: '#0d1117', border: '1px solid #30363d', borderRadius: '20px', padding: '30px', fontFamily: 'monospace' }}>
-          <div style={{ color: '#8b949e', fontSize: '16px', marginBottom: '14px' }}>// public/timeline.json (数据中枢契约)</div>
-          <pre style={{ color: '#e6edf3', fontSize: '18px', lineHeight: 1.6, margin: 0 }}>
-{`{
-  "project": "workflow_introduction",
-  "fps": 30,
-  "totalDurationInFrames": 1544,
-  "scenes": [
-    {
-      "id": "scene_01",
-      "durationInFrames": 415,
-      "audioPath": "audio/scene_01.mp3",
-      "words": [
-        { "text": "欢迎来到AIVideo", "startFrame": 0 },
-        { "text": "全链路视频工作流", "startFrame": 83 }
-      ]
-    }
-  ]
+        {/* 右卡：SenseVoice 毫秒打点契约 */}
+        <div style={{ flex: 1, backgroundColor: '#0d1117', border: '1px solid #30363d', borderRadius: '24px', padding: '30px', fontFamily: 'monospace' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981', fontSize: '16px', fontWeight: 700, marginBottom: '14px' }}>
+            <span>⏱️ 阿里 SenseVoice-Small CPU 极速打点</span>
+            <span>RTF: 0.05</span>
+          </div>
+          <pre style={{ color: '#e6edf3', fontSize: '16px', lineHeight: 1.6, margin: 0, backgroundColor: '#161b22', padding: '16px', borderRadius: '12px' }}>
+{`// public/timeline.json
+{
+  "voiceModel": "CustomVoiceClone_01",
+  "audioPath": "public/audio/scene_01.mp3",
+  "words": [
+    { "text": "第一模块", "startFrame": 0, "endFrame": 83 },
+    { "text": "自声音克隆与毫秒时钟中枢", "startFrame": 83, "endFrame": 166 }
+  ],
+  "emotion": "<|NEUTRAL|>"
 }`}
           </pre>
+          <div style={{ color: '#8b949e', fontSize: '14px', marginTop: '12px' }}>
+            ⚡ 声音先行原则：音频毫秒物理长度是画面的绝对唯一时钟
+          </div>
         </div>
       </div>
     </AbsoluteFill>
   );
 };
 
-// --- 分镜 3：核心第二步 · Google Flow 电影级镜头协同 ---
-const Scene03GoogleFlow: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
-  const frame = useCurrentFrame();
-
+// =========================================================================
+// 分镜 2：形态一 · 科普白板手绘 (Whiteboard & pixel2motion)
+// =========================================================================
+const Scene02Whiteboard: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
   return (
-    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <div style={{ fontSize: '22px', color: '#c084fc', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>
-          STEP 02 · 画面装配与电影质感
+    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        <div style={{ fontSize: '20px', color: '#f59e0b', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
+          SKILL 01 · story-to-handdrawn & pixel2motion
         </div>
-        <div style={{ fontSize: '56px', fontWeight: 900, color: '#fff', marginTop: '8px' }}>
-          组件化装配与 Google Flow 电影级镜头协同
+        <div style={{ fontSize: '52px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>
+          形态一：科普视频白板手绘与矢量活化
+        </div>
+      </div>
+
+      <WhiteboardHanddrawn durationInFrames={durationInFrames} />
+    </AbsoluteFill>
+  );
+};
+
+// =========================================================================
+// 分镜 3：形态二 · 项目实战教程 (Terminal & Pinout Stream)
+// =========================================================================
+const Scene03HandsOn: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
+  return (
+    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        <div style={{ fontSize: '20px', color: '#10b981', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
+          SKILL 02 · 极客终端与硬件引脚流光
+        </div>
+        <div style={{ fontSize: '52px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>
+          形态二：项目实战与软硬件架构深度对比
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '36px', width: '100%', maxWidth: '1400px', alignItems: 'center' }}>
+        {/* 左侧：极客终端打字机 */}
+        <div style={{ flex: 1 }}>
+          <TerminalWindow
+            title="bash - tutorial_demo"
+            command="docker run -d -p 80:80 --name my_app esp32/embedded:latest"
+            output={[
+              "[✓] Pulling container image layer 1/3 (12.4 MB)",
+              "[✓] Flashing microcode to GPIO 18/23 bus...",
+              "[OK] Container initialized, HTTP server running on port 80"
+            ]}
+            width="100%"
+            height={360}
+          />
+        </div>
+
+        {/* 右侧：单片机引脚脉冲流光 */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <PinoutStream />
+          <div style={{ display: 'flex', gap: '14px' }}>
+            <div style={{ flex: 1, backgroundColor: '#1e293b', padding: '16px', borderRadius: '12px', borderLeft: '4px solid #38bdf8' }}>
+              <div style={{ color: '#38bdf8', fontWeight: 700, fontSize: '16px' }}>架构双卡阻尼对比</div>
+              <div style={{ color: '#94a3b8', fontSize: '14px', marginTop: '4px' }}>物理弹簧阻尼入场，Before vs After</div>
+            </div>
+            <div style={{ flex: 1, backgroundColor: '#1e293b', padding: '16px', borderRadius: '12px', borderLeft: '4px solid #10b981' }}>
+              <div style={{ color: '#10b981', fontWeight: 700, fontSize: '16px' }}>正弦波信号流</div>
+              <div style={{ color: '#94a3b8', fontSize: '14px', marginTop: '4px' }}>毫秒级同步硬件通信脉冲</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+// =========================================================================
+// 分镜 4：形态三 · 实拍视频混剪 (PhoneFrame & Callout Pointer)
+// =========================================================================
+const Scene04HybridLive: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
+  return (
+    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <div style={{ fontSize: '20px', color: '#c084fc', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
+          SKILL 03 · video-shotcraft & 画中画包装
+        </div>
+        <div style={{ fontSize: '52px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>
+          形态三：实拍视频混剪与 HUD 激光发光引线
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '50px', width: '100%', maxWidth: '1400px', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+        {/* 左侧：3D 悬浮手机外壳原生播放实拍视频 */}
+        <PhoneFrame videoSrc="footage/real_sample.mp4" width={320} height={520} />
+
+        {/* 右侧：实拍混剪技术解析卡片 */}
+        <div style={{ flex: 1, backgroundColor: '#090d16', border: '1px solid #1e293b', borderRadius: '24px', padding: '36px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)' }}>
+          <div style={{ fontSize: '26px', fontWeight: 800, color: '#c084fc', marginBottom: '20px' }}>
+            🎬 实拍原片 + 动态动画高能混合
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', color: '#cbd5e1', fontSize: '18px', lineHeight: 1.6 }}>
+            <div>• <strong style={{ color: '#38bdf8' }}>拟真 3D 浮动手机壳</strong>：自动带有金属高光、圆角裁切与微幅浮动动效</div>
+            <div>• <strong style={{ color: '#f43f5e' }}>HUD 激光扫描线</strong>：循环扫描原片画面，增强极客科技质感</div>
+            <div>• <strong style={{ color: '#10b981' }}>发光引线 (Callout Pointer)</strong>：动态折线飞出，精准锚定实物元器件与芯片引脚</div>
+          </div>
+        </div>
+
+        {/* 动态激光 Callout 引线 (指向手机屏幕内部) */}
+        <CalloutPointer label="ESP32-S3 实物主控" sublabel="双核 Xtensa LX7 @ 240MHz" />
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+// =========================================================================
+// 分镜 5：形态四 · 日常自媒体与 Google Flow 电影级 AI 镜头
+// =========================================================================
+const Scene05GoogleFlowShorts: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
+  return (
+    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <div style={{ fontSize: '20px', color: '#e11d48', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
+          SKILL 04 · google-flow-broll & 9:16 自媒体
+        </div>
+        <div style={{ fontSize: '52px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>
+          形态四：日常自媒体短片与 Google Flow 映画镜头
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: '40px', width: '100%', maxWidth: '1400px', alignItems: 'center' }}>
-        {/* 左侧：极客终端打字机 */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-          <TerminalWindow
-            title="ai-video-studio - zsh"
-            command="python scripts/pipeline.py --project my_video"
-            output={[
-              "[✓] 1/3 Audio generated via Voice Clone",
-              "[✓] 2/3 SenseVoice aligned timeline.json",
-              "[✓] 3/3 Google Flow B-roll mounted: public/footage/",
-              "✨ Starting Remotion visual state machine..."
-            ]}
-            width="100%"
-            height={380}
-          />
-        </div>
-
-        {/* 右侧：Google Flow 镜头渲染卡片 */}
+        {/* 左侧：Google Flow (Veo) 映画镜头卡片 */}
         <div style={{
-          flex: 1,
-          height: '380px',
-          backgroundColor: '#030712',
-          border: '1px solid rgba(192, 132, 252, 0.4)',
-          borderRadius: '20px',
-          padding: '30px',
+          flex: 1.2,
+          height: '460px',
+          backgroundColor: '#050816',
+          border: '1px solid rgba(225, 29, 72, 0.4)',
+          borderRadius: '24px',
+          padding: '32px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          boxShadow: '0 20px 50px rgba(192, 132, 252, 0.15)',
+          boxShadow: '0 20px 50px rgba(225, 29, 72, 0.2)',
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* 装饰性网格背景 */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(192, 132, 252, 0.15) 0%, transparent 60%)',
-            pointerEvents: 'none'
-          }} />
-
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <span style={{ fontSize: '24px', fontWeight: 800, color: '#c084fc' }}>🌐 Google Flow (Veo / VideoFX)</span>
-              <span style={{ backgroundColor: '#2e1065', color: '#d8b4fe', padding: '4px 12px', borderRadius: '12px', fontSize: '14px', fontWeight: 600 }}>4K 60FPS</span>
+              <span style={{ fontSize: '24px', fontWeight: 800, color: '#fb7185' }}>🌐 Google Flow (Veo 映画级镜头)</span>
+              <span style={{ backgroundColor: '#4c0519', color: '#fecdd3', padding: '4px 12px', borderRadius: '10px', fontSize: '13px', fontWeight: 700 }}>4K 60FPS</span>
             </div>
-            <div style={{ color: '#e2e8f0', fontSize: '18px', fontStyle: 'italic', lineHeight: 1.6, backgroundColor: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '12px', borderLeft: '4px solid #c084fc' }}>
-              "Extreme cinematic macro shot of a glowing microchip processor with pulsating neon traces, slow camera drift..."
+            <div style={{ color: '#cbd5e1', fontSize: '17px', fontStyle: 'italic', lineHeight: 1.6, backgroundColor: 'rgba(255,255,255,0.05)', padding: '16px', borderRadius: '14px', borderLeft: '4px solid #f43f5e' }}>
+              "Extreme cinematic macro shot of a glowing microchip processor with pulsating blue circuit traces, anamorphic lens flare, smooth slow camera drift..."
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontSize: '16px' }}>
-            <span>🎥 摄影机运镜: 慢速平移推镜 (Ken Burns)</span>
-            <span>🧩 组件: &lt;BrollVideoPlayer /&gt;</span>
+          <div style={{ color: '#94a3b8', fontSize: '16px', lineHeight: 1.7 }}>
+            <div>🎥 电影级运镜: 慢速平移推镜 (Ken Burns 微缩放)</div>
+            <div>🧩 专用组件: &lt;BrollVideoPlayer blurBackground=&#123;true&#125; /&gt;</div>
+            <div>🌈 调色预设: Cyber Glow / Warm Editorial 工业级调色</div>
+          </div>
+        </div>
+
+        {/* 右侧：9:16 自媒体短视频视窗演示 */}
+        <div style={{ flex: 0.8, display: 'flex', justifyContent: 'center' }}>
+          <div style={{
+            width: '260px',
+            height: '460px',
+            borderRadius: '36px',
+            backgroundColor: '#000',
+            border: '3px solid #334155',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.8), 0 0 30px rgba(244, 63, 94, 0.2)',
+            position: 'relative'
+          }}>
+            <div style={{ color: '#f43f5e', fontWeight: 800, fontSize: '15px' }}>📱 9:16 高节奏竖屏</div>
+            <div style={{ textAlign: 'center', color: '#facc15', fontSize: '26px', fontWeight: 900, textShadow: '0 0 15px rgba(250,204,21,0.6)' }}>
+              逐字弹跳<br/>爆款大字
+            </div>
+            <div style={{ color: '#64748b', fontSize: '12px', textAlign: 'center' }}>
+              平台安全区防护 (避让头像与进度条)
+            </div>
           </div>
         </div>
       </div>
@@ -233,80 +281,9 @@ const Scene03GoogleFlow: React.FC<{ durationInFrames: number }> = ({ durationInF
   );
 };
 
-// --- 分镜 4：核心第三步 · 五重质量门禁与极速渲染 ---
-const Scene04AuditAndRender: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  const progress = Math.min(100, Math.floor(interpolate(frame, [20, durationInFrames - 40], [0, 100], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp'
-  })));
-
-  const checks = [
-    { name: "阶段 1：文案与分镜合规审查 (语速比 4.5字/秒)", passFrame: 10 },
-    { name: "阶段 2：声音与 SenseVoice 毫秒时钟连续性对齐", passFrame: 35 },
-    { name: "阶段 3：视觉动效物理弹簧阻尼与平台安全区", passFrame: 60 },
-    { name: "阶段 4：自动化静态资产门禁 (validator.py)", passFrame: 85 },
-    { name: "阶段 5：AMD 5800H 6进程并发硬件级压制 (yuv420p)", passFrame: 110 }
-  ];
-
-  return (
-    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <div style={{ fontSize: '22px', color: '#10b981', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase' }}>
-          STEP 03 · 质量门禁与交付
-        </div>
-        <div style={{ fontSize: '56px', fontWeight: 900, color: '#fff', marginTop: '8px' }}>
-          五重审查门禁与并发无头光栅化压制
-        </div>
-      </div>
-
-      <div style={{ width: '100%', maxWidth: '1200px', backgroundColor: '#090d16', border: '1px solid #1e293b', borderRadius: '24px', padding: '40px', boxShadow: '0 25px 50px rgba(0,0,0,0.6)' }}>
-        {/* 5 重审查清单 */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '36px' }}>
-          {checks.map((item, idx) => {
-            const isPassed = frame >= item.passFrame;
-            return (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '12px 20px',
-                  backgroundColor: isPassed ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.03)',
-                  border: isPassed ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '12px',
-                  fontSize: '20px',
-                  fontWeight: 600,
-                  color: isPassed ? '#34d399' : '#64748b',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <span>{item.name}</span>
-                <span>{isPassed ? "✅ [PASSED]" : "⏳ PENDING"}</span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 渲染进度条 */}
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontSize: '18px', marginBottom: '10px' }}>
-            <span>🎬 Remotion Chrome Headless 多核渲染进度</span>
-            <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>{progress}%</span>
-          </div>
-          <div style={{ width: '100%', height: '14px', backgroundColor: '#1e293b', borderRadius: '7px', overflow: 'hidden' }}>
-            <div style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #38bdf8 0%, #10b981 100%)', borderRadius: '7px', transition: 'width 0.1s linear' }} />
-          </div>
-        </div>
-      </div>
-    </AbsoluteFill>
-  );
-};
-
-// --- 主 MasterVideo 编排根组件 ---
+// =========================================================================
+// 主 MasterVideo 编排根组件
+// =========================================================================
 export const MasterVideo: React.FC = () => {
   const { scenes } = timelineData;
 
@@ -321,11 +298,12 @@ export const MasterVideo: React.FC = () => {
           {/* 配音音频 */}
           {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
 
-          {/* 各场景专业视觉组件 */}
-          {idx === 0 && <Scene01Intro durationInFrames={scene.durationInFrames} />}
-          {idx === 1 && <Scene02Timeline durationInFrames={scene.durationInFrames} />}
-          {idx === 2 && <Scene03GoogleFlow durationInFrames={scene.durationInFrames} />}
-          {idx === 3 && <Scene04AuditAndRender durationInFrames={scene.durationInFrames} />}
+          {/* 5 大核心形态场景逐一呈现 */}
+          {idx === 0 && <Scene01VoiceClone durationInFrames={scene.durationInFrames} />}
+          {idx === 1 && <Scene02Whiteboard durationInFrames={scene.durationInFrames} />}
+          {idx === 2 && <Scene03HandsOn durationInFrames={scene.durationInFrames} />}
+          {idx === 3 && <Scene04HybridLive durationInFrames={scene.durationInFrames} />}
+          {idx === 4 && <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />}
 
           {/* 逐字动态弹跳大字幕 */}
           {scene.words && scene.words.length > 0 && (
@@ -339,7 +317,7 @@ export const MasterVideo: React.FC = () => {
 
 export const RemotionRoot: React.FC = () => {
   const fps = timelineData.fps || 30;
-  const durationInFrames = Math.max(1, timelineData.totalDurationInFrames || 1544);
+  const durationInFrames = Math.max(1, timelineData.totalDurationInFrames || 2032);
 
   return (
     <>
