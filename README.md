@@ -89,22 +89,25 @@ python scripts/validator.py
 
 ---
 
-## 🎙️ 专属个人声音克隆 (GPT-SoVITS)
+## 🎙️ 双轨声音引擎：高保真商业音色与专属真声克隆
 
-本项目支持 100% 个人真实的克隆声音配音：
-1. **模型资产**：已训练好的音色权重归档于 `models/gpt_sovits/`：
-   * `epanda_voice_e8_s120.pth` (SoVITS 音色模型)
-   * `epanda_voice-e15.ckpt` (GPT 语言节奏模型)
-   * `models/reference_audio/my_voice_ref_5s.wav` (5s 提示基准音频)
-2. **启动本地专属音色服务**：
-   * 双击运行 `scripts/start_local_sovits.bat`（或在终端运行 `python scripts/start_local_sovits.py`）；
-   * 服务在 `http://127.0.0.1:9880` 启动，基于 AMD Ryzen 7 5800H CPU 深度优化，断网亦可全自动推理。
-3. **批量分镜生成**：
-   ```bash
-   python scripts/generate_audio.py --script inputs/script.json
-   ```
-   * 优先调用 `http://127.0.0.1:9880/tts` 进行专属声音合成；
-   * 若服务离线，**自动无缝回退至微软 Edge-TTS (YunxiNeural)**，保障视频流水线永不中断。
-4. **详细训练与本地推理 SOP**：
-   参见知识库 Wiki：[专属音色克隆与全自动微调训练指南 (GPT-SoVITS + Colab 混合云实战)](../wiki/docs/02-projects/ai-video-automation/06-personal-voice-cloning-gpt-sovits.mdx)。
+本项目内置**双轨可切换的配音引擎架构**，兼顾日常敏捷制作的极速体验与专属个人 IP 的沉淀：
+
+### 1. 默认引擎：微软 Edge-TTS（推荐日常快速出片）
+* **音色**：`zh-CN-YunxiNeural`（云希，沉稳大气的科普自媒体专业男声）。
+* **优势**：免启动任何本地大模型服务、毫秒级即时合成、零内存占用，适合日常快速迭代与分镜调试。
+* **配置方式**：在 `.env` 中设置 `TTS_PROVIDER=edge_tts`（默认即此模式）。
+
+### 2. 专属声音：GPT-SoVITS 个人真声微调模型（保留并随时激活）
+* **音色**：基于创作者 3m42s 真实录音微调的专属声纹 (`epanda_voice`)。
+* **资产**：
+  * `models/gpt_sovits/epanda_voice_e8_s120.pth` (SoVITS 音色模型)
+  * `models/gpt_sovits/epanda_voice-e15.ckpt` (GPT 节奏模型)
+  * `models/reference_audio/my_voice_ref_5s.wav` (5s 提示基准音频)
+* **激活方法**：
+  1. 双击运行 `scripts/start_local_sovits.bat`（启动本地 9880 端口 CPU 推理引擎）；
+  2. 在 `.env` 中修改为 `TTS_PROVIDER=gpt_sovits`；
+  3. 重新运行 `python scripts/pipeline.py ...` 即刻全自动切换为个人专属音色！
+* **详细训练与本地推理 SOP**：
+  参见知识库 Wiki：[专属音色克隆与全自动微调训练指南 (GPT-SoVITS + Colab 混合云实战)](../wiki/docs/02-projects/ai-video-automation/06-personal-voice-cloning-gpt-sovits.mdx)。
 

@@ -182,8 +182,15 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
             synthesize_minimax(text, out_path, mm_key, mm_group, mm_voice)
             return
 
-    # 回退到本地 Edge-TTS
+    # 回退到本地 Edge-TTS (或默认使用 Edge-TTS)
     asyncio.run(synthesize_edge_tts(text, out_path))
+    old_wav = os.path.splitext(out_path)[0] + ".wav"
+    if os.path.exists(old_wav) and old_wav != out_path:
+        try:
+            os.remove(old_wav)
+        except Exception:
+            pass
+    return out_path
 
 def main():
     parser = argparse.ArgumentParser(description="分镜音频批量自动生成")

@@ -1,226 +1,226 @@
 {
   "project": "workflow_introduction",
   "fps": 30,
-  "totalDurationInFrames": 3486,
+  "totalDurationInFrames": 1691,
   "scenes": [
     {
       "id": "scene_01",
       "type": "ExplainerWhiteboard",
       "startFrame": 0,
-      "durationInFrames": 549,
-      "audioPath": "audio/scene_01.wav",
-      "text": "的生活与技术云的小事。大家好，欢迎了解我们的全线路AI视频自动化生产工作理由的生活于技术员的小事。从分进文案到成片导出的生活于技术云的小事，彻底实现代码机视频。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>的生活与技术云的小事。大家好，欢迎了解我们的全线路AI视频自动化生产工作理由的生活于技术员的小事。从分进文案到成片导出的生活于技术云的小事，彻底实现代码机视频。",
+      "durationInFrames": 346,
+      "audioPath": "audio/scene_01.mp3",
+      "text": "大家好，欢迎了解我们的全链路AI视频自动化生产工作流。从分镜文案到成片导出，彻底实现代码及视频。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>大家好，欢迎了解我们的全链路AI视频自动化生产工作流。从分镜文案到成片导出，彻底实现代码及视频。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "的生活与技术云的小事",
-          "startFrame": 0,
-          "endFrame": 109,
-          "startMs": 0,
-          "endMs": 3633
-        },
-        {
           "text": "大家好",
-          "startFrame": 109,
-          "endFrame": 218,
-          "startMs": 3633,
-          "endMs": 7266
+          "startFrame": 0,
+          "endFrame": 86,
+          "startMs": 0,
+          "endMs": 2866
         },
         {
-          "text": "欢迎了解我们的全线路AI视频自动化生产工作理由的生活于技术员的小事",
-          "startFrame": 218,
-          "endFrame": 327,
-          "startMs": 7266,
-          "endMs": 10900
+          "text": "欢迎了解我们的全链路AI视频自动化生产工作流",
+          "startFrame": 86,
+          "endFrame": 172,
+          "startMs": 2866,
+          "endMs": 5733
         },
         {
-          "text": "从分进文案到成片导出的生活于技术云的小事",
-          "startFrame": 327,
-          "endFrame": 436,
-          "startMs": 10900,
-          "endMs": 14533
+          "text": "从分镜文案到成片导出",
+          "startFrame": 172,
+          "endFrame": 258,
+          "startMs": 5733,
+          "endMs": 8600
         },
         {
-          "text": "彻底实现代码机视频",
-          "startFrame": 436,
-          "endFrame": 545,
-          "startMs": 14533,
-          "endMs": 18166
+          "text": "彻底实现代码及视频",
+          "startFrame": 258,
+          "endFrame": 344,
+          "startMs": 8600,
+          "endMs": 11466
         }
       ]
     },
     {
       "id": "scene_02",
       "type": "TerminalCodeDemo",
-      "startFrame": 549,
-      "durationInFrames": 756,
-      "audioPath": "audio/scene_02.wav",
-      "text": "的生活与基础一的小戏。首先，在声音端的生活与技术已经消失。我们接入了基于真实录音微调的GPT show5VITS音色到生活基础一的小戏，并搭配双轨自动降级机制的生活与基术一的小示，让每个视频都自带独特的个人电视部。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>的生活与基础一的小戏。首先，在声音端的生活与技术已经消失。我们接入了基于真实录音微调的GPT show5VITS音色到生活基础一的小戏，并搭配双轨自动降级机制的生活与基术一的小示，让每个视频都自带独特的个人电视部。",
+      "startFrame": 346,
+      "durationInFrames": 343,
+      "audioPath": "audio/scene_02.mp3",
+      "text": "首先在声音端，我们接入了基于真实录音微调的GPT service专属音色，并搭配双轨自动降级机制，让每个视频都自带独特的个人辨识度。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>首先在声音端，我们接入了基于真实录音微调的GPT service专属音色，并搭配双轨自动降级机制，让每个视频都自带独特的个人辨识度。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "的生活与基础一的小戏",
-          "startFrame": 549,
-          "endFrame": 657,
-          "startMs": 18300,
-          "endMs": 21900
-        },
-        {
-          "text": "首先",
-          "startFrame": 657,
-          "endFrame": 765,
-          "startMs": 21900,
-          "endMs": 25500
-        },
-        {
-          "text": "在声音端的生活与技术已经消失",
-          "startFrame": 765,
-          "endFrame": 873,
-          "startMs": 25500,
-          "endMs": 29100
+          "text": "首先在声音端",
+          "startFrame": 346,
+          "endFrame": 414,
+          "startMs": 11533,
+          "endMs": 13800
         },
         {
           "text": "我们接入了基于真实录音微调的GPT",
-          "startFrame": 873,
-          "endFrame": 981,
-          "startMs": 29100,
-          "endMs": 32700
+          "startFrame": 414,
+          "endFrame": 482,
+          "startMs": 13800,
+          "endMs": 16066
         },
         {
-          "text": "show5VITS音色到生活基础一的小戏",
-          "startFrame": 981,
-          "endFrame": 1089,
-          "startMs": 32700,
-          "endMs": 36300
+          "text": "service专属音色",
+          "startFrame": 482,
+          "endFrame": 550,
+          "startMs": 16066,
+          "endMs": 18333
         },
         {
-          "text": "并搭配双轨自动降级机制的生活与基术一的小示",
-          "startFrame": 1089,
-          "endFrame": 1197,
-          "startMs": 36300,
-          "endMs": 39900
+          "text": "并搭配双轨自动降级机制",
+          "startFrame": 550,
+          "endFrame": 618,
+          "startMs": 18333,
+          "endMs": 20600
         },
         {
-          "text": "让每个视频都自带独特的个人电视部",
-          "startFrame": 1197,
-          "endFrame": 1305,
-          "startMs": 39900,
-          "endMs": 43500
+          "text": "让每个视频都自带独特的个人辨识度",
+          "startFrame": 618,
+          "endFrame": 686,
+          "startMs": 20600,
+          "endMs": 22866
         }
       ]
     },
     {
       "id": "scene_03",
       "type": "ExplainerWhiteboard",
-      "startFrame": 1305,
-      "durationInFrames": 769,
-      "audioPath": "audio/scene_03.wav",
-      "text": "的生活与基础一的小事贝因生成后啊生活用基术里的小事。阿里s草秒级对其模型在本地以20倍超时时寄速打点的生活与基础的小事，精准解析每个字词的旗帜正与情绪的生活于基术里的小事生成时间轴核心契约。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>的生活与基础一的小事贝因生成后啊生活用基术里的小事。阿里s草秒级对其模型在本地以20倍超时时寄速打点的生活与基础的小事，精准解析每个字词的旗帜正与情绪的生活于基术里的小事生成时间轴核心契约。",
+      "startFrame": 689,
+      "durationInFrames": 352,
+      "audioPath": "audio/scene_03.mp3",
+      "text": "配音生成后，阿里senses voiceice毫秒级对其模型在本地以20倍超时时极速打点，精准解析每个字词的其指针与情绪，生成时间轴核心契约。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>配音生成后，阿里senses voiceice毫秒级对其模型在本地以20倍超时时极速打点，精准解析每个字词的其指针与情绪，生成时间轴核心契约。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "的生活与基础一的小事贝因生成后啊生活用基术里的小事",
-          "startFrame": 1305,
-          "endFrame": 1561,
-          "startMs": 43500,
-          "endMs": 52033
+          "text": "配音生成后",
+          "startFrame": 689,
+          "endFrame": 759,
+          "startMs": 22966,
+          "endMs": 25300
         },
         {
-          "text": "阿里s草秒级对其模型在本地以20倍超时时寄速打点的生活与基础的小事",
-          "startFrame": 1561,
-          "endFrame": 1817,
-          "startMs": 52033,
-          "endMs": 60566
+          "text": "阿里senses",
+          "startFrame": 759,
+          "endFrame": 829,
+          "startMs": 25300,
+          "endMs": 27633
         },
         {
-          "text": "精准解析每个字词的旗帜正与情绪的生活于基术里的小事生成时间轴核心契约",
-          "startFrame": 1817,
-          "endFrame": 2073,
-          "startMs": 60566,
-          "endMs": 69100
+          "text": "voiceice毫秒级对其模型在本地以20倍超时时极速打点",
+          "startFrame": 829,
+          "endFrame": 899,
+          "startMs": 27633,
+          "endMs": 29966
+        },
+        {
+          "text": "精准解析每个字词的其指针与情绪",
+          "startFrame": 899,
+          "endFrame": 969,
+          "startMs": 29966,
+          "endMs": 32299
+        },
+        {
+          "text": "生成时间轴核心契约",
+          "startFrame": 969,
+          "endFrame": 1039,
+          "startMs": 32299,
+          "endMs": 34633
         }
       ]
     },
     {
       "id": "scene_04",
       "type": "TerminalCodeDemo",
-      "startFrame": 2074,
-      "durationInFrames": 728,
-      "audioPath": "audio/scene_04.wav",
-      "text": "的生活基础的域小事在视觉层的生活与基础一的小戏微motion结构院专机的生活与技术的域小事，将动坏自己发光字幕的生活为米基础的个小事波璃尼泰卡片续窗与googlef电影及镜头深度融合。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>的生活基础的域小事在视觉层的生活与基础一的小戏微motion结构院专机的生活与技术的域小事，将动坏自己发光字幕的生活为米基础的个小事波璃尼泰卡片续窗与googlef电影及镜头深度融合。",
+      "startFrame": 1041,
+      "durationInFrames": 311,
+      "audioPath": "audio/scene_04.mp3",
+      "text": "在视觉层remotion结合react状态机，将动态字集发光字幕，玻璃拟态卡片视窗与google flow电影及镜头深度融合。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>在视觉层remotion结合react状态机，将动态字集发光字幕，玻璃拟态卡片视窗与google flow电影及镜头深度融合。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "的生活基础的域小事在视觉层的生活与基础一的小戏微motion结构院专机的生活与技术的域小事",
-          "startFrame": 2074,
-          "endFrame": 2438,
-          "startMs": 69133,
-          "endMs": 81266
+          "text": "在视觉层remotion结合react状态机",
+          "startFrame": 1041,
+          "endFrame": 1118,
+          "startMs": 34700,
+          "endMs": 37266
         },
         {
-          "text": "将动坏自己发光字幕的生活为米基础的个小事波璃尼泰卡片续窗与googlef电影及镜头深度融合",
-          "startFrame": 2438,
-          "endFrame": 2802,
-          "startMs": 81266,
-          "endMs": 93400
+          "text": "将动态字集发光字幕",
+          "startFrame": 1118,
+          "endFrame": 1195,
+          "startMs": 37266,
+          "endMs": 39833
+        },
+        {
+          "text": "玻璃拟态卡片视窗与google",
+          "startFrame": 1195,
+          "endFrame": 1272,
+          "startMs": 39833,
+          "endMs": 42400
+        },
+        {
+          "text": "flow电影及镜头深度融合",
+          "startFrame": 1272,
+          "endFrame": 1349,
+          "startMs": 42400,
+          "endMs": 44966
         }
       ]
     },
     {
       "id": "scene_05",
       "type": "ExplainerWhiteboard",
-      "startFrame": 2802,
-      "durationInFrames": 684,
-      "audioPath": "audio/scene_05.wav",
-      "text": "的生活与基层里的小事，最后通过六进程并发光深化渲染呃生活与基础里的小事，几十秒即可输出广播级1080P视频的生活与基层里的小事，全流程里人工干预呃，生活于基子里的小事，欢迎体验。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>的生活与基层里的小事，最后通过六进程并发光深化渲染呃生活与基础里的小事，几十秒即可输出广播级1080P视频的生活与基层里的小事，全流程里人工干预呃，生活于基子里的小事，欢迎体验。",
+      "startFrame": 1352,
+      "durationInFrames": 339,
+      "audioPath": "audio/scene_05.mp3",
+      "text": "最后，通过六进程并发光山化渲染，几十秒即可输出广播级1080P视频，全流程零人工干预，欢迎体验。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>最后，通过六进程并发光山化渲染，几十秒即可输出广播级1080P视频，全流程零人工干预，欢迎体验。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "的生活与基层里的小事",
-          "startFrame": 2802,
-          "endFrame": 2916,
-          "startMs": 93400,
-          "endMs": 97200
+          "text": "最后",
+          "startFrame": 1352,
+          "endFrame": 1419,
+          "startMs": 45066,
+          "endMs": 47300
         },
         {
-          "text": "最后通过六进程并发光深化渲染呃生活与基础里的小事",
-          "startFrame": 2916,
-          "endFrame": 3030,
-          "startMs": 97200,
-          "endMs": 101000
+          "text": "通过六进程并发光山化渲染",
+          "startFrame": 1419,
+          "endFrame": 1486,
+          "startMs": 47300,
+          "endMs": 49533
         },
         {
-          "text": "几十秒即可输出广播级1080P视频的生活与基层里的小事",
-          "startFrame": 3030,
-          "endFrame": 3144,
-          "startMs": 101000,
-          "endMs": 104800
+          "text": "几十秒即可输出广播级1080P视频",
+          "startFrame": 1486,
+          "endFrame": 1553,
+          "startMs": 49533,
+          "endMs": 51766
         },
         {
-          "text": "全流程里人工干预呃",
-          "startFrame": 3144,
-          "endFrame": 3258,
-          "startMs": 104800,
-          "endMs": 108600
-        },
-        {
-          "text": "生活于基子里的小事",
-          "startFrame": 3258,
-          "endFrame": 3372,
-          "startMs": 108600,
-          "endMs": 112400
+          "text": "全流程零人工干预",
+          "startFrame": 1553,
+          "endFrame": 1620,
+          "startMs": 51766,
+          "endMs": 54000
         },
         {
           "text": "欢迎体验",
-          "startFrame": 3372,
-          "endFrame": 3486,
-          "startMs": 112400,
-          "endMs": 116200
+          "startFrame": 1620,
+          "endFrame": 1687,
+          "startMs": 54000,
+          "endMs": 56233
         }
       ]
     }
