@@ -110,13 +110,21 @@ def synthesize_gpt_sovits(text: str, out_path: str, api_url: str = "http://127.0
         "ref_audio_path": ref_audio,
         "prompt_text": prompt_text or "",
         "prompt_lang": prompt_lang,
-        "media_type": "mp3" if out_path.endswith(".mp3") else "wav"
+        "media_type": "wav"
     }
-    resp = requests.post(api_url, json=payload, timeout=120)
+    resp = requests.post(api_url, json=payload, timeout=180)
     if resp.status_code != 200:
         raise RuntimeError(f"GPT-SoVITS 合成失败 ({resp.status_code}): {resp.text}")
-    with open(out_path, "wb") as f:
+    wav_path = os.path.splitext(out_path)[0] + ".wav"
+    with open(wav_path, "wb") as f:
         f.write(resp.content)
+    old_mp3 = os.path.splitext(out_path)[0] + ".mp3"
+    if os.path.exists(old_mp3) and old_mp3 != wav_path:
+        try:
+            os.remove(old_mp3)
+        except Exception:
+            pass
+    return wav_path
 
 async def synthesize_edge_tts(text: str, out_path: str):
     import edge_tts
@@ -133,11 +141,14 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
     if provider in ("gpt_sovits", "gpt-sovits", "sovits"):
         api_url = env.get("GPT_SOVITS_API_URL", "http://127.0.0.1:9880/tts")
         ref_audio = env.get("GPT_SOVITS_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
+        if not os.path.isabs(ref_audio):
+            ref_audio = os.path.join(PROJECT_ROOT, ref_audio)
+        ref_audio = ref_audio.replace("\\", "/")
         prompt_text = env.get("GPT_SOVITS_PROMPT_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
         try:
             print(f"    [GPT-SoVITS] 正在使用专属个人克隆音色合成 (服务: {api_url})...")
-            synthesize_gpt_sovits(text, out_path, api_url=api_url, ref_audio=ref_audio, prompt_text=prompt_text)
-            return
+            actual_path = synthesize_gpt_sovits(text, out_path, api_url=api_url, ref_audio=ref_audio, prompt_text=prompt_text)
+            return actual_path
         except Exception as e:
             print(f"    ⚠️ GPT-SoVITS 服务调用异常 ({e})")
             print(f"    ➡️ 自动无缝回退至高质量 Edge-TTS 保证视频流水线不中断")
@@ -214,9 +225,8 @@ def main():
             continue
 
         out_file = os.path.join(output_dir, f"{scene_id}.mp3")
-        print(f"  ▶️ [{scene_id}] 正在合成: {text[:28]}...")
-        generate_scene_audio(text, out_file, env)
-        print(f"    ✓ 已输出: {os.path.relpath(out_file, PROJECT_ROOT)}")
+        actual_file = generate_scene_audio(text, out_file, env) or out_file
+        print(f"    ✓ 已输出: {os.path.relpath(actual_file, PROJECT_ROOT)}")
 
     print(f"\n✅ 所有分镜配音音频生成完毕！存储于 {os.path.relpath(output_dir, PROJECT_ROOT)}")
 
