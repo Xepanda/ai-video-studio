@@ -21,12 +21,15 @@ DEFAULT_TIMELINE = os.path.join(PUBLIC_DIR, "timeline.json")
 
 def get_audio_duration_seconds(audio_full_path: str) -> float:
     try:
-        with wave.open(audio_full_path, 'rb') as wf:
-            frames = wf.getnframes()
-            rate = wf.getframerate()
-            return frames / float(rate)
+        import soundfile as sf
+        info = sf.info(audio_full_path)
+        return info.duration
     except Exception:
-        return 0.0
+        try:
+            with wave.open(audio_full_path, 'rb') as wf:
+                return wf.getnframes() / float(wf.getframerate())
+        except Exception:
+            return 0.0
 
 def load_sensevoice_model():
     print(">>> 正在加载阿里 SenseVoice-Small 模型 (纯 CPU 极速推理)...")
@@ -86,8 +89,6 @@ def align_audio_files(audio_files: list, fps: int = 30, project_name: str = "dem
                     emotion = tag
                     break
 
-        # 简单字级切片估算（若需要更细粒度字级对齐，配合时间戳切片）
-        # 建立 scene 结构
         scene_data = {
             "id": scene_id,
             "type": "ExplainerWhiteboard" if i % 2 == 0 else "TerminalCodeDemo",
@@ -100,19 +101,23 @@ def align_audio_files(audio_files: list, fps: int = 30, project_name: str = "dem
             "words": []
         }
 
-        # 简单的逐字/逐词帧映射
-        words = clean_text.split() if " " in clean_text else list(clean_text)
-        if words and duration_frames > 0:
-            frames_per_word = max(1, duration_frames // len(words))
-            for w_idx, word in enumerate(words):
-                w_start_frame = current_start_frame + w_idx * frames_per_word
-                w_end_frame = min(current_start_frame + duration_frames, w_start_frame + frames_per_word)
+        # 智能短句分词 (标点符号切分，适合短视频弹跳字幕)
+        import re
+        chunks = [c.strip() for c in re.split(r'[,，。！？、\s]+', clean_text) if c.strip()]
+        if not chunks:
+            chunks = [clean_text]
+
+        if duration_frames > 0:
+            frames_per_chunk = max(1, duration_frames // len(chunks))
+            for c_idx, chunk in enumerate(chunks):
+                c_start_frame = current_start_frame + c_idx * frames_per_chunk
+                c_end_frame = min(current_start_frame + duration_frames, c_start_frame + frames_per_chunk)
                 scene_data["words"].append({
-                    "text": word,
-                    "startFrame": w_start_frame,
-                    "endFrame": w_end_frame,
-                    "startMs": int((w_start_frame / fps) * 1000),
-                    "endMs": int((w_end_frame / fps) * 1000)
+                    "text": chunk,
+                    "startFrame": c_start_frame,
+                    "endFrame": c_end_frame,
+                    "startMs": int((c_start_frame / fps) * 1000),
+                    "endMs": int((c_end_frame / fps) * 1000)
                 })
 
         scenes.append(scene_data)

@@ -28,15 +28,17 @@ class BColors:
     BOLD = '\033[1m'
 
 def get_audio_duration_seconds(audio_full_path: str) -> float:
-    """计算 WAV 文件真实时长"""
+    """计算音频真实时长 (支持 WAV, MP3, FLAC)"""
     try:
-        with wave.open(audio_full_path, 'rb') as wf:
-            frames = wf.getnframes()
-            rate = wf.getframerate()
-            return frames / float(rate)
+        import soundfile as sf
+        info = sf.info(audio_full_path)
+        return info.duration
     except Exception:
-        # 非 WAV 或特殊格式使用预估
-        return None
+        try:
+            with wave.open(audio_full_path, 'rb') as wf:
+                return wf.getnframes() / float(wf.getframerate())
+        except Exception:
+            return None
 
 def validate():
     print(f"\n{BColors.HEADER}===================================================={BColors.ENDC}")

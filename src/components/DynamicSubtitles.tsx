@@ -9,72 +9,92 @@ export interface WordInfo {
 
 export interface DynamicSubtitlesProps {
   words: WordInfo[];
-  baseStyle?: React.CSSProperties;
+  sceneStartFrame?: number;
   activeColor?: string;
-  inactiveColor?: string;
 }
 
 /**
- * 逐字动态弹跳高光字幕 (短视频 / 口播专属)
+ * 现代高节奏逐句弹跳大字幕 (仅显示当前正在发音的一句)
  */
 export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
   words,
-  activeColor = '#facc15', // 醒目明黄
-  inactiveColor = '#ffffff',
+  sceneStartFrame = 0,
+  activeColor = '#facc15', // 明黄高光
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
   if (!words || words.length === 0) return null;
 
+  // Remotion Sequence 内部的 frame 是相对于该 Sequence 的 (0 ~ durationInFrames)
+  // 如果 words 里的 startFrame 是全局绝对帧，则加上 sceneStartFrame 进行对齐
+  const currentGlobalFrame = frame + sceneStartFrame;
+
+  // 找到当前正在发音的一句话
+  const activeWord = words.find((w) => {
+    // 兼容全局帧或相对帧
+    if (w.startFrame >= sceneStartFrame) {
+      return currentGlobalFrame >= w.startFrame && currentGlobalFrame <= w.endFrame;
+    }
+    return frame >= w.startFrame && frame <= w.endFrame;
+  });
+
+  if (!activeWord) return null;
+
+  // 相对发音起始帧计算入场弹跳
+  const wordStartRelative = activeWord.startFrame >= sceneStartFrame
+    ? activeWord.startFrame - sceneStartFrame
+    : activeWord.startFrame;
+
+  const jump = spring({
+    frame: frame - wordStartRelative,
+    fps,
+    config: { damping: 14, stiffness: 200 },
+  });
+
+  const scale = interpolate(jump, [0, 1], [0.92, 1.05]);
+  const translateY = interpolate(jump, [0, 1], [15, 0]);
+
   return (
     <div
       style={{
         position: 'absolute',
-        bottom: '120px',
+        bottom: '80px',
         left: 0,
         right: 0,
         display: 'flex',
-        flexWrap: 'wrap',
         justifyContent: 'center',
-        gap: '12px',
-        padding: '0 60px',
-        zIndex: 50,
+        alignItems: 'center',
+        padding: '0 80px',
+        zIndex: 100,
+        pointerEvents: 'none',
       }}
     >
-      {words.map((w, idx) => {
-        const isActive = frame >= w.startFrame && frame <= w.endFrame;
-
-        // 弹跳动画
-        const jump = spring({
-          frame: frame - w.startFrame,
-          fps,
-          config: { damping: 12, stiffness: 200 },
-        });
-
-        const scale = isActive ? interpolate(jump, [0, 1], [1.0, 1.25]) : 1.0;
-        const translateY = isActive ? interpolate(jump, [0, 1], [0, -8]) : 0;
-
-        return (
-          <span
-            key={idx}
-            style={{
-              fontSize: '44px',
-              fontWeight: 800,
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              color: isActive ? activeColor : inactiveColor,
-              textShadow: isActive
-                ? '0 0 25px rgba(250, 204, 21, 0.8), 0 4px 12px rgba(0,0,0,0.8)'
-                : '0 4px 10px rgba(0,0,0,0.8)',
-              transform: `scale(${scale}) translateY(${translateY}px)`,
-              display: 'inline-block',
-              transition: 'color 0.1s ease',
-            }}
-          >
-            {w.text}
-          </span>
-        );
-      })}
+      <div
+        style={{
+          backgroundColor: 'rgba(15, 23, 42, 0.85)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
+          borderRadius: '24px',
+          padding: '16px 36px',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(250, 204, 21, 0.25)',
+          transform: `scale(${scale}) translateY(${translateY}px)`,
+        }}
+      >
+        <span
+          style={{
+            fontSize: '44px',
+            fontWeight: 900,
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            color: activeColor,
+            textShadow: '0 0 25px rgba(250, 204, 21, 0.6), 0 4px 12px rgba(0,0,0,0.9)',
+            letterSpacing: '1px',
+            display: 'inline-block',
+          }}
+        >
+          {activeWord.text}
+        </span>
+      </div>
     </div>
   );
 };
