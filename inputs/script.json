@@ -1,0 +1,24 @@
+{
+  "project": "my_embedded_tutorial",
+  "fps": 30,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "title": "ESP32 串口原理",
+      "style": "whiteboard",
+      "text": "大家好，今天我们来深入探讨 ESP32 嵌入式串口通信的底层原理与核心时序。"
+    },
+    {
+      "id": "scene_02",
+      "title": "引脚通信与波特率",
+      "style": "hands_on",
+      "text": "首先关注硬件引脚，TX 发送引脚与 RX 接收引脚交叉相连，默认波特率设定为 115200。"
+    },
+    {
+      "id": "scene_03",
+      "title": "实物联调与脉冲追踪",
+      "style": "hybrid_live",
+      "text": "通过示波器和逻辑分析仪，我们可以清晰抓取到正弦波与方波脉冲信号，实现毫秒级可靠通信。"
+    }
+  ]
+}
