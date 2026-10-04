@@ -14,9 +14,16 @@ venv/
 # Model checkpoints & large binary weights (keep folders via .gitkeep)
 models/gpt_sovits/*
 !models/gpt_sovits/.gitkeep
+models/kokoro/*
+!models/kokoro/.gitkeep
+models/f5tts/*
+!models/f5tts/.gitkeep
+models/chattts/*
+!models/chattts/.gitkeep
 models/reference_audio/*.wav
 models/reference_audio/*.mp3
 !models/reference_audio/.gitkeep
+test_*.wav
 
 # Rendered output media
 out/*

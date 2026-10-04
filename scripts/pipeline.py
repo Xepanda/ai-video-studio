@@ -35,6 +35,7 @@ def main():
     parser.add_argument("--skip_align", action="store_true", help="跳过 ASR 毫秒打点")
     parser.add_argument("--skip_validate", action="store_true", help="跳过静态审查")
     parser.add_argument("--render", action="store_true", help="直接调用 Remotion 渲染出最终 MP4")
+    parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 
     # 步骤 0: 专属音色 TTS 配音生成
@@ -50,7 +51,7 @@ def main():
         align_script = os.path.join(PROJECT_ROOT, "scripts", "sensevoice_aligner.py")
         run_step(
             "SenseVoice 毫秒打点与时间轴契约生成",
-            [PYTHON_EXE, align_script, "--project", args.project, "--fps", str(args.fps)]
+            [PYTHON_EXE, align_script, "--project", args.project, "--fps", str(args.fps), "--script", args.script]
         )
 
     # 步骤 2: 质量门禁自动审查
@@ -65,7 +66,7 @@ def main():
     if args.render:
         out_mp4 = os.path.join(PROJECT_ROOT, "out", f"{args.project}.mp4")
         os.makedirs(os.path.dirname(out_mp4), exist_ok=True)
-        remotion_cmd = f"npx remotion render src/index.ts MasterVideo out/{args.project}.mp4 --concurrency=6"
+        remotion_cmd = f"npx remotion render src/index.ts MasterVideo out/{args.project}.mp4 --concurrency={args.concurrency}"
         run_step(
             "Remotion 多核光栅化渲染 MP4",
             ["cmd.exe", "/c", remotion_cmd]

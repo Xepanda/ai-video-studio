@@ -1,0 +1,191 @@
+{
+  "project": "09_studio_workflow_deepdive_kokoro",
+  "engine": "kokoro",
+  "voice": "zm_009",
+  "fps": 30,
+  "title": "AI Video Studio 全自动化流水线落地细节与工程实践",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "title": "AI Video Studio 的设计初衷与架构全景",
+      "badge": "SYSTEM DESIGN · 架构全景",
+      "text": "AI Video Studio 是一套面向现代软件工程标准的完全自动化视频生产引擎。我们拒绝任何需要鼠标在剪辑软件上手动拖拽时间线的低效操作，通过将分镜解耦为声明式数据契约，串联多引擎配音、SenseVoice 毫秒打点与 Remotion 多核渲染，实现真正的代码即视频。",
+      "cards": [
+        {
+          "title": "代码即视频范式",
+          "desc": "完全剥离传统剪辑界面的手动干预，一切视听元素均由代码与数据状态机控制",
+          "tag": "CODE AS VIDEO",
+          "icon": "💻"
+        },
+        {
+          "title": "三大核心系统解耦",
+          "desc": "声学配音中枢、ASR 毫秒打点对齐、React 光栅化渲染三大模块独立演进",
+          "tag": "DECOUPLING",
+          "icon": "🧩"
+        },
+        {
+          "title": "全平台生产力交付",
+          "desc": "一套工程无缝输出横屏 16:9 宽屏母版与竖屏 9:16 短视频，矩阵化分发",
+          "tag": "MULTI FORMAT",
+          "icon": "📱"
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "title": "声明式分镜数据契约 Schema 解析",
+      "badge": "DATA CONTRACT · 核心契约",
+      "text": "整套流水线的逻辑起点是一份结构严密的 JSON 分镜脚本。每个分镜不仅包含用于配音的文案字符串，还预定义了该场景在视觉上需要呈现的标题徽标、极客终端代码块、架构卡片数组以及专属音色重载参数，确保数据在整条管道中准确传递。",
+      "cards": [
+        {
+          "title": "结构化视觉元数据",
+          "desc": "统一挂载 title、badge、cards 与 codeSnippet 等高维属性，驱动视觉组件",
+          "tag": "SCHEMA DEFINITION",
+          "icon": "📜"
+        },
+        {
+          "title": "声学参数独立覆写",
+          "desc": "允许在单分镜级别精细化指定引擎类型、参考音频与情感语调参数",
+          "tag": "AUDIO OVERRIDE",
+          "icon": "🎙️"
+        },
+        {
+          "title": "版本可控纯文本",
+          "desc": "完全适配 Git 分支管理与 PR 代码审查，每一次视频改动历史清晰可查",
+          "tag": "GIT OPS",
+          "icon": "📦"
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "title": "多引擎配音生成中枢与自动降级机制",
+      "badge": "AUDIO DISPATCHER · 音频中枢",
+      "text": "音频生成调度器是整座大厦的声音基石。系统内置了完善的服务适配层，统一抽象了 Kokoro、F5-TTS、ChatTTS 与 GPT-SoVITS 接口。在调用过程中，系统会自动检测模型加载状态与网络健康度，一旦发现异常立即触发静默降级，确保流水线永远畅通。",
+      "cards": [
+        {
+          "title": "统一 Provider 接口",
+          "desc": "高度抽象的适配器工厂，底层切换声学模型对上层脚本完全透明",
+          "tag": "FACTORY PATTERN",
+          "icon": "🔌"
+        },
+        {
+          "title": "毫秒级心跳自愈",
+          "desc": "对本地常驻守护进程进行周期性健康探测，进程僵死秒级重拉并告警",
+          "tag": "WATCHDOG",
+          "icon": "🐶"
+        },
+        {
+          "title": "商业与开源双轨互备",
+          "desc": "本地高精度模型优先，商业神经语音托底，保障工业级超高可用性",
+          "tag": "DUAL TRACK",
+          "icon": "🛡️"
+        }
+      ]
+    },
+    {
+      "id": "scene_04",
+      "title": "SenseVoice 毫秒打点与 timeline.json 生成",
+      "badge": "TIMELINE CONTRACT · 时间轴中枢",
+      "text": "当音频波形文件生成后，阿里 SenseVoice 毫秒打点模块介入。它在本地 CPU 上极速运算，对音频文件进行高精度时间戳提取，并将短句智能分词结果映射为精准的起止帧号，最终输出包含全片总帧数与各场景分块的 timeline.json 终极时间轴契约文件。",
+      "cards": [
+        {
+          "title": "帧级精确映射",
+          "desc": "将物理声学毫秒时间严格换算为渲染器时间轴对应的绝对整数帧号",
+          "tag": "FRAME ACCURATE",
+          "icon": "🎯"
+        },
+        {
+          "title": "智能短句分词算法",
+          "desc": "针对中文技术语境深度优化分词逻辑，杜绝机械硬切导致的语义断裂",
+          "tag": "SEGMENTATION",
+          "icon": "✂️"
+        },
+        {
+          "title": "元数据无缝继承",
+          "desc": "自动将分镜脚本中预定义的卡片与终端属性无损打包至时间轴中",
+          "tag": "INHERITANCE",
+          "icon": "📦"
+        }
+      ]
+    },
+    {
+      "id": "scene_05",
+      "title": "静态质量门禁 Quality Gate 自动化审查",
+      "badge": "QUALITY CONTROL · 质检门禁",
+      "text": "在调用重量级渲染进程前，独立质检脚本会自动执行几十项前置审查。它会扫描时间轴中是否存在 NaN 帧数、检查各分镜音频文件的真实时长与帧数是否产生累积时漂、验证静态素材文件是否存在、并对字幕密度过高导致的可读性风险发出预警。",
+      "cards": [
+        {
+          "title": "累积时漂拦截",
+          "desc": "严格比对物理音频长度与标定帧数差异，时漂超过两帧立即熔断报警",
+          "tag": "DRIFT CHECK",
+          "icon": "⏱️"
+        },
+        {
+          "title": "静态文件物理探测",
+          "desc": "提前校验所有外部引用的背景、字体与代码片段，杜绝渲染时报 404",
+          "tag": "INTEGRITY",
+          "icon": "📁"
+        },
+        {
+          "title": "零人工干预门禁",
+          "desc": "所有规则均由代码自动化执行，只有百分之百通过质检方能触发导出",
+          "tag": "GATE PASS",
+          "icon": "✅"
+        }
+      ]
+    },
+    {
+      "id": "scene_06",
+      "title": "Remotion 多核光栅化并发渲染优化",
+      "badge": "PARALLEL RENDER · 渲染加速",
+      "text": "视频导出的瓶颈往往在于光栅化速度。Remotion 底层利用无头浏览器将 React 组件渲染为图像。我们配置了多进程并发参数，将原本单核串行的数千帧任务均匀切片分配给多个浏览器实例并行光栅化，使现代八核处理器的渲染速度轻松提升四倍以上。",
+      "cards": [
+        {
+          "title": "进程分片池化",
+          "desc": "根据 CPU 物理核心数动态创建渲染工作池，跑满处理器每一核算力",
+          "tag": "WORKER POOL",
+          "icon": "🚀"
+        },
+        {
+          "title": "内存资源精细配额",
+          "desc": "限制单个 Chromium 实例内存水位，防止高负荷下遭遇操作系统的 OOM 绝杀",
+          "tag": "MEMORY CAP",
+          "icon": "💾"
+        },
+        {
+          "title": "硬件硬编管道加速",
+          "desc": "最终帧序列由系统底层硬件编解码器直通推流，极速封装无损 MP4",
+          "tag": "NVENC/AMF",
+          "icon": "⚡"
+        }
+      ]
+    },
+    {
+      "id": "scene_07",
+      "title": "打造属于工程师的终极视频生产力",
+      "badge": "CONCLUSION · 结语与展望",
+      "text": "AI Video Studio 不仅仅是一组自动化脚本，它代表了一种全新的工程思维方式：将复杂的视听表达拆解为严谨的算法、数据契约与组件状态机。通过这套可完全复用、可高度定制的开源工作流，每一位工程师都能轻松搭建起属于自己的自动化数字传媒帝国！",
+      "cards": [
+        {
+          "title": "全流程开箱即用",
+          "desc": "标准化的脚手架与完整的技术文档，新团队半小时内即可完整复刻上线",
+          "tag": "OUT OF THE BOX",
+          "icon": "🎁"
+        },
+        {
+          "title": "架构无上限演进",
+          "desc": "未来可无缝接入更多多模态视觉大模型，持续吸收前沿技术红利",
+          "tag": "FUTURE EVOLUTION",
+          "icon": "🌟"
+        },
+        {
+          "title": "释放技术创造力",
+          "desc": "用工程手段破除内容创作枷锁，让优质的硬核知识被全世界看见！",
+          "tag": "EMPOWERMENT",
+          "icon": "🚀"
+        }
+      ]
+    }
+  ]
+}

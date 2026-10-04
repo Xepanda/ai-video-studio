@@ -21,6 +21,8 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 ENV_PATH = os.path.join(PROJECT_ROOT, ".env")
 
 def load_env():
@@ -126,10 +128,19 @@ def synthesize_gpt_sovits(text: str, out_path: str, api_url: str = "http://127.0
             pass
     return wav_path
 
-async def synthesize_edge_tts(text: str, out_path: str, voice: str = "zh-CN-YunxiNeural"):
+async def synthesize_edge_tts(text: str, out_path: str, voice: str = "zh-CN-YunxiNeural", max_retries: int = 3):
     import edge_tts
-    communicate = edge_tts.Communicate(text, voice)
-    await communicate.save(out_path)
+    for attempt in range(max_retries):
+        try:
+            communicate = edge_tts.Communicate(text, voice)
+            await communicate.save(out_path)
+            return out_path
+        except Exception as e:
+            if attempt == max_retries - 1:
+                print(f"    ⚠️ Edge-TTS 网络超时 ({e})，自动切换至本地 Kokoro-82M 离线高可用兜底...")
+                from scripts.tts_kokoro import synthesize_kokoro
+                return synthesize_kokoro(text, out_path, voice="zm_031")
+            await asyncio.sleep(2)
 
 def generate_scene_audio(text: str, out_path: str, env: dict):
     provider = env.get("TTS_PROVIDER", "edge_tts").lower()
@@ -138,8 +149,30 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
     sf_voice = env.get("CUSTOM_VOICE_ID")
     sf_model = env.get("SILICONFLOW_MODEL", "FunAudioLLM/CosyVoice2-0.5B")
 
-    # 0. 优先尝试本地/自建 GPT-SoVITS 专属个人音色
-    if provider in ("gpt_sovits", "gpt-sovits", "sovits"):
+    # 0. 优先尝试 Kokoro-82M 超轻量极速 CPU 引擎
+    if provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
+        from scripts.tts_kokoro import synthesize_kokoro
+        kokoro_voice = env.get("KOKORO_VOICE", "zm_031")
+        print(f"    [Kokoro-82M] 正在使用本地 CPU 极速合成 (音色: {kokoro_voice})...")
+        return synthesize_kokoro(text, out_path, voice=kokoro_voice)
+
+    # 1. 优先尝试 ChatTTS 口语化对话引擎
+    elif provider in ("chattts", "chat_tts"):
+        from scripts.tts_chattts import synthesize_chattts
+        seed = int(env.get("CHATTTS_SEED", 2222))
+        print(f"    [ChatTTS] 正在使用本地极速口语合成 (Seed: {seed})...")
+        return synthesize_chattts(text, out_path, seed=seed)
+
+    # 2. 优先尝试 F5-TTS 扩散流匹配引擎
+    elif provider in ("f5_tts", "f5tts", "f5"):
+        from scripts.tts_f5tts import synthesize_f5tts
+        f5_ref = env.get("F5_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
+        f5_text = env.get("F5_REF_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
+        print(f"    [F5-TTS] 正在使用本地扩散流匹配零样本克隆...")
+        return synthesize_f5tts(text, out_path, ref_audio=f5_ref, ref_text=f5_text)
+
+    # 3. 尝试本地/自建 GPT-SoVITS 专属个人或社区音色
+    elif provider in ("gpt_sovits", "gpt-sovits", "sovits"):
         api_url = env.get("GPT_SOVITS_API_URL", "http://127.0.0.1:9880/tts")
         ref_audio = env.get("GPT_SOVITS_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
         if not os.path.isabs(ref_audio):
@@ -147,14 +180,14 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
         ref_audio = ref_audio.replace("\\", "/")
         prompt_text = env.get("GPT_SOVITS_PROMPT_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
         try:
-            print(f"    [GPT-SoVITS] 正在使用专属个人克隆音色合成 (服务: {api_url})...")
+            print(f"    [GPT-SoVITS] 正在使用克隆音色合成 (服务: {api_url})...")
             actual_path = synthesize_gpt_sovits(text, out_path, api_url=api_url, ref_audio=ref_audio, prompt_text=prompt_text)
             return actual_path
         except Exception as e:
             print(f"    ⚠️ GPT-SoVITS 服务调用异常 ({e})")
             print(f"    ➡️ 自动无缝回退至高质量 Edge-TTS 保证视频流水线不中断")
 
-    # 1. 尝试使用 SiliconFlow 专属音色
+    # 3. 尝试使用 SiliconFlow 专属音色
     elif provider == "siliconflow":
         if sf_key and not sf_key.startswith("sk-your-") and sf_voice:
             print(f"    [SiliconFlow] 正在使用专属克隆音色: {sf_voice}")
@@ -164,7 +197,7 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
             print(f"    ⚠️ 未检测到有效的 SILICONFLOW_API_KEY 或 CUSTOM_VOICE_ID")
             print(f"    ➡️ 自动回退至高质量 Edge-TTS (YunxiNeural)")
 
-    # 2. 尝试 Fish Audio
+    # 4. 尝试 Fish Audio
     elif provider == "fish_audio":
         fish_key = env.get("FISH_AUDIO_API_KEY")
         fish_voice = env.get("FISH_VOICE_ID")
@@ -173,7 +206,7 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
             synthesize_fish_audio(text, out_path, fish_key, fish_voice)
             return
 
-    # 3. 尝试 MiniMax
+    # 5. 尝试 MiniMax
     elif provider == "minimax":
         mm_key = env.get("MINIMAX_API_KEY")
         mm_group = env.get("MINIMAX_GROUP_ID")
@@ -197,6 +230,10 @@ def main():
     parser = argparse.ArgumentParser(description="分镜音频批量自动生成")
     parser.add_argument("--script", type=str, default="inputs/script.json", help="分镜脚本文件路径")
     parser.add_argument("--output_dir", type=str, default="public/audio", help="音频输出目录")
+    parser.add_argument("--provider", type=str, default=None, help="覆盖 TTS 服务商 (kokoro/f5_tts/gpt_sovits/edge_tts)")
+    parser.add_argument("--voice", type=str, default=None, help="覆盖音色名称或代码")
+    parser.add_argument("--ref_audio", type=str, default=None, help="参考音频文件路径")
+    parser.add_argument("--ref_text", type=str, default=None, help="参考音频对应文本")
     args = parser.parse_args()
 
     script_path = os.path.join(PROJECT_ROOT, args.script) if not os.path.isabs(args.script) else args.script
@@ -216,8 +253,42 @@ def main():
         sys.exit(1)
 
     env = load_env()
-    provider = env.get("TTS_PROVIDER", "siliconflow")
-    custom_voice = env.get("CUSTOM_VOICE_ID", "默认/未配置")
+    # 自动继承脚本文件中声明的 engine 与 voice
+    if not args.provider and script_data.get("engine"):
+        env["TTS_PROVIDER"] = script_data.get("engine")
+    if not args.voice and script_data.get("voice"):
+        v = str(script_data.get("voice"))
+        if env.get("TTS_PROVIDER") in ("kokoro", "kokoro-82m", "kokoro_82m"):
+            env["KOKORO_VOICE"] = v
+        elif env.get("TTS_PROVIDER") in ("chattts", "chat_tts"):
+            try:
+                env["CHATTTS_SEED"] = int(v)
+            except Exception:
+                env["CHATTTS_SEED"] = 2222
+        elif env.get("TTS_PROVIDER") == "edge_tts":
+            env["EDGE_TTS_VOICE"] = v
+        else:
+            env["CUSTOM_VOICE_ID"] = v
+
+    if args.provider:
+        env["TTS_PROVIDER"] = args.provider
+    if args.voice:
+        if env.get("TTS_PROVIDER") in ("kokoro", "kokoro-82m", "kokoro_82m"):
+            env["KOKORO_VOICE"] = args.voice
+        elif env.get("TTS_PROVIDER") in ("chattts", "chat_tts"):
+            env["CHATTTS_SEED"] = int(args.voice)
+        else:
+            env["EDGE_TTS_VOICE"] = args.voice
+            env["CUSTOM_VOICE_ID"] = args.voice
+    if args.ref_audio:
+        env["GPT_SOVITS_REF_AUDIO"] = args.ref_audio
+        env["F5_REF_AUDIO"] = args.ref_audio
+    if args.ref_text:
+        env["GPT_SOVITS_PROMPT_TEXT"] = args.ref_text
+        env["F5_REF_TEXT"] = args.ref_text
+
+    provider = env.get("TTS_PROVIDER", "edge_tts")
+    custom_voice = env.get("KOKORO_VOICE") or env.get("CHATTTS_SEED") or env.get("EDGE_TTS_VOICE") or env.get("CUSTOM_VOICE_ID", "默认/未配置")
 
     print(f"\n=======================================================")
     print(f"🎙️ [Audio Generator] 正在生成分镜配音音频")

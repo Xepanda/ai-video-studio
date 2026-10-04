@@ -48,8 +48,19 @@ def load_sensevoice_model():
     print(f"SenseVoice 模型就绪，耗时: {time.time() - t0:.2f}秒")
     return model, rich_transcription_postprocess
 
-def align_audio_files(audio_files: list, fps: int = 30, project_name: str = "demo_project"):
+def align_audio_files(audio_files: list, fps: int = 30, project_name: str = "demo_project", script_path: str = None):
     model, postprocess_fn = load_sensevoice_model()
+
+    script_meta_map = {}
+    if script_path and os.path.exists(script_path):
+        try:
+            with open(script_path, "r", encoding="utf-8") as f:
+                s_data = json.load(f)
+                for sc in s_data.get("scenes", []):
+                    if "id" in sc:
+                        script_meta_map[sc["id"]] = sc
+        except Exception as e:
+            print(f"⚠️ 读取分镜元数据异常 ({e})")
 
     scenes = []
     current_start_frame = 0
@@ -101,6 +112,13 @@ def align_audio_files(audio_files: list, fps: int = 30, project_name: str = "dem
             "words": []
         }
 
+        # 如果输入分镜脚本中定义了标题或卡片等视觉元数据，无缝继承到时间轴契约中
+        if script_meta_map and scene_id in script_meta_map:
+            meta = script_meta_map[scene_id]
+            for field in ["title", "badge", "subtitle", "cards", "bulletPoints", "codeSnippet", "codeLang", "type"]:
+                if field in meta:
+                    scene_data[field] = meta[field]
+
         # 智能短句分词 (标点符号切分，适合短视频弹跳字幕)
         import re
         chunks = [c.strip() for c in re.split(r'[,，。！？、\s]+', clean_text) if c.strip()]
@@ -144,6 +162,7 @@ def main():
     parser.add_argument("--audio_dir", type=str, default=AUDIO_DIR, help="音频目录")
     parser.add_argument("--fps", type=int, default=30, help="视频帧率")
     parser.add_argument("--project", type=str, default="auto_video_project", help="项目名称")
+    parser.add_argument("--script", type=str, default=None, help="分镜脚本路径以继承元数据")
     args = parser.parse_args()
 
     if not os.path.exists(args.audio_dir):
@@ -160,7 +179,7 @@ def main():
         print("请先放置或生成分镜音频 (如 scene_01.wav, scene_02.wav)！")
         sys.exit(0)
 
-    align_audio_files(audio_files, fps=args.fps, project_name=args.project)
+    align_audio_files(audio_files, fps=args.fps, project_name=args.project, script_path=args.script)
 
 if __name__ == "__main__":
     main()

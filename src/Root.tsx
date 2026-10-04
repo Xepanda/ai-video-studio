@@ -7,6 +7,7 @@ import { WhiteboardHanddrawn } from './components/WhiteboardHanddrawn';
 import { PhoneFrame } from './components/PhoneFrame';
 import { CalloutPointer } from './components/CalloutPointer';
 import { PinoutStream } from './components/PinoutStream';
+import { UniversalScene } from './components/UniversalScene';
 
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
@@ -298,12 +299,22 @@ export const MasterVideo: React.FC = () => {
           {/* 配音音频 */}
           {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
 
-          {/* 5 大核心形态场景逐一呈现 */}
-          {idx === 0 && <Scene01VoiceClone durationInFrames={scene.durationInFrames} />}
-          {idx === 1 && <Scene02Whiteboard durationInFrames={scene.durationInFrames} />}
-          {idx === 2 && <Scene03HandsOn durationInFrames={scene.durationInFrames} />}
-          {idx === 3 && <Scene04HybridLive durationInFrames={scene.durationInFrames} />}
-          {idx === 4 && <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />}
+          {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
+          {(scene as any).title ? (
+            <UniversalScene scene={scene as any} />
+          ) : idx === 0 ? (
+            <Scene01VoiceClone durationInFrames={scene.durationInFrames} />
+          ) : idx === 1 ? (
+            <Scene02Whiteboard durationInFrames={scene.durationInFrames} />
+          ) : idx === 2 ? (
+            <Scene03HandsOn durationInFrames={scene.durationInFrames} />
+          ) : idx === 3 ? (
+            <Scene04HybridLive durationInFrames={scene.durationInFrames} />
+          ) : idx === 4 ? (
+            <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />
+          ) : (
+            <UniversalScene scene={scene as any} />
+          )}
 
           {/* 逐字动态弹跳大字幕 */}
           {scene.words && scene.words.length > 0 && (
