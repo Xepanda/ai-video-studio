@@ -96,12 +96,15 @@ python scripts/validator.py
    * `epanda_voice_e8_s120.pth` (SoVITS 音色模型)
    * `epanda_voice-e15.ckpt` (GPT 语言节奏模型)
    * `models/reference_audio/my_voice_ref_5s.wav` (5s 提示基准音频)
-2. **批量分镜生成**：
+2. **启动本地专属音色服务**：
+   * 双击运行 `scripts/start_local_sovits.bat`（或在终端运行 `python scripts/start_local_sovits.py`）；
+   * 服务在 `http://127.0.0.1:9880` 启动，基于 AMD Ryzen 7 5800H CPU 深度优化，断网亦可全自动推理。
+3. **批量分镜生成**：
    ```bash
    python scripts/generate_audio.py --script inputs/script.json
    ```
    * 优先调用 `http://127.0.0.1:9880/tts` 进行专属声音合成；
    * 若服务离线，**自动无缝回退至微软 Edge-TTS (YunxiNeural)**，保障视频流水线永不中断。
-3. **详细训练与微调 SOP**：
+4. **详细训练与本地推理 SOP**：
    参见知识库 Wiki：[专属音色克隆与全自动微调训练指南 (GPT-SoVITS + Colab 混合云实战)](../wiki/docs/02-projects/ai-video-automation/06-personal-voice-cloning-gpt-sovits.mdx)。
 
