@@ -126,13 +126,14 @@ def synthesize_gpt_sovits(text: str, out_path: str, api_url: str = "http://127.0
             pass
     return wav_path
 
-async def synthesize_edge_tts(text: str, out_path: str):
+async def synthesize_edge_tts(text: str, out_path: str, voice: str = "zh-CN-YunxiNeural"):
     import edge_tts
-    communicate = edge_tts.Communicate(text, "zh-CN-YunxiNeural")
+    communicate = edge_tts.Communicate(text, voice)
     await communicate.save(out_path)
 
 def generate_scene_audio(text: str, out_path: str, env: dict):
-    provider = env.get("TTS_PROVIDER", "gpt_sovits").lower()
+    provider = env.get("TTS_PROVIDER", "edge_tts").lower()
+    edge_voice = env.get("EDGE_TTS_VOICE", "zh-CN-YunxiNeural")
     sf_key = env.get("SILICONFLOW_API_KEY")
     sf_voice = env.get("CUSTOM_VOICE_ID")
     sf_model = env.get("SILICONFLOW_MODEL", "FunAudioLLM/CosyVoice2-0.5B")
@@ -183,7 +184,7 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
             return
 
     # 回退到本地 Edge-TTS (或默认使用 Edge-TTS)
-    asyncio.run(synthesize_edge_tts(text, out_path))
+    asyncio.run(synthesize_edge_tts(text, out_path, voice=edge_voice))
     old_wav = os.path.splitext(out_path)[0] + ".wav"
     if os.path.exists(old_wav) and old_wav != out_path:
         try:
