@@ -1,7 +1,7 @@
 {
-  "project": "08_google_ai_video_kokoro",
-  "engine": "kokoro",
-  "voice": "zf_001",
+  "project": "08_google_ai_video_chattts",
+  "engine": "chattts",
+  "voice": "3333",
   "fps": 30,
   "title": "Google AI 视频生态与前沿技术实战指南",
   "scenes": [

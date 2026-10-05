@@ -1,7 +1,7 @@
 {
-  "project": "07_transformer_case_study_kokoro",
-  "engine": "kokoro",
-  "voice": "zm_031",
+  "project": "07_transformer_case_study_chattts",
+  "engine": "chattts",
+  "voice": "8888",
   "fps": 30,
   "title": "深度剖析：旗舰级 Transformer 架构原理与注意力机制",
   "scenes": [

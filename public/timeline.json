@@ -1,789 +1,754 @@
 {
-  "project": "11_fullstack_hardware_cloud_edge",
+  "project": "06_three_video_pipelines_chattts",
   "fps": 30,
-  "totalDurationInFrames": 7846,
+  "totalDurationInFrames": 5001,
   "scenes": [
     {
       "id": "scene_01",
       "type": "ExplainerWhiteboard",
       "startFrame": 0,
-      "durationInFrames": 649,
-      "audioPath": "audio/scene_01.mp3",
-      "text": "在软件分工高度细化的今天，工程师往往被局限在某个单一的前端框架或后端数据库中。然而，真正的极客精神是从底层的单片机寄存器、电路板上的差分阻抗，一直打通到全球边缘计算节点与全自动视频流水线，拥有自底向上的系统及透视能力。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>在软件分工高度细化的今天，工程师往往被局限在某个单一的前端框架或后端数据库中。然而，真正的极客精神是从底层的单片机寄存器、电路板上的差分阻抗，一直打通到全球边缘计算节点与全自动视频流水线，拥有自底向上的系统及透视能力。",
+      "durationInFrames": 634,
+      "audioPath": "audio/scene_01.wav",
+      "text": "回顾近两年的 AI 视频浪潮，从最初简单的图生视频玩具，演进到今天涵盖白板手绘、极客终端、实拍混剪与映画运镜的全链路工业化体系。面对五花八门的技术栈，创作者往往陷入选型迷茫。今天我们将全面拆解当前三大最具代表性的视频自动化流派。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>回顾近两年的AI视频浪潮，从最初简单的徒生视频玩具演镜到今天，涵盖白板手绘、即客终端实拍混剪与硬化运进的全链路工业化体系。面对五花八门的技术战，创作者往往陷入选型迷茫。今天我们将全面拆解当前三大最具代表性的视频自动化流派。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "在软件分工高度细化的今天",
+          "text": "回顾近两年的 AI 视频浪潮",
           "startFrame": 0,
-          "endFrame": 92,
+          "endFrame": 84,
+          "globalStartFrame": 0,
+          "globalEndFrame": 84,
           "startMs": 0,
-          "endMs": 3066
+          "endMs": 2800
         },
         {
-          "text": "工程师往往被局限在某个单一的前端框架或后端数据库中",
-          "startFrame": 92,
-          "endFrame": 184,
-          "startMs": 3066,
-          "endMs": 6133
+          "text": "从最初简单的图生视频玩具",
+          "startFrame": 84,
+          "endFrame": 156,
+          "globalStartFrame": 84,
+          "globalEndFrame": 156,
+          "startMs": 2800,
+          "endMs": 5200
         },
         {
-          "text": "然而",
-          "startFrame": 184,
-          "endFrame": 276,
-          "startMs": 6133,
-          "endMs": 9200
+          "text": "演进到今天涵盖白板手绘",
+          "startFrame": 156,
+          "endFrame": 222,
+          "globalStartFrame": 156,
+          "globalEndFrame": 222,
+          "startMs": 5200,
+          "endMs": 7400
         },
         {
-          "text": "真正的极客精神是从底层的单片机寄存器",
-          "startFrame": 276,
-          "endFrame": 368,
-          "startMs": 9200,
-          "endMs": 12266
+          "text": "极客终端",
+          "startFrame": 222,
+          "endFrame": 246,
+          "globalStartFrame": 222,
+          "globalEndFrame": 246,
+          "startMs": 7400,
+          "endMs": 8200
         },
         {
-          "text": "电路板上的差分阻抗",
-          "startFrame": 368,
-          "endFrame": 460,
-          "startMs": 12266,
-          "endMs": 15333
+          "text": "实拍混剪与映画运镜的全链路工业化体系",
+          "startFrame": 246,
+          "endFrame": 354,
+          "globalStartFrame": 246,
+          "globalEndFrame": 354,
+          "startMs": 8200,
+          "endMs": 11800
         },
         {
-          "text": "一直打通到全球边缘计算节点与全自动视频流水线",
-          "startFrame": 460,
-          "endFrame": 552,
-          "startMs": 15333,
-          "endMs": 18400
+          "text": "面对五花八门的技术栈",
+          "startFrame": 354,
+          "endFrame": 414,
+          "globalStartFrame": 354,
+          "globalEndFrame": 414,
+          "startMs": 11800,
+          "endMs": 13800
         },
         {
-          "text": "拥有自底向上的系统及透视能力",
-          "startFrame": 552,
-          "endFrame": 644,
-          "startMs": 18400,
-          "endMs": 21466
+          "text": "创作者往往陷入选型迷茫",
+          "startFrame": 414,
+          "endFrame": 480,
+          "globalStartFrame": 414,
+          "globalEndFrame": 480,
+          "startMs": 13800,
+          "endMs": 16000
+        },
+        {
+          "text": "今天我们将全面拆解当前三大最具代表性的视频自动化流派",
+          "startFrame": 480,
+          "endFrame": 634,
+          "globalStartFrame": 480,
+          "globalEndFrame": 634,
+          "startMs": 16000,
+          "endMs": 21133
         }
       ],
-      "title": "什么是全栈极客工程哲学",
-      "badge": "ENGINEERING CREED · 极客信条",
+      "title": "AI 视频制作进入工业化分水岭",
+      "badge": "INDUSTRY LANDSCAPE · 行业现状",
       "cards": [
         {
-          "title": "自底向上的透视力",
-          "desc": "从电子迁移、总线时序到分布式算法，对计算系统的每一个层级了然于胸",
-          "tag": "FIRST PRINCIPLES",
-          "icon": "🔬"
+          "title": "告别玩具阶段",
+          "desc": "视频制作从随机抽卡的盲盒模式，全面转向严谨、可控的代码工程阶段",
+          "tag": "INDUSTRIAL",
+          "icon": "🏭"
         },
         {
-          "title": "消灭低效重复劳动",
-          "desc": "凡是需要人类机械重复三次以上的繁琐流程，坚决编写脚本将其彻底自动化",
-          "tag": "AUTOMATE ALL",
-          "icon": "🤖"
+          "title": "核心场景分化",
+          "desc": "科普解说、编程教学、实物带货与自媒体短视频各具独特的最优解法",
+          "tag": "SCENARIOS",
+          "icon": "🎯"
         },
         {
-          "title": "代码构建真实世界",
-          "desc": "不仅能编写优雅的云原生微服务，更能亲手电烙铁焊出硬核嵌入式硬件设备",
-          "tag": "MAKER SPIRIT",
-          "icon": "🛠️"
+          "title": "全链路数据贯通",
+          "desc": "文案、配音、打点、渲染无缝衔接，构筑可持续迭代的自动化流水线",
+          "tag": "PIPELINE",
+          "icon": "🔄"
         }
       ]
     },
     {
       "id": "scene_02",
       "type": "TerminalCodeDemo",
-      "startFrame": 649,
-      "durationInFrames": 683,
-      "audioPath": "audio/scene_02.mp3",
-      "text": "一切计算的起点都在物理世界中，从墨水瓶电子纸的微囊电涌颗粒迁移到无刷直流电机，通过FOC算法，在微秒级时间内响应电磁转举，底层硬件教会了我们对物理规律的敬畏，精密的模拟电路布局与研苛的抗干扰设计，是上层所有软件大厦的立足之地。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>一切计算的起点都在物理世界中，从墨水瓶电子纸的微囊电涌颗粒迁移到无刷直流电机，通过FOC算法，在微秒级时间内响应电磁转举，底层硬件教会了我们对物理规律的敬畏，精密的模拟电路布局与研苛的抗干扰设计，是上层所有软件大厦的立足之地。",
+      "startFrame": 634,
+      "durationInFrames": 599,
+      "audioPath": "audio/scene_02.wav",
+      "text": "第一种流派是主打知识科普的白板手绘与矢量活化技术。通过提取故事脉络，AI 自动生成草图线稿，并配合骨骼插值生成拟真手部绘制动画。这种风格具有天然的亲和力与教学沉浸感，极度适合解释复杂的抽象算法与历史演进脉络。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第一种流派是主打知识科普的白板手绘与矢量活化技术，通过提取故事脉络，AI自动生成炒作线稿，并配合骨骼差值生成理真手部绘制动画。这种风格具有天然的亲和力与教学沉浸感，极度适合解释复杂的抽象算法与历史演镜脉络。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "一切计算的起点都在物理世界中",
-          "startFrame": 649,
-          "endFrame": 746,
-          "startMs": 21633,
-          "endMs": 24866
+          "text": "第一种流派是主打知识科普的白板手绘与矢量活化技术",
+          "startFrame": 0,
+          "endFrame": 147,
+          "globalStartFrame": 634,
+          "globalEndFrame": 781,
+          "startMs": 0,
+          "endMs": 4900
         },
         {
-          "text": "从墨水瓶电子纸的微囊电涌颗粒迁移到无刷直流电机",
-          "startFrame": 746,
-          "endFrame": 843,
-          "startMs": 24866,
-          "endMs": 28100
+          "text": "通过提取故事脉络",
+          "startFrame": 147,
+          "endFrame": 196,
+          "globalStartFrame": 781,
+          "globalEndFrame": 830,
+          "startMs": 4900,
+          "endMs": 6533
         },
         {
-          "text": "通过FOC算法",
-          "startFrame": 843,
-          "endFrame": 940,
-          "startMs": 28100,
-          "endMs": 31333
+          "text": "AI 自动生成草图线稿",
+          "startFrame": 196,
+          "endFrame": 263,
+          "globalStartFrame": 830,
+          "globalEndFrame": 897,
+          "startMs": 6533,
+          "endMs": 8766
         },
         {
-          "text": "在微秒级时间内响应电磁转举",
-          "startFrame": 940,
-          "endFrame": 1037,
-          "startMs": 31333,
-          "endMs": 34566
+          "text": "并配合骨骼插值生成拟真手部绘制动画",
+          "startFrame": 263,
+          "endFrame": 367,
+          "globalStartFrame": 897,
+          "globalEndFrame": 1001,
+          "startMs": 8766,
+          "endMs": 12233
         },
         {
-          "text": "底层硬件教会了我们对物理规律的敬畏",
-          "startFrame": 1037,
-          "endFrame": 1134,
-          "startMs": 34566,
-          "endMs": 37800
+          "text": "这种风格具有天然的亲和力与教学沉浸感",
+          "startFrame": 367,
+          "endFrame": 477,
+          "globalStartFrame": 1001,
+          "globalEndFrame": 1111,
+          "startMs": 12233,
+          "endMs": 15900
         },
         {
-          "text": "精密的模拟电路布局与研苛的抗干扰设计",
-          "startFrame": 1134,
-          "endFrame": 1231,
-          "startMs": 37800,
-          "endMs": 41033
-        },
-        {
-          "text": "是上层所有软件大厦的立足之地",
-          "startFrame": 1231,
-          "endFrame": 1328,
-          "startMs": 41033,
-          "endMs": 44266
+          "text": "极度适合解释复杂的抽象算法与历史演进脉络",
+          "startFrame": 477,
+          "endFrame": 599,
+          "globalStartFrame": 1111,
+          "globalEndFrame": 1233,
+          "startMs": 15900,
+          "endMs": 19966
         }
       ],
-      "title": "底层基石：单片机与物理世界交互",
-      "badge": "EMBEDDED HARDWARE · 物理感知",
+      "title": "流派一：科普白板手绘与矢量活化流",
+      "badge": "PIPELINE A · 白板手绘流",
       "cards": [
         {
-          "title": "微秒级硬件中断",
-          "desc": "在裸机固件中精确捕捉传感器脉冲，直接与物理世界客观规律硬碰硬对话",
-          "tag": "INTERRUPT",
-          "icon": "⚡"
+          "title": "手绘笔触模拟",
+          "desc": "贝塞尔曲线路径插值算法，生动还原白板手绘草图的逐笔勾勒质感",
+          "tag": "STROKE ANIM",
+          "icon": "✏️"
         },
         {
-          "title": "极限资源榨取",
-          "desc": "在几十 KB 内存的极度受限空间内，运用精妙的数据结构实现极致算法性能",
-          "tag": "LOW MEMORY",
-          "icon": "💾"
+          "title": "降低认知负荷",
+          "desc": "将复杂晦涩的论文概念具象为简单线条，极大提升观众完播率与理解度",
+          "tag": "COGNITIVE",
+          "icon": "🧠"
         },
         {
-          "title": "电磁兼容与鲁棒性",
-          "desc": "扎实的接地、退耦电容与阻抗匹配，为复杂工业环境提供坚如磐石的可靠度",
-          "tag": "EMC SHIELD",
-          "icon": "🛡️"
+          "title": "高信息密度传达",
+          "desc": "结合高亮荧光笔标注与重点箭头引导，牢牢抓住观众每一秒的视觉焦点",
+          "tag": "HIGHLIGHT",
+          "icon": "🎯"
         }
       ]
     },
     {
       "id": "scene_03",
       "type": "ExplainerWhiteboard",
-      "startFrame": 1332,
-      "durationInFrames": 638,
-      "audioPath": "audio/scene_03.mp3",
-      "text": "走向中层家庭home lab与个人工作站，构成了极客的生产力中枢，通过泰山派等低功耗arm开发版打造私有NAS结合desk flow跨屏鞋同与KVM硬件信号穿透，多台开发机在指尖无缝流动，构建其属于工程师自己的低延迟私有云根据地。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>走向中层家庭home lab与个人工作站，构成了极客的生产力中枢，通过泰山派等低功耗arm开发版打造私有NAS结合desk flow跨屏鞋同与KVM硬件信号穿透，多台开发机在指尖无缝流动，构建其属于工程师自己的低延迟私有云根据地。",
+      "startFrame": 1233,
+      "durationInFrames": 606,
+      "audioPath": "audio/scene_03.wav",
+      "text": "第二种流派专为程序员与嵌入式硬件创作者定制。它摒弃了冗余的插画修饰，直接将现代深色极客终端、动态语法高亮代码块、以及微控制器引脚高频脉冲流光搬上屏幕。这种硬核视觉让技术教程视频呈现出工业级软件评测的严谨与说服力。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第二种流派专为程序员与嵌入式硬件创作者定制，他摒弃了冗余的插画修饰，直接将现代深色极客终端动态语法高亮代码块以及微控制器引角高频脉冲流光搬上屏幕。这种硬核视觉，让技术教程，视频呈现出工业级软件评测的严谨与说服力。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "走向中层家庭home",
-          "startFrame": 1332,
-          "endFrame": 1423,
-          "startMs": 44400,
-          "endMs": 47433
+          "text": "第二种流派专为程序员与嵌入式硬件创作者定制",
+          "startFrame": 0,
+          "endFrame": 127,
+          "globalStartFrame": 1233,
+          "globalEndFrame": 1360,
+          "startMs": 0,
+          "endMs": 4233
         },
         {
-          "text": "lab与个人工作站",
-          "startFrame": 1423,
-          "endFrame": 1514,
-          "startMs": 47433,
-          "endMs": 50466
+          "text": "它摒弃了冗余的插画修饰",
+          "startFrame": 127,
+          "endFrame": 194,
+          "globalStartFrame": 1360,
+          "globalEndFrame": 1427,
+          "startMs": 4233,
+          "endMs": 6466
         },
         {
-          "text": "构成了极客的生产力中枢",
-          "startFrame": 1514,
-          "endFrame": 1605,
-          "startMs": 50466,
-          "endMs": 53500
+          "text": "直接将现代深色极客终端",
+          "startFrame": 194,
+          "endFrame": 261,
+          "globalStartFrame": 1427,
+          "globalEndFrame": 1494,
+          "startMs": 6466,
+          "endMs": 8700
         },
         {
-          "text": "通过泰山派等低功耗arm开发版打造私有NAS结合desk",
-          "startFrame": 1605,
-          "endFrame": 1696,
-          "startMs": 53500,
-          "endMs": 56533
+          "text": "动态语法高亮代码块",
+          "startFrame": 261,
+          "endFrame": 316,
+          "globalStartFrame": 1494,
+          "globalEndFrame": 1549,
+          "startMs": 8700,
+          "endMs": 10533
         },
         {
-          "text": "flow跨屏鞋同与KVM硬件信号穿透",
-          "startFrame": 1696,
-          "endFrame": 1787,
-          "startMs": 56533,
-          "endMs": 59566
+          "text": "以及微控制器引脚高频脉冲流光搬上屏幕",
+          "startFrame": 316,
+          "endFrame": 425,
+          "globalStartFrame": 1549,
+          "globalEndFrame": 1658,
+          "startMs": 10533,
+          "endMs": 14166
         },
         {
-          "text": "多台开发机在指尖无缝流动",
-          "startFrame": 1787,
-          "endFrame": 1878,
-          "startMs": 59566,
-          "endMs": 62600
-        },
-        {
-          "text": "构建其属于工程师自己的低延迟私有云根据地",
-          "startFrame": 1878,
-          "endFrame": 1969,
-          "startMs": 62600,
-          "endMs": 65633
+          "text": "这种硬核视觉让技术教程视频呈现出工业级软件评测的严谨与说服力",
+          "startFrame": 425,
+          "endFrame": 606,
+          "globalStartFrame": 1658,
+          "globalEndFrame": 1839,
+          "startMs": 14166,
+          "endMs": 20200
         }
       ],
-      "title": "中枢枢纽：本地服务器与工作站环境",
-      "badge": "WORKSTATION & HOMELAB · 生产力枢纽",
+      "title": "流派二：项目实战与极客终端引脚流",
+      "badge": "PIPELINE B · 极客终端流",
       "cards": [
         {
-          "title": "低功耗常驻集群",
-          "desc": "几瓦能耗即可全天候值守下载、备份、去广告与智能家居中枢多重任务",
-          "tag": "LOW WATTAGE",
-          "icon": "🌱"
+          "title": "打字机代码推演",
+          "desc": "真实还原开发者编码与排障时的键盘节奏，代码逐行高亮推演逻辑",
+          "tag": "TYPING TERMINAL",
+          "icon": "💻"
         },
         {
-          "title": "双机无界漫游",
-          "desc": "一套键盘鼠标在 Windows 与 Linux 双机屏幕间自由穿梭，剪贴板秒级共享",
-          "tag": "DESKFLOW",
-          "icon": "🖱️"
+          "title": "芯片引脚脉冲流光",
+          "desc": "用流动光斑直观展示 SPI、I2C 硬件通信时序，硬件原理一目了然",
+          "tag": "PINOUT GLOW",
+          "icon": "⚡"
         },
         {
-          "title": "私有数据金库",
-          "desc": "拒绝依赖公有云存储的单点风险，将核心代码与数字记忆掌握在自己手中",
-          "tag": "DATA VAULT",
-          "icon": "🏰"
+          "title": "架构双卡阻尼对比",
+          "desc": "Before 与 After 方案同屏物理弹簧阻尼入场，技术优劣一目了然",
+          "tag": "SPRING CARDS",
+          "icon": "⚖️"
         }
       ]
     },
     {
       "id": "scene_04",
       "type": "TerminalCodeDemo",
-      "startFrame": 1970,
-      "durationInFrames": 663,
-      "audioPath": "audio/scene_04.mp3",
-      "text": "来到云端，现代即客告别了传统虚拟机的繁琐维护。cloudware workers等边缘运行时，将代码秒级推送到全球数百座机房，以几乎为零的冷启动开销，响应全球访客，结合零出口费用的对象存储与轻量数据库，以极低成本承载全球级分布式流量。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>来到云端，现代即客告别了传统虚拟机的繁琐维护。cloudware workers等边缘运行时，将代码秒级推送到全球数百座机房，以几乎为零的冷启动开销，响应全球访客，结合零出口费用的对象存储与轻量数据库，以极低成本承载全球级分布式流量。",
+      "startFrame": 1839,
+      "durationInFrames": 636,
+      "audioPath": "audio/scene_04.wav",
+      "text": "第三种流派是软硬结合的高阶形态。创作者手持真实硬件拍摄简短素材，Remotion 将实拍视频装入带有高光反射的 3D 悬浮手机模型中循环播放。同时，屏幕上射出动态 HUD 激光扫描线与折线发光引线，精准锁定并标注电路板上的核心芯片元器件。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第三种流派是软硬结合的高阶形态，创作者手持真实硬件拍摄，简短素材remotion，将实拍视频装入带有高光反射的低悬浮手机模型中循环播放。同时，屏幕上射出动态LUD激光扫描线与折线发光影线精准锁定，并标注电路板上的核心芯片元器件。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "来到云端",
-          "startFrame": 1970,
-          "endFrame": 2043,
-          "startMs": 65666,
-          "endMs": 68100
+          "text": "第三种流派是软硬结合的高阶形态",
+          "startFrame": 0,
+          "endFrame": 84,
+          "globalStartFrame": 1839,
+          "globalEndFrame": 1923,
+          "startMs": 0,
+          "endMs": 2800
         },
         {
-          "text": "现代即客告别了传统虚拟机的繁琐维护",
-          "startFrame": 2043,
-          "endFrame": 2116,
-          "startMs": 68100,
-          "endMs": 70533
+          "text": "创作者手持真实硬件拍摄简短素材",
+          "startFrame": 84,
+          "endFrame": 168,
+          "globalStartFrame": 1923,
+          "globalEndFrame": 2007,
+          "startMs": 2800,
+          "endMs": 5600
         },
         {
-          "text": "cloudware",
-          "startFrame": 2116,
-          "endFrame": 2189,
-          "startMs": 70533,
-          "endMs": 72966
+          "text": "Remotion 将实拍视频装入带有高光反射的 3D 悬浮手机模型中循环播放",
+          "startFrame": 168,
+          "endFrame": 382,
+          "globalStartFrame": 2007,
+          "globalEndFrame": 2221,
+          "startMs": 5600,
+          "endMs": 12733
         },
         {
-          "text": "workers等边缘运行时",
-          "startFrame": 2189,
-          "endFrame": 2262,
-          "startMs": 72966,
-          "endMs": 75400
+          "text": "同时",
+          "startFrame": 382,
+          "endFrame": 397,
+          "globalStartFrame": 2221,
+          "globalEndFrame": 2236,
+          "startMs": 12733,
+          "endMs": 13233
         },
         {
-          "text": "将代码秒级推送到全球数百座机房",
-          "startFrame": 2262,
-          "endFrame": 2335,
-          "startMs": 75400,
-          "endMs": 77833
+          "text": "屏幕上射出动态 HUD 激光扫描线与折线发光引线",
+          "startFrame": 397,
+          "endFrame": 532,
+          "globalStartFrame": 2236,
+          "globalEndFrame": 2371,
+          "startMs": 13233,
+          "endMs": 17733
         },
         {
-          "text": "以几乎为零的冷启动开销",
-          "startFrame": 2335,
-          "endFrame": 2408,
-          "startMs": 77833,
-          "endMs": 80266
-        },
-        {
-          "text": "响应全球访客",
-          "startFrame": 2408,
-          "endFrame": 2481,
-          "startMs": 80266,
-          "endMs": 82700
-        },
-        {
-          "text": "结合零出口费用的对象存储与轻量数据库",
-          "startFrame": 2481,
-          "endFrame": 2554,
-          "startMs": 82700,
-          "endMs": 85133
-        },
-        {
-          "text": "以极低成本承载全球级分布式流量",
-          "startFrame": 2554,
-          "endFrame": 2627,
-          "startMs": 85133,
-          "endMs": 87566
+          "text": "精准锁定并标注电路板上的核心芯片元器件",
+          "startFrame": 532,
+          "endFrame": 636,
+          "globalStartFrame": 2371,
+          "globalEndFrame": 2475,
+          "startMs": 17733,
+          "endMs": 21200
         }
       ],
-      "title": "云端边缘：去中心化全球计算网络",
-      "badge": "EDGE ARCHITECTURE · 边缘计算",
+      "title": "流派三：实拍混剪与 HUD 激光发光引线流",
+      "badge": "PIPELINE C · 实拍混剪流",
       "cards": [
         {
-          "title": "全球毫秒就近响应",
-          "desc": "代码部署在全球骨干网边缘，彻底消灭跨越大洋回源带来的物理光纤延迟",
-          "tag": "GLOBAL SPEED",
-          "icon": "🌍"
+          "title": "3D 拟真手机画中画",
+          "desc": "原生圆角裁切与悬浮阻尼浮动微动效，瞬间提升实拍素材的高级感",
+          "tag": "3D PHONE",
+          "icon": "📱"
         },
         {
-          "title": "极致弹性成本",
-          "desc": "只为实际执行的计算微秒买单，闲置时费用归零，个人开发者也能从容抗流",
-          "tag": "PAY AS YOU GO",
-          "icon": "💸"
+          "title": "HUD 激光循环扫描",
+          "desc": "科幻感十足的半透明蓝色扫描线掠过实物表面，极客氛围直接拉满",
+          "tag": "LASER SCAN",
+          "icon": "🌐"
         },
         {
-          "title": "基础设施即代码",
-          "desc": "整套网络安全规则、持久化路由全部由代码仓库声明式版本化管理",
-          "tag": "IAC OPS",
-          "icon": "📜"
+          "title": "Callout 折线引线",
+          "desc": "发光折线从芯片引脚飞出展开参数卡片，实物与虚拟数据完美交融",
+          "tag": "POINTER HUD",
+          "icon": "📍"
         }
       ]
     },
     {
       "id": "scene_05",
       "type": "ExplainerWhiteboard",
-      "startFrame": 2633,
-      "durationInFrames": 691,
-      "audioPath": "audio/scene_05.mp3",
-      "text": "拥有顶尖的技术固然重要，但如何将硬核知识高效传播给世界，同样是一门大学问。我们的AI视频自动化流水线，将技术沉淀转化为可视化的视听资产，从markdown文档解析到神经配音毫秒打点与remotion多核渲染，彻底实现知识传播的百倍杠杆。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>拥有顶尖的技术固然重要，但如何将硬核知识高效传播给世界，同样是一门大学问。我们的AI视频自动化流水线，将技术沉淀转化为可视化的视听资产，从markdown文档解析到神经配音毫秒打点与remotion多核渲染，彻底实现知识传播的百倍杠杆。",
+      "startFrame": 2475,
+      "durationInFrames": 633,
+      "audioPath": "audio/scene_05.wav",
+      "text": "我们从制作周期、硬件算力门槛、信息传达效率以及观众留存率四个维度对三大流派进行严格横评。手绘白板流视觉最亲民但资产生成最慢；终端引脚流完全代码驱动、渲染速度最快且最具硬核专业度；而实拍混剪流最具真实感，带货转化率最高。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>我们从制作周期、硬件算力、门槛、信息传达效率以及观众留存率四个维度，对三大流派进行严格横屏。手绘白板流视觉最轻名淡资产生成最慢，终端引角流完全代码驱动渲染速度最快且最具硬核专业度，而实拍混简流最具真实感，带货转化率最高。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "拥有顶尖的技术固然重要",
-          "startFrame": 2633,
-          "endFrame": 2731,
-          "startMs": 87766,
-          "endMs": 91033
+          "text": "我们从制作周期",
+          "startFrame": 0,
+          "endFrame": 44,
+          "globalStartFrame": 2475,
+          "globalEndFrame": 2519,
+          "startMs": 0,
+          "endMs": 1466
         },
         {
-          "text": "但如何将硬核知识高效传播给世界",
-          "startFrame": 2731,
-          "endFrame": 2829,
-          "startMs": 91033,
-          "endMs": 94300
+          "text": "硬件算力门槛",
+          "startFrame": 44,
+          "endFrame": 82,
+          "globalStartFrame": 2519,
+          "globalEndFrame": 2557,
+          "startMs": 1466,
+          "endMs": 2733
         },
         {
-          "text": "同样是一门大学问",
-          "startFrame": 2829,
-          "endFrame": 2927,
-          "startMs": 94300,
-          "endMs": 97566
+          "text": "信息传达效率以及观众留存率四个维度对三大流派进行严格横评",
+          "startFrame": 82,
+          "endFrame": 257,
+          "globalStartFrame": 2557,
+          "globalEndFrame": 2732,
+          "startMs": 2733,
+          "endMs": 8566
         },
         {
-          "text": "我们的AI视频自动化流水线",
-          "startFrame": 2927,
-          "endFrame": 3025,
-          "startMs": 97566,
-          "endMs": 100833
+          "text": "手绘白板流视觉最亲民但资产生成最慢",
+          "startFrame": 257,
+          "endFrame": 364,
+          "globalStartFrame": 2732,
+          "globalEndFrame": 2839,
+          "startMs": 8566,
+          "endMs": 12133
         },
         {
-          "text": "将技术沉淀转化为可视化的视听资产",
-          "startFrame": 3025,
-          "endFrame": 3123,
-          "startMs": 100833,
-          "endMs": 104100
+          "text": "终端引脚流完全代码驱动",
+          "startFrame": 364,
+          "endFrame": 433,
+          "globalStartFrame": 2839,
+          "globalEndFrame": 2908,
+          "startMs": 12133,
+          "endMs": 14433
         },
         {
-          "text": "从markdown文档解析到神经配音毫秒打点与remotion多核渲染",
-          "startFrame": 3123,
-          "endFrame": 3221,
-          "startMs": 104100,
-          "endMs": 107366
+          "text": "渲染速度最快且最具硬核专业度",
+          "startFrame": 433,
+          "endFrame": 521,
+          "globalStartFrame": 2908,
+          "globalEndFrame": 2996,
+          "startMs": 14433,
+          "endMs": 17366
         },
         {
-          "text": "彻底实现知识传播的百倍杠杆",
-          "startFrame": 3221,
-          "endFrame": 3319,
-          "startMs": 107366,
-          "endMs": 110633
+          "text": "而实拍混剪流最具真实感",
+          "startFrame": 521,
+          "endFrame": 590,
+          "globalStartFrame": 2996,
+          "globalEndFrame": 3065,
+          "startMs": 17366,
+          "endMs": 19666
+        },
+        {
+          "text": "带货转化率最高",
+          "startFrame": 590,
+          "endFrame": 633,
+          "globalStartFrame": 3065,
+          "globalEndFrame": 3108,
+          "startMs": 19666,
+          "endMs": 21100
         }
       ],
-      "title": "视听表达：AI 赋能的端到端自动化视频",
-      "badge": "AUTOMATED MEDIA · 生产力倍增",
+      "title": "三大视频生产流派的核心指标横评",
+      "badge": "BENCHMARK · 多维指标横评",
       "cards": [
         {
-          "title": "知识一键视听化",
-          "desc": "撰写完成的 Wiki 技术文档，一键触发全链路生成电影级质感的精美视频",
-          "tag": "AUTO VIDEO",
-          "icon": "🎬"
+          "title": "白板手绘：留存之王",
+          "desc": "极高完播率与点赞互动率，适合破圈科普与泛技术知识沉淀传播",
+          "tag": "RETENTION",
+          "icon": "🏆"
         },
         {
-          "title": "声学与视觉同构",
-          "desc": "利用前沿开源声学模型与 React 声明式渲染，让算法呈现艺术般的美感",
-          "tag": "AESTHETICS",
-          "icon": "🎨"
+          "title": "极客终端：效率之王",
+          "desc": "全代码渲染无渲染素材瓶颈，单机秒级导出，适合高频实战干货",
+          "tag": "EFFICIENCY",
+          "icon": "⚡"
         },
         {
-          "title": "开源知识普惠",
-          "desc": "用最高维度的视听表现力普及底层硬核原理，打破科技知识的信息壁垒",
-          "tag": "IMPACT",
-          "icon": "🌟"
+          "title": "实拍混剪：信任之王",
+          "desc": "所见即所得的真实硬件质感，适合产品发布、开箱评测与商用演示",
+          "tag": "CONVERSION",
+          "icon": "💎"
         }
       ]
     },
     {
       "id": "scene_06",
       "type": "TerminalCodeDemo",
-      "startFrame": 3324,
-      "durationInFrames": 656,
-      "audioPath": "audio/scene_06.mp3",
-      "text": "从硬件到云端，从异行嵌入事故件，汇编到一段驱动视频光商化的react组件。技术的终极魅力在于创造，保持好奇，拒绝平庸，用扎实的工程实践去探索未知的边界。每一个用代码和硬件改善世界的开发者，都在谱写属于这个时代的伟大诗篇。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>从硬件到云端，从异行嵌入事故件，汇编到一段驱动视频光商化的react组件。技术的终极魅力在于创造，保持好奇，拒绝平庸，用扎实的工程实践去探索未知的边界。每一个用代码和硬件改善世界的开发者，都在谱写属于这个时代的伟大诗篇。",
+      "startFrame": 3108,
+      "durationInFrames": 636,
+      "audioPath": "audio/scene_06.wav",
+      "text": "除了上述三种骨干流派，近期兴起的 Google Flow 与 Veo 视频模型为技术视频注入了电影级质感。在介绍复杂宏观架构或前瞻愿景时，穿插几秒带有微距景深、变形镜头光晕和慢速推镜的芯片特写映画空镜，能够让视频整体质感瞬间飞跃至纪录片水准。",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>除了上述三种骨干流派，近期兴起的google flow与标多视频模型为技术视频，注入了电影机制感，在介绍复杂宏观架构或潜瞻愿景时，穿插几秒，带有微距景深、变形镜头光晕和慢速推进的军舰特写硬化空镜，能够让视频整体质感瞬间飞跃至纪录片水准。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "从硬件到云端",
-          "startFrame": 3324,
-          "endFrame": 3396,
-          "startMs": 110800,
-          "endMs": 113200
+          "text": "除了上述三种骨干流派",
+          "startFrame": 0,
+          "endFrame": 55,
+          "globalStartFrame": 3108,
+          "globalEndFrame": 3163,
+          "startMs": 0,
+          "endMs": 1833
         },
         {
-          "text": "从异行嵌入事故件",
-          "startFrame": 3396,
-          "endFrame": 3468,
-          "startMs": 113200,
-          "endMs": 115600
+          "text": "近期兴起的 Google Flow 与 Veo 视频模型为技术视频注入了电影级质感",
+          "startFrame": 55,
+          "endFrame": 282,
+          "globalStartFrame": 3163,
+          "globalEndFrame": 3390,
+          "startMs": 1833,
+          "endMs": 9400
         },
         {
-          "text": "汇编到一段驱动视频光商化的react组件",
-          "startFrame": 3468,
-          "endFrame": 3540,
-          "startMs": 115600,
-          "endMs": 118000
+          "text": "在介绍复杂宏观架构或前瞻愿景时",
+          "startFrame": 282,
+          "endFrame": 365,
+          "globalStartFrame": 3390,
+          "globalEndFrame": 3473,
+          "startMs": 9400,
+          "endMs": 12166
         },
         {
-          "text": "技术的终极魅力在于创造",
-          "startFrame": 3540,
-          "endFrame": 3612,
-          "startMs": 118000,
-          "endMs": 120400
+          "text": "穿插几秒带有微距景深",
+          "startFrame": 365,
+          "endFrame": 420,
+          "globalStartFrame": 3473,
+          "globalEndFrame": 3528,
+          "startMs": 12166,
+          "endMs": 14000
         },
         {
-          "text": "保持好奇",
-          "startFrame": 3612,
-          "endFrame": 3684,
-          "startMs": 120400,
-          "endMs": 122800
+          "text": "变形镜头光晕和慢速推镜的芯片特写映画空镜",
+          "startFrame": 420,
+          "endFrame": 531,
+          "globalStartFrame": 3528,
+          "globalEndFrame": 3639,
+          "startMs": 14000,
+          "endMs": 17700
         },
         {
-          "text": "拒绝平庸",
-          "startFrame": 3684,
-          "endFrame": 3756,
-          "startMs": 122800,
-          "endMs": 125200
-        },
-        {
-          "text": "用扎实的工程实践去探索未知的边界",
-          "startFrame": 3756,
-          "endFrame": 3828,
-          "startMs": 125200,
-          "endMs": 127600
-        },
-        {
-          "text": "每一个用代码和硬件改善世界的开发者",
-          "startFrame": 3828,
-          "endFrame": 3900,
-          "startMs": 127600,
-          "endMs": 130000
-        },
-        {
-          "text": "都在谱写属于这个时代的伟大诗篇",
-          "startFrame": 3900,
-          "endFrame": 3972,
-          "startMs": 130000,
-          "endMs": 132400
+          "text": "能够让视频整体质感瞬间飞跃至纪录片水准",
+          "startFrame": 531,
+          "endFrame": 636,
+          "globalStartFrame": 3639,
+          "globalEndFrame": 3744,
+          "startMs": 17700,
+          "endMs": 21200
         }
       ],
-      "title": "全栈工程之美：持续探索与终身学习",
-      "badge": "EPILOGUE · 结语与致敬",
+      "title": "Google Flow 与映画级 AI 镜头补充",
+      "badge": "CINEMATIC B-ROLL · 映画镜头",
       "cards": [
         {
-          "title": "保持赤子好奇心",
-          "desc": "永远对底层运作的本质抱有穷根究底的渴望，不盲从潮流，深耕核心底层",
-          "tag": "CURIOSITY",
-          "icon": "🔍"
+          "title": "电影级运镜推演",
+          "desc": "慢速推拉摇移平滑运镜搭配大光圈虚化，呈现好莱坞级工业科技质感",
+          "tag": "CINEMATIC",
+          "icon": "🎥"
         },
         {
-          "title": "用工程改变现实",
-          "desc": "动手实践是检验真理的唯一标准，将每一个大胆想法化为坚实的落地代码",
-          "tag": "EXECUTION",
-          "icon": "⚡"
+          "title": "4K 60FPS 极清细节",
+          "desc": "纳米级光刻电路与金线键合的超写实光影漫反射，震撼视觉冲击力",
+          "tag": "4K MACRO",
+          "icon": "✨"
         },
         {
-          "title": "致敬每一位极客",
-          "desc": "在万物互联与人工智能的浩瀚星空下，我们同舟共济，共同奔赴下一场山海！",
-          "tag": "SALUTE",
-          "icon": "🚀"
+          "title": "情绪节奏缓冲器",
+          "desc": "在密集的硬核技术卡片之间适度穿插空镜，给予观众消化思考的呼吸空间",
+          "tag": "PACING",
+          "icon": "🧘"
         }
       ]
     },
     {
       "id": "scene_07",
       "type": "ExplainerWhiteboard",
-      "startFrame": 3980,
-      "durationInFrames": 569,
+      "startFrame": 3744,
+      "durationInFrames": 637,
       "audioPath": "audio/scene_07.wav",
-      "text": "I丢to地友铺京金是一组紫通话叫本塔太票利用前行，孔亨思维方式一样复杂，是听票他嗨结为严金。算发术语气语足烟王太一通国逃万钱扶庸考图听开验空作六妹一为孔亨都能轻松泰言起诉于自己子通话术欢美提阔。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>I丢to地友铺京金是一组紫通话叫本塔太票利用前行，孔亨思维方式一样复杂，是听票他嗨结为严金。算发术语气语足烟王太一通国逃万钱扶庸考图听开验空作六妹一为孔亨都能轻松泰言起诉于自己子通话术欢美提阔。",
+      "text": "成熟的技术团队不应拘泥于单一风格。最高明的策略是建立混合管线：开篇使用白板手绘引出痛点背景，主体部分由极客终端和引脚流光展开深度剖析，实物落地阶段调出实拍手机壳与发光引线，结尾穿插映画空镜升华主题，达成完美的视听闭环！",
+      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>成熟的技术团队不应拘泥于单一风格，最高明的策略是建立混合管线，开篇使用白板手绘，引出痛点。背景主体部分由即客终端和引角流光展开，深度剖析实物落地阶段，调出实拍手机壳与发光影线结尾，穿插硬化，空镜升华主题，达成完美的视情闭环。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "I丢to地友铺京金是一组紫通话叫本塔太票利用前行",
-          "startFrame": 3980,
-          "endFrame": 4122,
-          "startMs": 132666,
-          "endMs": 137400
+          "text": "成熟的技术团队不应拘泥于单一风格",
+          "startFrame": 0,
+          "endFrame": 99,
+          "globalStartFrame": 3744,
+          "globalEndFrame": 3843,
+          "startMs": 0,
+          "endMs": 3300
         },
         {
-          "text": "孔亨思维方式一样复杂",
-          "startFrame": 4122,
-          "endFrame": 4264,
-          "startMs": 137400,
-          "endMs": 142133
+          "text": "最高明的策略是建立混合管线：开篇使用白板手绘引出痛点背景",
+          "startFrame": 99,
+          "endFrame": 272,
+          "globalStartFrame": 3843,
+          "globalEndFrame": 4016,
+          "startMs": 3300,
+          "endMs": 9066
         },
         {
-          "text": "是听票他嗨结为严金",
-          "startFrame": 4264,
-          "endFrame": 4406,
-          "startMs": 142133,
-          "endMs": 146866
+          "text": "主体部分由极客终端和引脚流光展开深度剖析",
+          "startFrame": 272,
+          "endFrame": 396,
+          "globalStartFrame": 4016,
+          "globalEndFrame": 4140,
+          "startMs": 9066,
+          "endMs": 13200
         },
         {
-          "text": "算发术语气语足烟王太一通国逃万钱扶庸考图听开验空作六妹一为孔亨都能轻松泰言起诉于自己子通话术欢美提阔",
-          "startFrame": 4406,
-          "endFrame": 4548,
-          "startMs": 146866,
-          "endMs": 151600
+          "text": "实物落地阶段调出实拍手机壳与发光引线",
+          "startFrame": 396,
+          "endFrame": 507,
+          "globalStartFrame": 4140,
+          "globalEndFrame": 4251,
+          "startMs": 13200,
+          "endMs": 16900
+        },
+        {
+          "text": "结尾穿插映画空镜升华主题",
+          "startFrame": 507,
+          "endFrame": 581,
+          "globalStartFrame": 4251,
+          "globalEndFrame": 4325,
+          "startMs": 16900,
+          "endMs": 19366
+        },
+        {
+          "text": "达成完美的视听闭环",
+          "startFrame": 581,
+          "endFrame": 637,
+          "globalStartFrame": 4325,
+          "globalEndFrame": 4381,
+          "startMs": 19366,
+          "endMs": 21233
+        }
+      ],
+      "title": "如何搭建属于你自己的混合自动化管线",
+      "badge": "PIPELINE SYNTHESIS · 选型建议",
+      "cards": [
+        {
+          "title": "场景驱动动态组合",
+          "desc": "根据每一幕的内容特性动态匹配最恰当的视觉组件，杜绝审美疲劳",
+          "tag": "HYBRID",
+          "icon": "🧩"
+        },
+        {
+          "title": "单一时间轴统一纳管",
+          "desc": "无论何种视觉组件，全部挂载在 SenseVoice 输出的同一份时间轴上",
+          "tag": "UNIFIED TIMELINE",
+          "icon": "📜"
+        },
+        {
+          "title": "模块化渐进式沉淀",
+          "desc": "先打磨好最核心的终端组件，逐步扩展手绘与映画模块，稳步演进",
+          "tag": "ITERATIVE",
+          "icon": "🧱"
         }
       ]
     },
     {
       "id": "scene_08",
       "type": "TerminalCodeDemo",
-      "startFrame": 4549,
+      "startFrame": 4381,
       "durationInFrames": 620,
       "audioPath": "audio/scene_08.wav",
-      "text": "从剪辑软件的时间轴，轨道拖拽到声明式代码与大模型、声学渲染视频生产方式正发生着百年未有的大变革。掌握全链路自动化工具链的工程师，正在以百倍于传统创作者的效率输出顶尖内容。未来以来，让我们用代码重新定义试听艺术。",
+      "text": "从剪辑软件的时间轴轨道拖拽，到声明式代码与大模型声学渲染，视频生产方式正发生着百年未有的大变革。掌握全链路自动化工具链的工程师，正在以百倍于传统创作者的效率输出顶尖内容。未来已来，让我们用代码重新定义视听艺术！",
       "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>从剪辑软件的时间轴，轨道拖拽到声明式代码与大模型、声学渲染视频生产方式正发生着百年未有的大变革。掌握全链路自动化工具链的工程师，正在以百倍于传统创作者的效率输出顶尖内容。未来以来，让我们用代码重新定义试听艺术。",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "从剪辑软件的时间轴",
-          "startFrame": 4549,
-          "endFrame": 4637,
-          "startMs": 151633,
-          "endMs": 154566
+          "text": "从剪辑软件的时间轴轨道拖拽",
+          "startFrame": 0,
+          "endFrame": 82,
+          "globalStartFrame": 4381,
+          "globalEndFrame": 4463,
+          "startMs": 0,
+          "endMs": 2733
         },
         {
-          "text": "轨道拖拽到声明式代码与大模型",
-          "startFrame": 4637,
-          "endFrame": 4725,
-          "startMs": 154566,
-          "endMs": 157500
+          "text": "到声明式代码与大模型声学渲染",
+          "startFrame": 82,
+          "endFrame": 171,
+          "globalStartFrame": 4463,
+          "globalEndFrame": 4552,
+          "startMs": 2733,
+          "endMs": 5700
         },
         {
-          "text": "声学渲染视频生产方式正发生着百年未有的大变革",
-          "startFrame": 4725,
-          "endFrame": 4813,
-          "startMs": 157500,
-          "endMs": 160433
+          "text": "视频生产方式正发生着百年未有的大变革",
+          "startFrame": 171,
+          "endFrame": 285,
+          "globalStartFrame": 4552,
+          "globalEndFrame": 4666,
+          "startMs": 5700,
+          "endMs": 9500
         },
         {
           "text": "掌握全链路自动化工具链的工程师",
-          "startFrame": 4813,
-          "endFrame": 4901,
-          "startMs": 160433,
-          "endMs": 163366
+          "startFrame": 285,
+          "endFrame": 380,
+          "globalStartFrame": 4666,
+          "globalEndFrame": 4761,
+          "startMs": 9500,
+          "endMs": 12666
         },
         {
           "text": "正在以百倍于传统创作者的效率输出顶尖内容",
-          "startFrame": 4901,
-          "endFrame": 4989,
-          "startMs": 163366,
-          "endMs": 166300
+          "startFrame": 380,
+          "endFrame": 507,
+          "globalStartFrame": 4761,
+          "globalEndFrame": 4888,
+          "startMs": 12666,
+          "endMs": 16900
         },
         {
-          "text": "未来以来",
-          "startFrame": 4989,
-          "endFrame": 5077,
-          "startMs": 166300,
-          "endMs": 169233
+          "text": "未来已来",
+          "startFrame": 507,
+          "endFrame": 532,
+          "globalStartFrame": 4888,
+          "globalEndFrame": 4913,
+          "startMs": 16900,
+          "endMs": 17733
         },
         {
-          "text": "让我们用代码重新定义试听艺术",
-          "startFrame": 5077,
-          "endFrame": 5165,
-          "startMs": 169233,
-          "endMs": 172166
+          "text": "让我们用代码重新定义视听艺术",
+          "startFrame": 532,
+          "endFrame": 620,
+          "globalStartFrame": 4913,
+          "globalEndFrame": 5001,
+          "startMs": 17733,
+          "endMs": 20666
         }
-      ]
-    },
-    {
-      "id": "scene_09",
-      "type": "ExplainerWhiteboard",
-      "startFrame": 5169,
-      "durationInFrames": 1314,
-      "audioPath": "audio/scene_09.wav",
-      "text": "生活与技术里的小学训练好的群众最终被封装为一个轻量化的本地HTTP而ESTLV服务生活为技术云的小当视频多述调度器解析分镜脚本时，与技术里的小持需发送标准N载生活与技云的小时服务即可实时返回分段VV。听狐雄前佛下豪鸟打点通色，生活与艺术里的小诗，实现从文字到波形的全自动播式。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>生活与技术里的小学训练好的群众最终被封装为一个轻量化的本地HTTP而ESTLV服务生活为技术云的小当视频多述调度器解析分镜脚本时，与技术里的小持需发送标准N载生活与技云的小时服务即可实时返回分段VV。 <|zh|><|NEUTRAL|><|Speech|><|withitn|>听狐雄前佛下豪鸟打点通色，生活与艺术里的小诗，实现从文字到波形的全自动播式。",
-      "emotion": "<|NEUTRAL|>",
-      "words": [
+      ],
+      "title": "代码即视频：技术创作者的未来",
+      "badge": "FUTURE OF CREATION · 结语",
+      "cards": [
         {
-          "text": "生活与技术里的小学训练好的群众最终被封装为一个轻量化的本地HTTP而ESTLV服务生活为技术云的小当视频多述调度器解析分镜脚本时",
-          "startFrame": 5169,
-          "endFrame": 5431,
-          "startMs": 172300,
-          "endMs": 181033
+          "title": "百倍杠杆放大",
+          "desc": "把重复机械的剪辑劳动交给计算机，将人类智慧集中于洞察与架构",
+          "tag": "LEVERAGE",
+          "icon": "🚀"
         },
         {
-          "text": "与技术里的小持需发送标准N载生活与技云的小时服务即可实时返回分段VV",
-          "startFrame": 5431,
-          "endFrame": 5693,
-          "startMs": 181033,
-          "endMs": 189766
+          "title": "终身可重构复用",
+          "desc": "所有设计沉淀均为标准代码库，随时修改参数即可整套品牌焕新升级",
+          "tag": "RECONFIGURABLE",
+          "icon": "🔄"
         },
         {
-          "text": "听狐雄前佛下豪鸟打点通色",
-          "startFrame": 5693,
-          "endFrame": 5955,
-          "startMs": 189766,
-          "endMs": 198500
-        },
-        {
-          "text": "生活与艺术里的小诗",
-          "startFrame": 5955,
-          "endFrame": 6217,
-          "startMs": 198500,
-          "endMs": 207233
-        },
-        {
-          "text": "实现从文字到波形的全自动播式",
-          "startFrame": 6217,
-          "endFrame": 6479,
-          "startMs": 207233,
-          "endMs": 215966
-        }
-      ]
-    },
-    {
-      "id": "scene_10",
-      "type": "TerminalCodeDemo",
-      "startFrame": 6483,
-      "durationInFrames": 1363,
-      "audioPath": "audio/scene_10.wav",
-      "text": "我生活每技础里的小事，声音克隆不是冰冷的代码，生活与技受里的小事，而是创作者思想与人格的升学延续。在生活与技术里的小事，借助本地化跟生活与基术里的小事高品质的小样本微调，生活与技术里的小事，我们在保护个人生物隐私的同时，生活与技术里的小事将。操作的编辑成本两到了极致，售黄美技数了一个小时，让每一个极客都能拥有专属的数字来生提升。高效黄美技术一个小时，提高效不到前沿科技。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>我生活每技础里的小事，声音克隆不是冰冷的代码，生活与技受里的小事，而是创作者思想与人格的升学延续。在生活与技术里的小事，借助本地化跟生活与基术里的小事高品质的小样本微调，生活与技术里的小事，我们在保护个人生物隐私的同时，生活与技术里的小事将。 <|zh|><|NEUTRAL|><|Speech|><|withitn|>操作的编辑成本两到了极致，售黄美技数了一个小时，让每一个极客都能拥有专属的数字来生提升。高效黄美技术一个小时，提高效不到前沿科技。",
-      "emotion": "<|NEUTRAL|>",
-      "words": [
-        {
-          "text": "我生活每技础里的小事",
-          "startFrame": 6483,
-          "endFrame": 6580,
-          "startMs": 216100,
-          "endMs": 219333
-        },
-        {
-          "text": "声音克隆不是冰冷的代码",
-          "startFrame": 6580,
-          "endFrame": 6677,
-          "startMs": 219333,
-          "endMs": 222566
-        },
-        {
-          "text": "生活与技受里的小事",
-          "startFrame": 6677,
-          "endFrame": 6774,
-          "startMs": 222566,
-          "endMs": 225800
-        },
-        {
-          "text": "而是创作者思想与人格的升学延续",
-          "startFrame": 6774,
-          "endFrame": 6871,
-          "startMs": 225800,
-          "endMs": 229033
-        },
-        {
-          "text": "在生活与技术里的小事",
-          "startFrame": 6871,
-          "endFrame": 6968,
-          "startMs": 229033,
-          "endMs": 232266
-        },
-        {
-          "text": "借助本地化跟生活与基术里的小事高品质的小样本微调",
-          "startFrame": 6968,
-          "endFrame": 7065,
-          "startMs": 232266,
-          "endMs": 235500
-        },
-        {
-          "text": "生活与技术里的小事",
-          "startFrame": 7065,
-          "endFrame": 7162,
-          "startMs": 235500,
-          "endMs": 238733
-        },
-        {
-          "text": "我们在保护个人生物隐私的同时",
-          "startFrame": 7162,
-          "endFrame": 7259,
-          "startMs": 238733,
-          "endMs": 241966
-        },
-        {
-          "text": "生活与技术里的小事将",
-          "startFrame": 7259,
-          "endFrame": 7356,
-          "startMs": 241966,
-          "endMs": 245200
-        },
-        {
-          "text": "操作的编辑成本两到了极致",
-          "startFrame": 7356,
-          "endFrame": 7453,
-          "startMs": 245200,
-          "endMs": 248433
-        },
-        {
-          "text": "售黄美技数了一个小时",
-          "startFrame": 7453,
-          "endFrame": 7550,
-          "startMs": 248433,
-          "endMs": 251666
-        },
-        {
-          "text": "让每一个极客都能拥有专属的数字来生提升",
-          "startFrame": 7550,
-          "endFrame": 7647,
-          "startMs": 251666,
-          "endMs": 254900
-        },
-        {
-          "text": "高效黄美技术一个小时",
-          "startFrame": 7647,
-          "endFrame": 7744,
-          "startMs": 254900,
-          "endMs": 258133
-        },
-        {
-          "text": "提高效不到前沿科技",
-          "startFrame": 7744,
-          "endFrame": 7841,
-          "startMs": 258133,
-          "endMs": 261366
+          "title": "极客工程师的护城河",
+          "desc": "懂硬件、懂算法、懂前端渲染的全栈极客，将成为数字内容时代的新领航者",
+          "tag": "NEW ERA",
+          "icon": "🌟"
         }
       ]
     }

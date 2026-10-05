@@ -15,7 +15,8 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PYTHON_EXE = sys.executable
+LIVECLIP_PYTHON = r"C:\Users\ePanda\.workbuddy\binaries\python\envs\liveclip\Scripts\python.exe"
+PYTHON_EXE = LIVECLIP_PYTHON if os.path.exists(LIVECLIP_PYTHON) else sys.executable
 SCRIPTS_DIR = os.path.join(PROJECT_ROOT, "content", "scripts")
 OUT_DIR = os.path.join(PROJECT_ROOT, "out")
 MANIFEST_FILE = os.path.join(OUT_DIR, "production_manifest.json")
@@ -80,36 +81,36 @@ PRODUCTION_QUEUE = [
     {
         "id": "07",
         "script": "content/scripts/07_transformer_flagship_case.json",
-        "project": "07_transformer_case_study_kokoro",
-        "engine": "kokoro",
-        "voice": "zm_031",
+        "project": "07_transformer_case_study_chattts",
+        "engine": "chattts",
+        "voice": "8888",
         "title": "Transformer 架构与注意力机制深度剖析",
         "category": "算法底层"
     },
     {
         "id": "08",
         "script": "content/scripts/08_google_ai_video_ecosystem.json",
-        "project": "08_google_ai_video_kokoro",
-        "engine": "kokoro",
-        "voice": "zf_001",
+        "project": "08_google_ai_video_chattts",
+        "engine": "chattts",
+        "voice": "3333",
         "title": "Google AI 视频生态与前沿技术实战指南",
         "category": "多模态生态"
     },
     {
         "id": "09",
         "script": "content/scripts/09_ai_video_studio_workflow.json",
-        "project": "09_studio_workflow_deepdive_kokoro",
-        "engine": "kokoro",
-        "voice": "zm_009",
+        "project": "09_studio_workflow_deepdive_chattts",
+        "engine": "chattts",
+        "voice": "5555",
         "title": "AI Video Studio 全自动化流水线落地细节",
         "category": "自动化工程"
     },
     {
         "id": "10",
         "script": "content/scripts/10_remotion_flow_matching.json",
-        "project": "10_remotion_flow_matching_f5tts",
-        "engine": "f5_tts",
-        "voice": "f5_flow",
+        "project": "10_remotion_flow_matching_chattts",
+        "engine": "chattts",
+        "voice": "7777",
         "title": "Remotion 声明式视频渲染与扩散流匹配",
         "category": "流匹配前沿"
     },
@@ -177,11 +178,11 @@ def get_mp4_duration(mp4_path):
             pass
     return 0.0
 
-def process_video_item(item, skip_render=False, concurrency=4):
+def process_video_item(item, skip_render=False, concurrency=4, force=False):
     out_mp4 = os.path.join(OUT_DIR, f"{item['project']}.mp4")
     
     # 检查是否已完成并且时长合格
-    if os.path.exists(out_mp4) and os.path.getsize(out_mp4) > 1024 * 1024:
+    if not force and os.path.exists(out_mp4) and os.path.getsize(out_mp4) > 1024 * 1024:
         dur_sec = get_mp4_duration(out_mp4)
         frames = int(round(dur_sec * 30))
         file_size_mb = round(os.path.getsize(out_mp4)/1024/1024, 2)
@@ -273,17 +274,32 @@ def process_video_item(item, skip_render=False, concurrency=4):
     }
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="全链路长视频批量自动化生产与质量验收总控")
+    parser.add_argument("--only", type=str, default="", help="指定生产的视频编号列表，例如: 07,08,09,10 或 04,05,06")
+    parser.add_argument("--force", action="store_true", help="强制重新合成语音并重新渲染，即使 out/*.mp4 已经存在")
+    parser.add_argument("--concurrency", type=int, default=4, help="Remotion 多核并行光栅化线程数 (默认 4)")
+    parser.add_argument("--skip-render", action="store_true", help="跳过 Remotion 视频渲染 (仅生成配音与打点契约)")
+    args = parser.parse_args()
+
     manifest = load_manifest()
     completed_projects = {v["project"]: v for v in manifest.get("videos", []) if v.get("status") in ("COMPLETED", "SUCCESS")}
 
+    queue = PRODUCTION_QUEUE
+    if args.only:
+        targets = set([x.strip() for x in args.only.split(",") if x.strip()])
+        queue = [item for item in PRODUCTION_QUEUE if item["id"] in targets or item["project"] in targets]
+        print(f"🎯 用户指定过滤生产队列: {[item['id'] for item in queue]}")
+
     print(f"\n=======================================================")
     print(f"🚀 [Batch Producer] 全链路 10+ 视频流水线批量中枢启动")
-    print(f"   目标总数: {len(PRODUCTION_QUEUE)} 支")
+    print(f"   本次生产目标: {len(queue)} 支 (总队列: {len(PRODUCTION_QUEUE)} 支)")
     print(f"   当前已完成: {len(completed_projects)} 支")
+    print(f"   强制重跑模式: {'🔥 是' if args.force else '⚡ 否'}")
     print(f"=======================================================\n")
 
-    for item in PRODUCTION_QUEUE:
-        res = process_video_item(item, skip_render=False, concurrency=4)
+    for item in queue:
+        res = process_video_item(item, skip_render=args.skip_render, concurrency=args.concurrency, force=args.force)
         
         # 更新清单
         existing_idx = None
@@ -300,7 +316,7 @@ def main():
         print(f"\n🎉 视频 [{item['title']}] 状态更新完毕: {res.get('status')}\n")
 
     print("\n=======================================================")
-    print("🏆 全部视频批量流水线执行完毕！请查看生产清单:")
+    print("🏆 全部指定视频流水线执行完毕！请查看生产清单:")
     print(f"   {MANIFEST_FILE}")
     print("=======================================================\n")
 

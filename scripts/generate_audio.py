@@ -239,6 +239,13 @@ def main():
     script_path = os.path.join(PROJECT_ROOT, args.script) if not os.path.isabs(args.script) else args.script
     output_dir = os.path.join(PROJECT_ROOT, args.output_dir) if not os.path.isabs(args.output_dir) else args.output_dir
     os.makedirs(output_dir, exist_ok=True)
+    # 清理历史残留分镜音频，杜绝多视频批处理时前序视频音频残留导致的分镜串扰
+    for old_file in os.listdir(output_dir):
+        if old_file.lower().startswith("scene_") and old_file.lower().endswith((".wav", ".mp3")):
+            try:
+                os.remove(os.path.join(output_dir, old_file))
+            except Exception:
+                pass
 
     if not os.path.exists(script_path):
         print(f"❌ 找不到分镜脚本: {script_path}")

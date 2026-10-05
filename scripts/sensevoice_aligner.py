@@ -119,28 +119,49 @@ def align_audio_files(audio_files: list, fps: int = 30, project_name: str = "dem
                 if field in meta:
                     scene_data[field] = meta[field]
 
-        # 智能短句分词 (标点符号切分，适合短视频弹跳字幕)
-        import re
-        chunks = [c.strip() for c in re.split(r'[,，。！？、\s]+', clean_text) if c.strip()]
-        if not chunks:
-            chunks = [clean_text]
+        # 优先使用分镜原稿文字，确保中英文术语与专有名词 100% 准确
+        original_text = ""
+        if script_meta_map and scene_id in script_meta_map:
+            original_text = script_meta_map[scene_id].get("text", "")
+        display_text = original_text if original_text.strip() else clean_text
+        scene_data["text"] = display_text
 
-        if duration_frames > 0:
-            frames_per_chunk = max(1, duration_frames // len(chunks))
-            for c_idx, chunk in enumerate(chunks):
-                c_start_frame = current_start_frame + c_idx * frames_per_chunk
-                c_end_frame = min(current_start_frame + duration_frames, c_start_frame + frames_per_chunk)
-                scene_data["words"].append({
-                    "text": chunk,
-                    "startFrame": c_start_frame,
-                    "endFrame": c_end_frame,
-                    "startMs": int((c_start_frame / fps) * 1000),
-                    "endMs": int((c_end_frame / fps) * 1000)
-                })
+        # 智能短句切分 (按标点符号分句)
+        import re
+        chunks = [c.strip() for c in re.split(r'[,，。！？、；;!\?\n]+', display_text) if c.strip()]
+        if not chunks:
+            chunks = [display_text]
+
+        # 基于字数比例动态加权计算每一短句的发音持续帧数，避免平均切分导致的长句过快、短句过慢
+        total_chars = sum(max(1, len(c)) for c in chunks)
+        allocated_frame = 0
+
+        for c_idx, chunk in enumerate(chunks):
+            if c_idx == len(chunks) - 1:
+                chunk_frames = max(1, duration_frames - allocated_frame)
+            else:
+                chunk_ratio = len(chunk) / float(total_chars)
+                chunk_frames = max(15, int(round(duration_frames * chunk_ratio)))
+                if allocated_frame + chunk_frames >= duration_frames:
+                    chunk_frames = max(1, duration_frames - allocated_frame - (len(chunks) - 1 - c_idx))
+
+            rel_start_frame = allocated_frame
+            rel_end_frame = min(duration_frames, rel_start_frame + chunk_frames)
+            allocated_frame += chunk_frames
+
+            scene_data["words"].append({
+                "text": chunk,
+                "startFrame": rel_start_frame,
+                "endFrame": rel_end_frame,
+                "globalStartFrame": current_start_frame + rel_start_frame,
+                "globalEndFrame": current_start_frame + rel_end_frame,
+                "startMs": int((rel_start_frame / fps) * 1000),
+                "endMs": int((rel_end_frame / fps) * 1000)
+            })
 
         scenes.append(scene_data)
         print(f"  [✓] {scene_id}: 时长 {duration_sec:.2f}s -> {duration_frames}帧, 情绪: {emotion}")
-        print(f"      文本: {clean_text}")
+        print(f"      文本: {display_text}")
 
         current_start_frame += duration_frames
 

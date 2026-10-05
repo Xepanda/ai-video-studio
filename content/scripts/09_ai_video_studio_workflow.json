@@ -1,7 +1,7 @@
 {
-  "project": "09_studio_workflow_deepdive_kokoro",
-  "engine": "kokoro",
-  "voice": "zm_009",
+  "project": "09_studio_workflow_deepdive_chattts",
+  "engine": "chattts",
+  "voice": "5555",
   "fps": 30,
   "title": "AI Video Studio 全自动化流水线落地细节与工程实践",
   "scenes": [

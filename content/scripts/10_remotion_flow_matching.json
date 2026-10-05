@@ -1,7 +1,7 @@
 {
-  "project": "10_remotion_flow_matching_f5tts",
-  "engine": "f5_tts",
-  "voice": "f5_flow",
+  "project": "10_remotion_flow_matching_chattts",
+  "engine": "chattts",
+  "voice": "7777",
   "fps": 30,
   "title": "Remotion 声明式视频渲染与扩散流匹配深度融合",
   "scenes": [
@@ -111,6 +111,58 @@
     },
     {
       "id": "scene_05",
+      "title": "多核光栅化并发与现代渲染加速",
+      "badge": "MULTI-CORE RENDER · 渲染加速",
+      "text": "为了解决深度长视频渲染速度慢的痛点，我们深度利用了多进程 Chromium 并发光栅化技术。将整支数千帧的视频拆分为多个独立的并发渲染分块，结合多核 CPU 的并行算力，实现极速导出，保证高保真工程质量的同时将出片效率提升至极峰。",
+      "cards": [
+        {
+          "title": "多核进程并发",
+          "desc": "充分榨干多核 CPU 的多线程算力，多进程并行渲染切片，效率呈线性提升",
+          "tag": "CONCURRENCY",
+          "icon": "🚀"
+        },
+        {
+          "title": "WebGL 硬件加速",
+          "desc": "复杂毛玻璃材质与粒子动效由底层图形管线加速计算，杜绝卡顿与帧撕裂",
+          "tag": "WEBGL ACCEL",
+          "icon": "⚡"
+        },
+        {
+          "title": "无损像素光栅化",
+          "desc": "严格遵从 1080p 60fps 广播级标准逐帧压制，呈现极客级别的清晰质感",
+          "tag": "BROADCAST",
+          "icon": "🎞️"
+        }
+      ]
+    },
+    {
+      "id": "scene_06",
+      "title": "数据契约驱动的工业级流水线",
+      "badge": "DATA CONTRACT · 架构治理",
+      "text": "整个视频系统的灵魂在于标准化的数据契约。从分镜 JSON 脚本，到 SenseVoice 毫秒打点时间轴，每一个分镜都具备完整自洽的元数据。通过严格的质量门禁与静态类型检查，确保每一次自动化生产都拥有百分之百的确定性与复用性。",
+      "cards": [
+        {
+          "title": "强类型数据契约",
+          "desc": "TypeScript 与 JSON Schema 严格校验视觉元素与音频时长，杜绝运行时空指针",
+          "tag": "TYPE SAFETY",
+          "icon": "🔒"
+        },
+        {
+          "title": "自动化质量门禁",
+          "desc": "渲染前全面审计分镜音频完整性、总时长与帧率匹配，拦截任何潜在缺陷",
+          "tag": "QUALITY GATE",
+          "icon": "🛡️"
+        },
+        {
+          "title": "高度可复用脚手架",
+          "desc": "无论是横屏科普还是竖屏爆款短剧，同一套架构均可秒级切换自适应装配",
+          "tag": "REUSABLE",
+          "icon": "🧩"
+        }
+      ]
+    },
+    {
+      "id": "scene_07",
       "title": "流匹配与声明式视频的终极融合",
       "badge": "FUTURE CONVERGENCE · 总结融合",
       "text": "流匹配扩散算法赋予了计算机前所未有的高保真声学表达能力，而 Remotion 声明式视频渲染则让视觉画面的每一个像素拥有了数学般的精准度。两者的深度融合，标志着全链路程序化内容创作已然成熟。让我们共同见证这场数字视听的革命浪潮！",
