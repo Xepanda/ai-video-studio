@@ -3,6 +3,8 @@ import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Aud
 import timelineData from '../../public/timeline.json';
 import { TerminalWindow } from './TerminalWindow';
 import { WhiteboardHanddrawn } from './WhiteboardHanddrawn';
+import { ArchitectureTopology, TopologyNode, TopologyLink } from './ArchitectureTopology';
+import { MetricComparison, MetricCategory } from './MetricComparison';
 
 export interface SceneMeta {
   id: string;
@@ -17,6 +19,9 @@ export interface SceneMeta {
   durationInFrames: number;
   text?: string;
   enableSfx?: boolean;
+  topologyNodes?: TopologyNode[];
+  topologyLinks?: TopologyLink[];
+  metrics?: MetricCategory[];
 }
 
 export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
@@ -86,8 +91,31 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
         {title}
       </div>
 
-      {/* 主展示区：根据 scene 内容渲染代码窗口或卡片组 */}
-      {scene.codeSnippet ? (
+      {/* 主展示区：根据 scene.type 或内容动态匹配最优视觉组件 */}
+      {(scene.type === 'ArchitectureTopology' || scene.type === 'TopologyFlow') ? (
+        <div style={{
+          width: '100%',
+          maxWidth: '1500px',
+          transform: `translateY(${interpolate(contentSpring, [0, 1], [30, 0])}px)`,
+          opacity: contentSpring
+        }}>
+          <ArchitectureTopology
+            nodes={scene.topologyNodes}
+            links={scene.topologyLinks}
+          />
+        </div>
+      ) : (scene.type === 'MetricComparison' || scene.type === 'MetricChart') ? (
+        <div style={{
+          width: '100%',
+          maxWidth: '1440px',
+          transform: `translateY(${interpolate(contentSpring, [0, 1], [30, 0])}px)`,
+          opacity: contentSpring
+        }}>
+          <MetricComparison
+            metrics={scene.metrics}
+          />
+        </div>
+      ) : scene.codeSnippet ? (
         <div style={{
           width: '100%',
           maxWidth: '1280px',
