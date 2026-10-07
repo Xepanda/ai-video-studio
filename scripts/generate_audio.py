@@ -229,6 +229,7 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
 def main():
     parser = argparse.ArgumentParser(description="分镜音频批量自动生成")
     parser.add_argument("--script", type=str, default="inputs/script.json", help="分镜脚本文件路径")
+    parser.add_argument("--project", type=str, default=None, help="项目名称 (启用多项目资产隔离目录 public/projects/{project}/audio)")
     parser.add_argument("--output_dir", type=str, default="public/audio", help="音频输出目录")
     parser.add_argument("--provider", type=str, default=None, help="覆盖 TTS 服务商 (kokoro/f5_tts/gpt_sovits/edge_tts)")
     parser.add_argument("--voice", type=str, default=None, help="覆盖音色名称或代码")
@@ -237,7 +238,14 @@ def main():
     args = parser.parse_args()
 
     script_path = os.path.join(PROJECT_ROOT, args.script) if not os.path.isabs(args.script) else args.script
-    output_dir = os.path.join(PROJECT_ROOT, args.output_dir) if not os.path.isabs(args.output_dir) else args.output_dir
+    
+    # 多项目资产隔离逻辑
+    if args.project and args.output_dir == "public/audio":
+        target_out_dir = os.path.join("public", "projects", args.project, "audio")
+    else:
+        target_out_dir = args.output_dir
+
+    output_dir = os.path.join(PROJECT_ROOT, target_out_dir) if not os.path.isabs(target_out_dir) else target_out_dir
     os.makedirs(output_dir, exist_ok=True)
     # 清理历史残留分镜音频，杜绝多视频批处理时前序视频音频残留导致的分镜串扰
     for old_file in os.listdir(output_dir):
