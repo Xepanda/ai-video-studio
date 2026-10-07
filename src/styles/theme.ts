@@ -111,3 +111,17 @@ export const getTheme = (name?: string): ThemeConfig => {
   }
   return THEMES['obsidian-minimal'];
 };
+
+export const safeColorWithAlpha = (color: string | undefined, alphaHex: string, fallback: string = '#38bdf8'): string => {
+  let base = (color && color.trim()) || fallback;
+  if (base.startsWith('#')) {
+    if (base.length === 4) {
+      base = `#${base[1]}${base[1]}${base[2]}${base[2]}${base[3]}${base[3]}`;
+    }
+    if (base.length === 7) {
+      const cleanAlpha = alphaHex.startsWith('#') ? alphaHex.slice(1) : alphaHex;
+      return `${base}${cleanAlpha}`;
+    }
+  }
+  return base;
+};

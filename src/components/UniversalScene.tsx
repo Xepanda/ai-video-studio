@@ -5,7 +5,7 @@ import { TerminalWindow } from './TerminalWindow';
 import { ArchitectureTopology, TopologyNode, TopologyLink } from './ArchitectureTopology';
 import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
-import { getTheme, ThemeName, ThemeConfig } from '../styles/theme';
+import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
 
 export interface SceneMeta {
   id: string;
@@ -37,14 +37,16 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const isSfxEnabled = (timelineData as any).enableSfx !== false && scene.enableSfx !== false;
 
   // 1. Ken Burns 电影级微慢推运镜 (场景全长内 scale 从 1.00 平滑匀速推至 1.025，微移 Y 轴)
-  const sceneProgress = Math.min(1, Math.max(0, frame / Math.max(1, scene.durationInFrames)));
+  const safeDuration = Math.max(1, scene.durationInFrames || 1);
+  const sceneProgress = Math.min(1, Math.max(0, frame / safeDuration));
   const cameraScale = interpolate(sceneProgress, [0, 1], [1.0, 1.025]);
   const cameraTranslateY = interpolate(sceneProgress, [0, 1], [0, -6]);
 
-  // 2. 长分镜时序逐级高亮联动 (消除长镜头静态疲劳)
-  const activeNodeIndex = (scene.topologyNodes && scene.topologyNodes.length > 0)
-    ? Math.min(scene.topologyNodes.length - 1, Math.floor(sceneProgress * scene.topologyNodes.length))
-    : undefined;
+  // 2. 长分镜时序逐级高亮联动 (消除长镜头静态疲劳，缺省 topologyNodes 时默认对标 5 阶段流水线)
+  const topologyNodeCount = (scene.topologyNodes && scene.topologyNodes.length > 0)
+    ? scene.topologyNodes.length
+    : 5;
+  const activeNodeIndex = Math.min(topologyNodeCount - 1, Math.floor(sceneProgress * topologyNodeCount));
 
   // 3. 元素平滑入场弹簧 (沉稳工业阻尼，避免轻浮弹跳)
   const titleSpring = spring({ frame, fps, config: { damping: 18, stiffness: 140 } });
@@ -198,7 +200,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                   const finalCardScale = isCardActive ? baseScale * 1.025 : baseScale;
                   const activeBorder = isCardActive ? `1px solid ${theme.accentColor}` : theme.cardBorder;
                   const activeShadow = isCardActive
-                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 28px ${theme.accentColor}33, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
+                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 28px ${safeColorWithAlpha(theme.accentColor, '33')}, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
                     : theme.cardShadow;
 
                   return (
@@ -217,8 +219,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                         backdropFilter: 'blur(16px)',
                         WebkitBackdropFilter: 'blur(16px)',
                         transform: `scale(${finalCardScale})`,
-                        opacity: cardSpring,
-                        transition: 'box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease'
+                        opacity: cardSpring
                       }}
                     >
                       <div>
@@ -240,7 +241,9 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                                 height: '6px',
                                 borderRadius: '50%',
                                 backgroundColor: theme.accentColor,
-                                boxShadow: `0 0 8px ${theme.accentColor}`
+                                boxShadow: `0 0 8px ${theme.accentColor}`,
+                                opacity: 0.6 + Math.sin(frame / 4) * 0.4,
+                                transform: `scale(${1 + Math.sin(frame / 4) * 0.15})`
                               }} />
                             )}
                           </div>
@@ -276,8 +279,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                         background: isCardActive ? theme.accentColor : 'rgba(255, 255, 255, 0.15)',
                         opacity: isCardActive ? 1.0 : 0.4,
                         marginTop: '28px',
-                        width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`,
-                        transition: 'background 0.3s ease, opacity 0.3s ease'
+                        width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`
                       }} />
                     </div>
                   );

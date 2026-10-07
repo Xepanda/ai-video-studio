@@ -27,13 +27,7 @@ export interface ArchitectureTopologyProps {
   activeNodeId?: string;
 }
 
-const safeColorWithAlpha = (color: string | undefined, alphaHex: string, fallback: string = '#38bdf8') => {
-  const base = color || fallback;
-  if (base.startsWith('#') && (base.length === 7 || base.length === 4)) {
-    return `${base}${alphaHex}`;
-  }
-  return base;
-};
+import { safeColorWithAlpha } from '../styles/theme';
 
 export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
   nodes: customNodes,
@@ -255,8 +249,7 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
                 padding: '16px 20px',
                 minWidth: '200px',
                 boxShadow: shadowStyle,
-                zIndex: isCurrentActive ? 20 : 10,
-                transition: 'box-shadow 0.2s ease, transform 0.2s ease'
+                zIndex: isCurrentActive ? 20 : 10
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -280,7 +273,9 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
                         height: '6px',
                         borderRadius: '50%',
                         backgroundColor: statusColor,
-                        boxShadow: `0 0 8px ${statusColor}`
+                        boxShadow: `0 0 8px ${statusColor}`,
+                        opacity: 0.6 + Math.sin(frame / 4) * 0.4,
+                        transform: `scale(${1 + Math.sin(frame / 4) * 0.15})`
                       }} />
                     )}
                     {node.status}
