@@ -25,6 +25,12 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 ENV_PATH = os.path.join(PROJECT_ROOT, ".env")
 
+try:
+    from scripts.tech_phonetic_dict import normalize_tech_pronunciation
+except ImportError:
+    def normalize_tech_pronunciation(t: str) -> str:
+        return t
+
 def load_env():
     env_vars = {}
     if os.path.exists(ENV_PATH):
@@ -142,36 +148,43 @@ async def synthesize_edge_tts(text: str, out_path: str, voice: str = "zh-CN-Yunx
                 return synthesize_kokoro(text, out_path, voice="zm_031")
             await asyncio.sleep(2)
 
-def generate_scene_audio(text: str, out_path: str, env: dict):
+def generate_scene_audio(text: str, out_path: str, env: dict, normalize_phonetics: bool = True):
     provider = env.get("TTS_PROVIDER", "chattts").lower()
     edge_voice = env.get("EDGE_TTS_VOICE", "zh-CN-YunxiNeural")
     sf_key = env.get("SILICONFLOW_API_KEY")
     sf_voice = env.get("CUSTOM_VOICE_ID")
     sf_model = env.get("SILICONFLOW_MODEL", "FunAudioLLM/CosyVoice2-0.5B")
 
+    # 发音规范化处理：仅对发给 TTS 的语音流进行词汇与多音字纠偏，不影响脚本契约与字幕
+    speech_text = text
+    if normalize_phonetics:
+        speech_text = normalize_tech_pronunciation(text)
+        if speech_text != text:
+            print(f"    [Phonetic G2P] 词汇纠音预处理已生效")
+
     # 1. 主力引擎: ChatTTS 本地口语化对话与多元种子声学引擎
     if provider in ("chattts", "chat_tts"):
         from scripts.tts_chattts import synthesize_chattts
         seed = int(env.get("CHATTTS_SEED", 4444))
         print(f"    [ChatTTS] 正在使用本地极速口语合成 (Seed: {seed} · 随和生活男声)...")
-        return synthesize_chattts(text, out_path, seed=seed)
+        return synthesize_chattts(speech_text, out_path, seed=seed)
 
     # 2. Kokoro-82M 超轻量极速 CPU 引擎 (保留)
     elif provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
         from scripts.tts_kokoro import synthesize_kokoro
         kokoro_voice = env.get("KOKORO_VOICE", "zm_031")
         print(f"    [Kokoro-82M] 正在使用本地 CPU 极速合成 (音色: {kokoro_voice})...")
-        return synthesize_kokoro(text, out_path, voice=kokoro_voice)
+        return synthesize_kokoro(speech_text, out_path, voice=kokoro_voice)
 
-    # 2. 优先尝试 F5-TTS 扩散流匹配引擎
+    # 3. 优先尝试 F5-TTS 扩散流匹配引擎
     elif provider in ("f5_tts", "f5tts", "f5"):
         from scripts.tts_f5tts import synthesize_f5tts
         f5_ref = env.get("F5_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
         f5_text = env.get("F5_REF_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
         print(f"    [F5-TTS] 正在使用本地扩散流匹配零样本克隆...")
-        return synthesize_f5tts(text, out_path, ref_audio=f5_ref, ref_text=f5_text)
+        return synthesize_f5tts(speech_text, out_path, ref_audio=f5_ref, ref_text=f5_text)
 
-    # 3. 尝试本地/自建 GPT-SoVITS 专属个人或社区音色
+    # 4. 尝试本地/自建 GPT-SoVITS 专属个人或社区音色
     elif provider in ("gpt_sovits", "gpt-sovits", "sovits"):
         api_url = env.get("GPT_SOVITS_API_URL", "http://127.0.0.1:9880/tts")
         ref_audio = env.get("GPT_SOVITS_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
@@ -181,43 +194,43 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
         prompt_text = env.get("GPT_SOVITS_PROMPT_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
         try:
             print(f"    [GPT-SoVITS] 正在使用克隆音色合成 (服务: {api_url})...")
-            actual_path = synthesize_gpt_sovits(text, out_path, api_url=api_url, ref_audio=ref_audio, prompt_text=prompt_text)
+            actual_path = synthesize_gpt_sovits(speech_text, out_path, api_url=api_url, ref_audio=ref_audio, prompt_text=prompt_text)
             return actual_path
         except Exception as e:
             print(f"    ⚠️ GPT-SoVITS 服务调用异常 ({e})")
             print(f"    ➡️ 自动无缝回退至高质量 Edge-TTS 保证视频流水线不中断")
 
-    # 3. 尝试使用 SiliconFlow 专属音色
+    # 5. 尝试使用 SiliconFlow 专属音色
     elif provider == "siliconflow":
         if sf_key and not sf_key.startswith("sk-your-") and sf_voice:
             print(f"    [SiliconFlow] 正在使用专属克隆音色: {sf_voice}")
-            synthesize_siliconflow(text, out_path, sf_key, sf_voice, sf_model)
+            synthesize_siliconflow(speech_text, out_path, sf_key, sf_voice, sf_model)
             return
         else:
             print(f"    ⚠️ 未检测到有效的 SILICONFLOW_API_KEY 或 CUSTOM_VOICE_ID")
             print(f"    ➡️ 自动回退至高质量 Edge-TTS (YunxiNeural)")
 
-    # 4. 尝试 Fish Audio
+    # 6. 尝试 Fish Audio
     elif provider == "fish_audio":
         fish_key = env.get("FISH_AUDIO_API_KEY")
         fish_voice = env.get("FISH_VOICE_ID")
         if fish_key and fish_voice:
             print(f"    [Fish Audio] 正在使用专属音色: {fish_voice}")
-            synthesize_fish_audio(text, out_path, fish_key, fish_voice)
+            synthesize_fish_audio(speech_text, out_path, fish_key, fish_voice)
             return
 
-    # 5. 尝试 MiniMax
+    # 7. 尝试 MiniMax
     elif provider == "minimax":
         mm_key = env.get("MINIMAX_API_KEY")
         mm_group = env.get("MINIMAX_GROUP_ID")
         mm_voice = env.get("MINIMAX_VOICE_ID")
         if mm_key and mm_group and mm_voice:
             print(f"    [MiniMax] 正在使用专属音色: {mm_voice}")
-            synthesize_minimax(text, out_path, mm_key, mm_group, mm_voice)
+            synthesize_minimax(speech_text, out_path, mm_key, mm_group, mm_voice)
             return
 
     # 回退到本地 Edge-TTS (或默认使用 Edge-TTS)
-    asyncio.run(synthesize_edge_tts(text, out_path, voice=edge_voice))
+    asyncio.run(synthesize_edge_tts(speech_text, out_path, voice=edge_voice))
     old_wav = os.path.splitext(out_path)[0] + ".wav"
     if os.path.exists(old_wav) and old_wav != out_path:
         try:
@@ -235,6 +248,8 @@ def main():
     parser.add_argument("--voice", type=str, default=None, help="覆盖音色名称或代码")
     parser.add_argument("--ref_audio", type=str, default=None, help="参考音频文件路径")
     parser.add_argument("--ref_text", type=str, default=None, help="参考音频对应文本")
+    parser.add_argument("--normalize_phonetics", action="store_true", default=True, help="启用技术专有名词与多音字发音规范化 (默认启用)")
+    parser.add_argument("--no_normalize_phonetics", dest="normalize_phonetics", action="store_false", help="禁用技术专有名词发音规范化")
     args = parser.parse_args()
 
     script_path = os.path.join(PROJECT_ROOT, args.script) if not os.path.isabs(args.script) else args.script
@@ -319,7 +334,7 @@ def main():
             continue
 
         out_file = os.path.join(output_dir, f"{scene_id}.mp3")
-        actual_file = generate_scene_audio(text, out_file, env) or out_file
+        actual_file = generate_scene_audio(text, out_file, env, normalize_phonetics=args.normalize_phonetics) or out_file
         print(f"    ✓ 已输出: {os.path.relpath(actual_file, PROJECT_ROOT)}")
 
     print(f"\n✅ 所有分镜配音音频生成完毕！存储于 {os.path.relpath(output_dir, PROJECT_ROOT)}")

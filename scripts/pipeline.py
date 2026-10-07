@@ -40,6 +40,7 @@ def main():
     parser.add_argument("--device", type=str, default="cpu", help="ASR 推理设备 (cpu/cuda)")
     parser.add_argument("--isolated", action="store_true", default=True, help="启用项目资产隔离 (输出至 public/projects/{project})")
     parser.add_argument("--no_isolated", action="store_false", dest="isolated", help="禁用项目资产隔离 (直接使用根目录 public/audio)")
+    parser.add_argument("--no_normalize_phonetics", action="store_true", default=False, help="禁用 TTS 技术名词发音规范化")
     parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 
@@ -49,6 +50,8 @@ def main():
         tts_cmd = [PYTHON_EXE, tts_script, "--script", args.script]
         if args.isolated and args.project:
             tts_cmd.extend(["--project", args.project])
+        if args.no_normalize_phonetics:
+            tts_cmd.append("--no_normalize_phonetics")
         run_step(
             "专属克隆音色分镜配音生成",
             tts_cmd
