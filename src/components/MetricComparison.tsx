@@ -56,7 +56,45 @@ export const MetricComparison: React.FC<MetricComparisonProps> = ({
     }
   ];
 
-  const metrics = customMetrics && customMetrics.length > 0 ? customMetrics : defaultMetrics;
+  // 数据格式自适应归一化：全面支持标准 MetricCategory[] 或扁平 KPI 对象数组
+  const rawList = (customMetrics && customMetrics.length > 0 ? customMetrics : defaultMetrics);
+  const metrics: MetricCategory[] = rawList.map((cat: any, idx: number) => {
+    if (cat.items && Array.isArray(cat.items)) {
+      return cat as MetricCategory;
+    }
+    // 自动兼容扁平 KPI 格式 { label, value, baseline, unit, highlight }
+    const catTitle = cat.title || cat.label || `指标 #${idx + 1}`;
+    const catBadge = cat.badge || (cat.highlight ? 'KEY HIGHLIGHT' : 'BENCHMARK');
+    const catPill = cat.pill || (cat.baseline ? `vs ${cat.baseline}` : (cat.unit ? `${cat.value} ${cat.unit}` : undefined));
+    const numValue = typeof cat.value === 'number' ? cat.value : parseFloat(cat.value) || 100;
+    const baseValue = typeof cat.baseline === 'number' ? cat.baseline : parseFloat(cat.baseline) || (numValue * 0.6);
+    const maxVal = Math.max(numValue, baseValue) * 1.25 || 100;
+
+    return {
+      title: catTitle,
+      badge: catBadge,
+      pill: catPill,
+      items: [
+        ...(cat.baseline ? [{
+          name: '基准参照 / 行业对比',
+          value: baseValue,
+          maxValue: maxVal,
+          unit: cat.unit || '',
+          color: '#64748b',
+          subtext: String(cat.baseline)
+        }] : []),
+        {
+          name: catTitle,
+          value: numValue,
+          maxValue: maxVal,
+          unit: cat.unit || '',
+          color: cat.highlight ? '#38bdf8' : '#10b981',
+          highlight: cat.highlight !== false,
+          subtext: String(cat.value)
+        }
+      ]
+    };
+  });
 
   return (
     <div style={{
