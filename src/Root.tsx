@@ -378,8 +378,13 @@ export const MasterVideo: React.FC = () => {
             from={scene.startFrame}
             durationInFrames={scene.durationInFrames}
           >
-            {/* 配音音频 */}
-            {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
+            {/* 配音音频：支持全局与分镜 voiceVolume 放大系数，默认 1.25x 强化移动端小喇叭穿透力 */}
+            {scene.audioPath && (
+              <Audio
+                src={staticFile(scene.audioPath)}
+                volume={(scene as any).voiceVolume ?? (timelineData as any).voiceVolume ?? 1.25}
+              />
+            )}
 
             {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
             {enableSfx && idx > 0 && (
