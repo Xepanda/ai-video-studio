@@ -23,20 +23,18 @@ export interface ArchitectureTopologyProps {
   nodes?: TopologyNode[];
   links?: TopologyLink[];
   title?: string;
+  activeNodeIndex?: number;
+  activeNodeId?: string;
 }
 
-const safeColorWithAlpha = (color: string | undefined, alphaHex: string, fallback: string = '#38bdf8') => {
-  const base = color || fallback;
-  if (base.startsWith('#') && (base.length === 7 || base.length === 4)) {
-    return `${base}${alphaHex}`;
-  }
-  return base;
-};
+import { safeColorWithAlpha } from '../styles/theme';
 
 export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
   nodes: customNodes,
   links: customLinks,
-  title
+  title,
+  activeNodeIndex,
+  activeNodeId,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -216,57 +214,86 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
       </svg>
 
       {/* 节点渲染 */}
-      {nodes.map((node, i) => {
-        const nodeSpring = spring({ frame: Math.max(0, frame - i * 5), fps, config: { damping: 13 } });
-        const leftPct = node.x ?? 10;
-        const topPct = node.y ?? 50;
-        const statusColor = node.statusColor || '#38bdf8';
+      {(() => {
+        const currentActiveIndex = activeNodeIndex !== undefined
+          ? activeNodeIndex
+          : activeNodeId
+            ? nodes.findIndex(n => n.id === activeNodeId)
+            : -1;
 
-        return (
-          <div
-            key={node.id}
-            style={{
-              position: 'absolute',
-              left: `${leftPct}%`,
-              top: `${topPct}%`,
-              transform: `translate(-50%, -50%) scale(${interpolate(nodeSpring, [0, 1], [0.8, 1.0])})`,
-              opacity: nodeSpring,
-              backgroundColor: 'rgba(2, 6, 23, 0.92)',
-              border: `2px solid ${statusColor}`,
-              borderRadius: '18px',
-              padding: '16px 20px',
-              minWidth: '200px',
-              boxShadow: `0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px ${safeColorWithAlpha(statusColor, '33')}`,
-              zIndex: 10
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '24px' }}>{node.icon || '📦'}</span>
-              {node.status && (
-                <span style={{
-                  fontSize: '11px',
-                  fontWeight: 800,
-                  color: statusColor,
-                  backgroundColor: safeColorWithAlpha(statusColor, '22'),
-                  padding: '2px 8px',
-                  borderRadius: '6px',
-                  border: `1px solid ${safeColorWithAlpha(statusColor, '44')}`
-                }}>
-                  {node.status}
-                </span>
+        return nodes.map((node, i) => {
+          const nodeSpring = spring({ frame: Math.max(0, frame - i * 5), fps, config: { damping: 13 } });
+          const leftPct = node.x ?? 10;
+          const topPct = node.y ?? 50;
+          const statusColor = node.statusColor || '#38bdf8';
+          const isCurrentActive = i === currentActiveIndex;
+
+          const baseScale = interpolate(nodeSpring, [0, 1], [0.8, 1.0]);
+          const finalScale = isCurrentActive ? baseScale * 1.05 : baseScale;
+          const shadowStyle = isCurrentActive
+            ? `0 16px 36px rgba(0, 0, 0, 0.8), 0 0 32px ${safeColorWithAlpha(statusColor, 'aa')}`
+            : `0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px ${safeColorWithAlpha(statusColor, '33')}`;
+
+          return (
+            <div
+              key={node.id}
+              style={{
+                position: 'absolute',
+                left: `${leftPct}%`,
+                top: `${topPct}%`,
+                transform: `translate(-50%, -50%) scale(${finalScale})`,
+                opacity: nodeSpring,
+                backgroundColor: isCurrentActive ? 'rgba(7, 14, 34, 0.96)' : 'rgba(2, 6, 23, 0.92)',
+                border: isCurrentActive ? `2.5px solid ${statusColor}` : `2px solid ${statusColor}`,
+                borderRadius: '18px',
+                padding: '16px 20px',
+                minWidth: '200px',
+                boxShadow: shadowStyle,
+                zIndex: isCurrentActive ? 20 : 10
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '24px' }}>{node.icon || '📦'}</span>
+                {node.status && (
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    color: statusColor,
+                    backgroundColor: safeColorWithAlpha(statusColor, '22'),
+                    padding: '2px 8px',
+                    borderRadius: '6px',
+                    border: `1px solid ${safeColorWithAlpha(statusColor, '44')}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    {isCurrentActive && (
+                      <span style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: statusColor,
+                        boxShadow: `0 0 8px ${statusColor}`,
+                        opacity: 0.6 + Math.sin(frame / 4) * 0.4,
+                        transform: `scale(${1 + Math.sin(frame / 4) * 0.15})`
+                      }} />
+                    )}
+                    {node.status}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#f8fafc', marginBottom: '4px' }}>
+                {node.label}
+              </div>
+              {node.sublabel && (
+                <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.4 }}>
+                  {node.sublabel}
+                </div>
               )}
             </div>
-            <div style={{ fontSize: '18px', fontWeight: 800, color: '#f8fafc', marginBottom: '4px' }}>
-              {node.label}
-            </div>
-            {node.sublabel && (
-              <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.4 }}>
-                {node.sublabel}
-              </div>
-            )}
-          </div>
-        );
-      })}
+          );
+        });
+      })()}
     </div>
   );
 };
