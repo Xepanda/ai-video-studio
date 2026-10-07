@@ -287,9 +287,30 @@ const Scene05GoogleFlowShorts: React.FC<{ durationInFrames: number }> = ({ durat
 // =========================================================================
 export const MasterVideo: React.FC = () => {
   const { scenes } = timelineData;
+  const totalDuration = timelineData.totalDurationInFrames || 2032;
+  const bgmPath = (timelineData as any).bgmPath || 'audio/bgm_cyber_ambient.wav';
+  const bgmVolume = (timelineData as any).bgmVolume ?? 0.10;
+  const enableBgm = (timelineData as any).enableBgm !== false;
+  const enableSfx = (timelineData as any).enableSfx !== false;
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      {/* 全局极客科技氛围背景音乐 (轻柔垫乐 + 自动循环 + 首尾淡入淡出) */}
+      {enableBgm && (
+        <Audio
+          src={staticFile(bgmPath)}
+          volume={(f) =>
+            interpolate(
+              f,
+              [0, 45, totalDuration - 60, totalDuration],
+              [0, bgmVolume, bgmVolume, 0],
+              { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+            )
+          }
+          loop
+        />
+      )}
+
       {scenes.map((scene, idx) => (
         <Sequence
           key={scene.id}
@@ -298,6 +319,13 @@ export const MasterVideo: React.FC = () => {
         >
           {/* 配音音频 */}
           {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
+
+          {/* 场景起幅转场高科技音效 (从第二镜开始触发) */}
+          {enableSfx && idx > 0 && (
+            <Sequence from={0} durationInFrames={24}>
+              <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
+            </Sequence>
+          )}
 
           {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
           {(scene as any).title ? (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from 'remotion';
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Audio, Sequence, staticFile } from 'remotion';
 import { TerminalWindow } from './TerminalWindow';
 import { WhiteboardHanddrawn } from './WhiteboardHanddrawn';
 
@@ -106,11 +106,16 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
           opacity: contentSpring
         }}>
           {cards.map((card, i) => {
-            const cardSpring = spring({ frame: Math.max(0, frame - 15 - i * 6), fps, config: { damping: 12 } });
+            const cardDelay = 15 + i * 6;
+            const cardSpring = spring({ frame: Math.max(0, frame - cardDelay), fps, config: { damping: 12 } });
             return (
-              <div
-                key={i}
-                style={{
+              <React.Fragment key={i}>
+                {/* 卡片弹出微音效 (10帧) */}
+                <Sequence from={cardDelay} durationInFrames={10}>
+                  <Audio src={staticFile('audio/sfx_pop.wav')} volume={0.06} />
+                </Sequence>
+                <div
+                  style={{
                   flex: 1,
                   backgroundColor: 'rgba(15, 23, 42, 0.75)',
                   border: '1px solid rgba(56, 189, 248, 0.25)',
@@ -159,8 +164,9 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                   width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`
                 }} />
               </div>
-            );
-          })}
+            </React.Fragment>
+          );
+        })}
         </div>
       )}
     </AbsoluteFill>
