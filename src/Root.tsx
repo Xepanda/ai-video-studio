@@ -287,11 +287,19 @@ const Scene05GoogleFlowShorts: React.FC<{ durationInFrames: number }> = ({ durat
 // =========================================================================
 export const MasterVideo: React.FC = () => {
   const { scenes } = timelineData;
+  const { fps } = useVideoConfig();
   const totalDuration = timelineData.totalDurationInFrames || 2032;
   const bgmPath = (timelineData as any).bgmPath || 'audio/bgm_cyber_ambient.wav';
   const bgmVolume = (timelineData as any).bgmVolume ?? 0.10;
   const enableBgm = (timelineData as any).enableBgm !== false;
   const enableSfx = (timelineData as any).enableSfx !== false;
+
+  // 严格单调递增区间计算，杜绝短视频测试时总帧数过少引发的 interpolate 崩溃
+  const fadeInFrames = Math.max(1, Math.min(45, Math.floor(totalDuration * 0.25)));
+  const fadeOutFrames = Math.max(1, Math.min(60, Math.floor(totalDuration * 0.25)));
+  const fadeOutStart = Math.max(fadeInFrames + 1, totalDuration - fadeOutFrames);
+  const fadeOutEnd = Math.max(fadeOutStart + 1, totalDuration);
+  const transitionFrames = Math.max(1, Math.round(0.8 * fps));
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -302,7 +310,7 @@ export const MasterVideo: React.FC = () => {
           volume={(f) =>
             interpolate(
               f,
-              [0, 45, totalDuration - 60, totalDuration],
+              [0, fadeInFrames, fadeOutStart, fadeOutEnd],
               [0, bgmVolume, bgmVolume, 0],
               { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
             )
@@ -320,9 +328,9 @@ export const MasterVideo: React.FC = () => {
           {/* 配音音频 */}
           {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
 
-          {/* 场景起幅转场高科技音效 (从第二镜开始触发) */}
+          {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
           {enableSfx && idx > 0 && (
-            <Sequence from={0} durationInFrames={24}>
+            <Sequence from={0} durationInFrames={transitionFrames} layout="none">
               <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
             </Sequence>
           )}

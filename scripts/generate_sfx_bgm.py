@@ -93,21 +93,20 @@ def generate_ambient_bgm(output_path: str, duration_sec: float = 120.0, sr: int 
                 left[seg_indices] += wave_l * env * lfo * 0.08
                 right[seg_indices] += wave_r * env * lfo * 0.08
 
-    # 全局淡入淡出 (首尾平滑)
-    global_fade = int(sr * 2.0)
-    if len(t) > global_fade * 2:
-        fade_in_curve = np.linspace(0, 1, global_fade)
-        fade_out_curve = np.linspace(1, 0, global_fade)
-        left[:global_fade] *= fade_in_curve
-        right[:global_fade] *= fade_in_curve
-        left[-global_fade:] *= fade_out_curve
-        right[-global_fade:] *= fade_out_curve
-
     # 峰值归一化至 -12 dBFS (保证作为背景音乐柔和不喧宾夺主)
     stereo = np.stack([left, right], axis=1)
     max_val = np.max(np.abs(stereo))
     if max_val > 0:
         stereo = (stereo / max_val) * 0.25  # 适度响度
+
+    # 循环无缝交叉淡化 (尾部 1.5 秒淡入头部，消除循环断点，保持全幅电平，杜绝 4 秒静音裂缝)
+    loop_seam = int(sr * 1.5)
+    if len(stereo) > loop_seam * 2:
+        fade_out = np.linspace(1, 0, loop_seam)[:, np.newaxis]
+        fade_in = np.linspace(0, 1, loop_seam)[:, np.newaxis]
+        seam_blend = stereo[:loop_seam] * fade_in + stereo[-loop_seam:] * fade_out
+        stereo[:loop_seam] = seam_blend
+        stereo[-loop_seam:] = seam_blend
 
     sf.write(output_path, stereo, sr, subtype='PCM_16')
     print(f"  [✓] 成功生成 BGM: {output_path}")
@@ -156,13 +155,15 @@ def generate_swoosh_sfx(output_path: str, duration_sec: float = 0.8, sr: int = 4
 def generate_pop_sfx(output_path: str, duration_sec: float = 0.15, sr: int = 44100):
     """
     合成轻巧卡片弹入音效 (UI Pop / Click)
+    采用相位积分 (Phase Accumulation) 保障频率调制连续平滑
     """
     num_samples = int(sr * duration_sec)
     t = np.linspace(0, duration_sec, num_samples, endpoint=False)
 
-    # 快速俯冲频率正弦
+    # 快速俯冲频率正弦 (相位积分)
     freq = 650 * np.exp(-t * 28.0) + 120
-    wave = np.sin(2 * np.pi * freq * t)
+    phase = 2.0 * np.pi * np.cumsum(freq) / float(sr)
+    wave = np.sin(phase)
     env = np.exp(-t * 22.0)
 
     audio = wave * env

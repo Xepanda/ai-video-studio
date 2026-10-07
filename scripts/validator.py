@@ -193,20 +193,20 @@ def validate():
             f"全局 totalDurationInFrames ({total_frames}) 与各分镜累计帧数 ({calculated_total_frames}) 不匹配！"
         )
 
-    # 检查全局背景音乐 (BGM) 与转场音效 (SFX) 资产
+    # 检查全局背景音乐 (BGM) 与转场音效 (SFX) 资产 (若开启则作为阻断性资产强校验)
     enable_bgm = data.get("enableBgm", True)
     bgm_path = data.get("bgmPath", "audio/bgm_cyber_ambient.wav")
     if enable_bgm and bgm_path:
         full_bgm = os.path.join(PUBLIC_DIR, bgm_path)
         if not os.path.exists(full_bgm):
-            warnings.append(f"全局 BGM 文件不存在: {bgm_path} (可运行 python scripts/generate_sfx_bgm.py 自动生成)")
+            errors.append(f"全局 BGM 文件不存在: {bgm_path} (请运行 python scripts/generate_sfx_bgm.py 自动生成)")
 
     enable_sfx = data.get("enableSfx", True)
     if enable_sfx:
         for sfx_name in ["audio/sfx_transition.wav", "audio/sfx_pop.wav"]:
             full_sfx = os.path.join(PUBLIC_DIR, sfx_name)
             if not os.path.exists(full_sfx):
-                warnings.append(f"音效资产缺失: {sfx_name} (可运行 python scripts/generate_sfx_bgm.py 自动生成)")
+                errors.append(f"必选音效资产缺失: {sfx_name} (请运行 python scripts/generate_sfx_bgm.py 自动生成)")
 
     # 打印审查结果
     if warnings:
