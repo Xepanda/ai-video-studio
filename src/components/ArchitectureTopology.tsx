@@ -25,6 +25,14 @@ export interface ArchitectureTopologyProps {
   title?: string;
 }
 
+const safeColorWithAlpha = (color: string | undefined, alphaHex: string, fallback: string = '#38bdf8') => {
+  const base = color || fallback;
+  if (base.startsWith('#') && (base.length === 7 || base.length === 4)) {
+    return `${base}${alphaHex}`;
+  }
+  return base;
+};
+
 export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
   nodes: customNodes,
   links: customLinks,
@@ -33,7 +41,7 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // 默认拓扑架构节点配置 (4阶典型工业管线)
+  // 默认拓扑架构节点配置 (5阶典型工业级视频流水线架构)
   const defaultNodes: TopologyNode[] = [
     { id: 'script', label: '剧本分镜中枢', sublabel: 'JSON Schema 声明式契约', icon: '📜', status: 'SOURCE', statusColor: '#818cf8', x: 12, y: 50 },
     { id: 'tts', label: 'ChatTTS 声学引擎', sublabel: 'Seed 4444 专属随和音色', icon: '🎙️', status: 'SYNTH', statusColor: '#38bdf8', x: 38, y: 26 },
@@ -43,12 +51,12 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
   ];
 
   const defaultLinks: TopologyLink[] = [
-    { from: 'script', to: 'tts', label: 'TTS 文本派发' },
-    { from: 'script', to: 'aligner', label: '分镜原稿对齐' },
-    { from: 'tts', to: 'aligner', label: '波形时钟流' },
-    { from: 'tts', to: 'timeline', label: 'Audio 路径注册' },
-    { from: 'aligner', to: 'timeline', label: '字符级 Frame 打点' },
-    { from: 'timeline', to: 'remotion', label: '声明式总线渲染' }
+    { from: 'script', to: 'tts', label: 'TTS 文本派发', active: true },
+    { from: 'script', to: 'aligner', label: '分镜原稿对齐', active: true },
+    { from: 'tts', to: 'aligner', label: '波形时钟流', active: true },
+    { from: 'tts', to: 'timeline', label: 'Audio 路径注册', active: true },
+    { from: 'aligner', to: 'timeline', label: '字符级 Frame 打点', active: true },
+    { from: 'timeline', to: 'remotion', label: '声明式总线渲染', active: true }
   ];
 
   const nodes = customNodes && customNodes.length > 0 ? customNodes : defaultNodes;
@@ -57,6 +65,9 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
   // 节点 ID 到坐标查找表
   const nodeMap = new Map<string, TopologyNode>();
   nodes.forEach(n => nodeMap.set(n.id, n));
+
+  // 全局 SVG 入场动效
+  const svgSpring = spring({ frame, fps, config: { damping: 14 } });
 
   return (
     <div style={{
@@ -86,21 +97,24 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
         </div>
       )}
 
-      {/* SVG 拓扑连线与光脉冲流动 */}
+      {/* SVG 拓扑连线与光脉冲流动 (绑定标准 1500x520 viewBox，保证无论父容器何等分辨率比例均绝对精准重合) */}
       <svg
+        viewBox="0 0 1500 520"
+        preserveAspectRatio="none"
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
           width: '100%',
           height: '100%',
-          pointerEvents: 'none'
+          pointerEvents: 'none',
+          opacity: svgSpring
         }}
       >
         <defs>
           <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#818cf8" stopOpacity="0.8" />
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#818cf8" stopOpacity="0.4" />
           </linearGradient>
           <filter id="glow">
             <feGaussianBlur stdDeviation="3" result="coloredBlur" />
@@ -116,8 +130,8 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
           const toNode = nodeMap.get(link.to);
           if (!fromNode || !toNode) return null;
 
-          const x1 = (fromNode.x ?? 10) * 15; // 映射至 1500px 宽度
-          const y1 = (fromNode.y ?? 50) * 5.2; // 映射至 520px 高度
+          const x1 = (fromNode.x ?? 10) * 15; // 0..100 -> 0..1500 viewBox 坐标
+          const y1 = (fromNode.y ?? 50) * 5.2; // 0..100 -> 0..520 viewBox 坐标
           const x2 = (toNode.x ?? 90) * 15;
           const y2 = (toNode.y ?? 50) * 5.2;
 
@@ -131,9 +145,14 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
           // 光脉冲沿连线循环行进 (每 45 帧一个周期)
           const pulseT = ((frame + idx * 12) % 45) / 45;
           const t = pulseT;
-          // 三次贝塞尔曲线公式采样脉冲坐标
           const px = (1 - t) ** 3 * x1 + 3 * (1 - t) ** 2 * t * cx1 + 3 * (1 - t) * t ** 2 * cx2 + t ** 3 * x2;
           const py = (1 - t) ** 3 * y1 + 3 * (1 - t) ** 2 * t * cy1 + 3 * (1 - t) * t ** 2 * cy2 + t ** 3 * y2;
+
+          // 连线中点
+          const midX = 0.125 * x1 + 0.375 * cx1 + 0.375 * cx2 + 0.125 * x2;
+          const midY = 0.125 * y1 + 0.375 * cy1 + 0.375 * cy2 + 0.125 * y2;
+
+          const isActive = link.active !== false;
 
           return (
             <g key={`link-${idx}`}>
@@ -141,24 +160,56 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
               <path
                 d={pathD}
                 fill="none"
-                stroke="rgba(56, 189, 248, 0.2)"
+                stroke="url(#flowGrad)"
                 strokeWidth="3"
                 strokeDasharray="6 6"
               />
-              {/* 动态高亮行进脉冲光球 */}
-              <circle
-                cx={px}
-                cy={py}
-                r="6"
-                fill="#38bdf8"
-                filter="url(#glow)"
-              />
-              <circle
-                cx={px}
-                cy={py}
-                r="3"
-                fill="#ffffff"
-              />
+
+              {/* 连线文字标签 */}
+              {link.label && (
+                <g transform={`translate(${midX}, ${midY})`}>
+                  <rect
+                    x="-55"
+                    y="-12"
+                    width="110"
+                    height="24"
+                    rx="6"
+                    fill="rgba(2, 6, 23, 0.85)"
+                    stroke="rgba(56, 189, 248, 0.3)"
+                    strokeWidth="1"
+                  />
+                  <text
+                    x="0"
+                    y="4"
+                    textAnchor="middle"
+                    fill="#94a3b8"
+                    fontSize="11"
+                    fontFamily="system-ui, sans-serif"
+                    fontWeight="600"
+                  >
+                    {link.label}
+                  </text>
+                </g>
+              )}
+
+              {/* 动态高亮行进脉冲光球 (仅在 active 时行进) */}
+              {isActive && (
+                <>
+                  <circle
+                    cx={px}
+                    cy={py}
+                    r="6"
+                    fill="#38bdf8"
+                    filter="url(#glow)"
+                  />
+                  <circle
+                    cx={px}
+                    cy={py}
+                    r="3"
+                    fill="#ffffff"
+                  />
+                </>
+              )}
             </g>
           );
         })}
@@ -169,6 +220,7 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
         const nodeSpring = spring({ frame: Math.max(0, frame - i * 5), fps, config: { damping: 13 } });
         const leftPct = node.x ?? 10;
         const topPct = node.y ?? 50;
+        const statusColor = node.statusColor || '#38bdf8';
 
         return (
           <div
@@ -180,11 +232,11 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
               transform: `translate(-50%, -50%) scale(${interpolate(nodeSpring, [0, 1], [0.8, 1.0])})`,
               opacity: nodeSpring,
               backgroundColor: 'rgba(2, 6, 23, 0.92)',
-              border: `2px solid ${node.statusColor || '#38bdf8'}`,
+              border: `2px solid ${statusColor}`,
               borderRadius: '18px',
               padding: '16px 20px',
               minWidth: '200px',
-              boxShadow: `0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px ${node.statusColor || '#38bdf8'}33`,
+              boxShadow: `0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px ${safeColorWithAlpha(statusColor, '33')}`,
               zIndex: 10
             }}
           >
@@ -194,11 +246,11 @@ export const ArchitectureTopology: React.FC<ArchitectureTopologyProps> = ({
                 <span style={{
                   fontSize: '11px',
                   fontWeight: 800,
-                  color: node.statusColor || '#38bdf8',
-                  backgroundColor: `${node.statusColor || '#38bdf8'}22`,
+                  color: statusColor,
+                  backgroundColor: safeColorWithAlpha(statusColor, '22'),
                   padding: '2px 8px',
                   borderRadius: '6px',
-                  border: `1px solid ${node.statusColor || '#38bdf8'}44`
+                  border: `1px solid ${safeColorWithAlpha(statusColor, '44')}`
                 }}>
                   {node.status}
                 </span>

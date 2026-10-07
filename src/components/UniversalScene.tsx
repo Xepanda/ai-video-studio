@@ -2,7 +2,6 @@ import React from 'react';
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Audio, Sequence, staticFile } from 'remotion';
 import timelineData from '../../public/timeline.json';
 import { TerminalWindow } from './TerminalWindow';
-import { WhiteboardHanddrawn } from './WhiteboardHanddrawn';
 import { ArchitectureTopology, TopologyNode, TopologyLink } from './ArchitectureTopology';
 import { MetricComparison, MetricCategory } from './MetricComparison';
 
@@ -31,17 +30,9 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
 
   const titleSpring = spring({ frame, fps, config: { damping: 14, stiffness: 120 } });
   const contentSpring = spring({ frame: Math.max(0, frame - 10), fps, config: { damping: 14, stiffness: 100 } });
-  
-  // 呼吸脉冲动效
-  const pulse = Math.sin(frame / 6) * 4;
 
   const title = scene.title || `第 ${scene.id.replace('scene_', '')} 幕 · 核心架构与实践`;
   const badge = scene.badge || 'TECHNICAL DEEP DIVE · 核心技术要点';
-  const points = scene.bulletPoints || [
-    '硬核实战架构与生产力工程化落地方案',
-    '毫秒级吞吐优化与极致离线高保真表现',
-    '全链路数据契约保障与自动化质量门禁'
-  ];
 
   const cards = scene.cards || [
     { title: '高保真模型底座', desc: '深度利用本地 AVX2 向量加速与量化运行时，零显卡依赖稳定运行', tag: 'CORE INFRA', icon: '⚡' },
