@@ -3,7 +3,8 @@ import { useCurrentFrame, interpolate } from 'remotion';
 
 export interface TerminalWindowProps {
   title?: string;
-  command: string;
+  command?: string;
+  content?: string;
   output?: string[];
   typingDurationFrames?: number;
   width?: number | string;
@@ -16,22 +17,24 @@ export interface TerminalWindowProps {
 export const TerminalWindow: React.FC<TerminalWindowProps> = ({
   title = 'zsh - terminal',
   command,
+  content,
   output = [],
   typingDurationFrames = 45,
   width = 960,
   height = 540,
 }) => {
   const frame = useCurrentFrame();
+  const rawCode = command || content || '';
 
   // 打字进度
   const charsCount = Math.floor(
-    interpolate(frame, [10, 10 + typingDurationFrames], [0, command.length], {
+    interpolate(frame, [10, 10 + typingDurationFrames], [0, rawCode.length], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     })
   );
 
-  const typedCommand = command.slice(0, charsCount);
+  const typedCommand = rawCode.slice(0, charsCount);
   const showOutput = frame > 10 + typingDurationFrames + 5;
   const cursorBlink = Math.floor(frame / 12) % 2 === 0;
 

@@ -15,6 +15,7 @@ export interface SceneMeta {
   subtitle?: string;
   bulletPoints?: string[];
   codeSnippet?: string;
+  codeTitle?: string;
   codeLang?: string;
   cards?: Array<{ title: string; desc: string; tag?: string; icon?: string }>;
   durationInFrames: number;
@@ -158,7 +159,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
             opacity: contentSpring
           }}>
             <TerminalWindow
-              title={scene.codeLang || 'Architecture.rs'}
+              title={scene.codeTitle || scene.codeLang || 'Architecture.rs'}
               content={scene.codeSnippet}
             />
           </div>

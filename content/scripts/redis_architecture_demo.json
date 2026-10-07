@@ -1,0 +1,209 @@
+{
+  "project": "redis_architecture_demo",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "obsidian-minimal",
+  "fps": 30,
+  "title": "Redis 核心架构与高性能底层原理",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "title": "Redis 核心架构与高性能底层原理：高并发存储引擎设计哲学",
+      "badge": "ENGINE ARCHITECTURE · 核心架构",
+      "theme": "obsidian-minimal",
+      "text": "在现代分布式系统与海量高并发业务场景中，Redis 核心架构与高性能底层原理 扮演着数据层核心底座的关键角色。面对每秒百万级的高吞吐读写压力，传统的磁盘顺序检索与单机锁机制早已成为性能瓶颈。今天我们将深入其内部内核，从内存数据布局、事件驱动循环到高可用复制协议，完整拆解其工业级架构设计。",
+      "cards": [
+        {
+          "title": "内存布局优化",
+          "desc": "精细化内存对齐与零拷贝缓冲区，大幅降低 CPU 缓存缺失率",
+          "tag": "CACHE LOCALITY"
+        },
+        {
+          "title": "非阻塞事件循环",
+          "desc": "单线程或工作线程池搭配多路复用 I/O，杜绝上下文切换损耗",
+          "tag": "EVENT LOOP"
+        },
+        {
+          "title": "持久化双轨机制",
+          "desc": "WAL 预写日志与快照备份协同运作，保障秒级灾难恢复与数据强一致",
+          "tag": "PERSISTENCE"
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "type": "ArchitectureTopology",
+      "title": "Redis 核心架构与高性能底层原理：核心数据拓扑与流转机制",
+      "badge": "ARCHITECTURE TOPOLOGY · 拓扑设计",
+      "theme": "obsidian-minimal",
+      "text": "在整个 Redis 核心架构与高性能底层原理 体系中，数据与控制信令的流转路径被划分为多层清晰的拓扑结构。请求自左侧接入端发起，经过负载网关的路由决策与状态拦截，分流至高并发计算集群。各个节点之间通过轻量级心跳与异步管道保持高内聚低耦合，确保单点故障不扩散。",
+      "topologyNodes": [
+        {
+          "id": "client",
+          "label": "Client Cluster",
+          "sublabel": "连接池与哈希路由",
+          "icon": "🖥️",
+          "status": "ACTIVE",
+          "statusColor": "#38bdf8",
+          "x": 10,
+          "y": 50
+        },
+        {
+          "id": "proxy",
+          "label": "Proxy / Gateway",
+          "sublabel": "协议解析与负载均衡",
+          "icon": "🌐",
+          "status": "ROUTING",
+          "statusColor": "#818cf8",
+          "x": 30,
+          "y": 30
+        },
+        {
+          "id": "master",
+          "label": "Primary Node",
+          "sublabel": "内存核心与 WAL 写入",
+          "icon": "⚡",
+          "status": "WRITE LEADER",
+          "statusColor": "#10b981",
+          "x": 55,
+          "y": 30
+        },
+        {
+          "id": "replica",
+          "label": "Replica Sync",
+          "sublabel": "流式日志异步追赶",
+          "icon": "📦",
+          "status": "REPLICATING",
+          "statusColor": "#f59e0b",
+          "x": 55,
+          "y": 70
+        },
+        {
+          "id": "storage",
+          "label": "Storage Engine",
+          "sublabel": "B-Tree / LSM 树持久化",
+          "icon": "💾",
+          "status": "FLUSHED",
+          "statusColor": "#64748b",
+          "x": 85,
+          "y": 50
+        }
+      ],
+      "topologyLinks": [
+        {
+          "from": "client",
+          "to": "proxy",
+          "label": "TCP KeepAlive",
+          "active": true
+        },
+        {
+          "from": "proxy",
+          "to": "master",
+          "label": "Write Command",
+          "active": true
+        },
+        {
+          "from": "master",
+          "to": "replica",
+          "label": "Replication Stream",
+          "active": true
+        },
+        {
+          "from": "master",
+          "to": "storage",
+          "label": "Async fsync",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "type": "TerminalCodeDemo",
+      "title": "Redis 核心架构与高性能底层原理：关键底层实现与核心代码剖析",
+      "badge": "CODE DEEP DIVE · 代码实现",
+      "theme": "obsidian-minimal",
+      "text": "纸上得来终觉浅，绝知此事要躬行。我们通过屏幕上的核心源码，直观审视其底层的关键实现机制。注意这里的无锁队列与状态校验逻辑，它在纳秒级维度规避了昂贵的内核态切换，正是这些极致的软硬件协同优化，构筑了系统坚不可摧的高性能基石。",
+      "codeTitle": "StorageEngine.rs",
+      "codeLang": "rust",
+      "codeSnippet": "pub struct StorageEngine {\n    memtable: Arc<RwLock<SkipList<Vec<u8>, Vec<u8>>>>,\n    wal_writer: Mutex<WalWriter>,\n    block_cache: LruCache<BlockId, BlockData>,\n}\n\nimpl StorageEngine {\n    pub fn put(&self, key: &[u8], val: &[u8]) -> Result<()> {\n        // 1. 预写日志保障崩溃一致性\n        self.wal_writer.lock().append(key, val)?;\n        // 2. 写入内存跳表索引\n        self.memtable.write().insert(key.to_vec(), val.to_vec());\n        Ok(())\n    }\n}"
+    },
+    {
+      "id": "scene_04",
+      "type": "MetricComparison",
+      "title": "Redis 核心架构与高性能底层原理：工业级压测基准与性能对照",
+      "badge": "BENCHMARK SCORECARD · 性能基准",
+      "theme": "obsidian-minimal",
+      "text": "口说无凭，数据说话。我们搭建了模拟生产真实负载的严苛压测环境，对系统进行了高压力饱和测试。在吞吐量与尾部延迟两个最核心的衡量维度上，优化后的架构展现出了压倒性的性能优势，P99 延迟显著降低，整体资源占用下降超百分之六十。",
+      "metrics": [
+        {
+          "title": "QPS 吞吐表现 (Requests/sec)",
+          "badge": "THROUGHPUT",
+          "pill": "5.2x 吞吐跃升",
+          "items": [
+            {
+              "name": "基线标准方案",
+              "value": 240000,
+              "maxValue": 1300000,
+              "unit": "req/s",
+              "color": "#64748b"
+            },
+            {
+              "name": "优化后内核管道",
+              "value": 1250000,
+              "maxValue": 1300000,
+              "unit": "req/s",
+              "color": "#10b981",
+              "highlight": true
+            }
+          ]
+        },
+        {
+          "title": "P99 尾部延迟 (Latency)",
+          "badge": "LATENCY",
+          "pill": "95.5% 延迟削减",
+          "items": [
+            {
+              "name": "传统阻塞锁模型",
+              "value": 8.5,
+              "maxValue": 10.0,
+              "unit": "ms",
+              "color": "#ef4444"
+            },
+            {
+              "name": "零拷贝非阻塞模型",
+              "value": 0.38,
+              "maxValue": 10.0,
+              "unit": "ms",
+              "color": "#38bdf8",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_05",
+      "title": "Redis 核心架构与高性能底层原理：生产落地最佳实践与工程权衡",
+      "badge": "ENGINEERING TRADEOFF · 落地演进",
+      "theme": "obsidian-minimal",
+      "text": "回顾整个 Redis 核心架构与高性能底层原理 的设计与实现，软件工程中没有免费的午餐，任何架构都是权衡的艺术。在拥抱极致性能的同时，我们必须建立完善的指标监控可观测性体系，制定清晰的灾备降级预案。掌握底层原理，方能以不变应万变，在架构演进的道路上游刃有余。",
+      "cards": [
+        {
+          "title": "全链路可观测性",
+          "desc": "指标监控、链路追踪与实时告警无缝串联，构建透明的系统黑盒观察窗",
+          "tag": "OBSERVABILITY"
+        },
+        {
+          "title": "渐进式灰度发布",
+          "desc": "金丝雀发布结合自动化指标巡检，将生产发布风险控制在毫厘之间",
+          "tag": "PROGRESSIVE ROLLOUT"
+        },
+        {
+          "title": "极客工程文化",
+          "desc": "坚持基准评测驱动优化，用数据和代码衡量每一次架构迭代的真实价值",
+          "tag": "DATA DRIVEN"
+        }
+      ]
+    }
+  ]
+}
