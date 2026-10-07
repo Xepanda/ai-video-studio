@@ -8,6 +8,7 @@ import { PhoneFrame } from './components/PhoneFrame';
 import { CalloutPointer } from './components/CalloutPointer';
 import { PinoutStream } from './components/PinoutStream';
 import { UniversalScene } from './components/UniversalScene';
+import { getTheme } from './styles/theme';
 
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
@@ -293,6 +294,7 @@ export const MasterVideo: React.FC = () => {
   const bgmVolume = (timelineData as any).bgmVolume ?? 0.10;
   const enableBgm = (timelineData as any).enableBgm !== false;
   const enableSfx = (timelineData as any).enableSfx !== false;
+  const activeTheme = getTheme((timelineData as any).theme);
 
   // 严格单调递增区间计算，杜绝短视频测试时总帧数过少引发的 interpolate 崩溃
   const fadeInFrames = Math.max(1, Math.min(45, Math.floor(totalDuration * 0.25)));
@@ -354,7 +356,7 @@ export const MasterVideo: React.FC = () => {
 
           {/* 逐字动态弹跳大字幕 */}
           {scene.words && scene.words.length > 0 && (
-            <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} />
+            <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} theme={activeTheme} />
           )}
         </Sequence>
       ))}
