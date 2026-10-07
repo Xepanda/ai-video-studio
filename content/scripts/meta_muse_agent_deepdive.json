@@ -1,0 +1,193 @@
+{
+  "project": "meta_muse_agent_deepdive",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "linear-graphite",
+  "fps": 30,
+  "title": "Meta Muse 个人 AI Agent 深度拆解：颠覆还是监控风暴？",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MetricComparison",
+      "title": "22天狂揽500万下载：Meta Muse 引爆科技圈",
+      "badge": "VIRAL PHENOMENON · 现象级爆发",
+      "theme": "linear-graphite",
+      "text": "如果你最近刷推特或者关注科技圈，一定被一个叫 Muse 的名字彻底刷屏了。仅仅上线二十二天，狂揽五百万下载，直接登顶苹果应用商店第一。甚至在海外社区诞生了一个新热搜，叫 Musemaxxing。",
+      "metrics": [
+        {
+          "label": "App Store 登顶耗时",
+          "value": "22 天",
+          "baseline": "45 天 (ChatGPT)",
+          "unit": "天",
+          "highlight": true
+        },
+        {
+          "label": "首月下载量突破",
+          "value": "500 万+",
+          "baseline": "180 万 (行业均值)",
+          "unit": "次",
+          "highlight": true
+        },
+        {
+          "label": "周活跃独立用户",
+          "value": "320 万",
+          "baseline": "100 万 (基准线)",
+          "unit": "人",
+          "highlight": false
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "type": "Default",
+      "title": "终结聊天机器人：从被动问答到主动接管",
+      "badge": "PARADIGM SHIFT · 范式跃迁",
+      "theme": "vercel-geist",
+      "text": "但它绝不是另一个陪你聊天的机器人。过去的大模型是你问一句它答一段，而 Muse 是一个拥有自主执行权限的后台代理人。给它一句话，它自己在后台去开浏览器、比价订票、采购物品、甚至回复复杂的商务邮件。",
+      "cards": [
+        {
+          "title": "被动问答时代终结",
+          "desc": "传统 Chatbot 只能在对话框里干瞪眼，输出文字等待人类手动复制操作",
+          "tag": "PASSIVE CHAT"
+        },
+        {
+          "title": "主动代理人跃迁",
+          "desc": "自主拆解多步真实任务，无头浏览器后台自主冲浪执行，无需人类干预",
+          "tag": "AUTONOMOUS AGENT"
+        },
+        {
+          "title": "真实世界任务履约",
+          "desc": "直接接管订票、支付结账、日程编排与跨应用协同，完成闭环交付",
+          "tag": "REAL WORLD ACTION"
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "type": "ArchitectureTopology",
+      "title": "硬核解构：Muse Secure VM 隔离沙箱与大脑",
+      "badge": "CORE ARCHITECTURE · 核心架构",
+      "theme": "cyber-blueprint",
+      "text": "在底层架构上，它没有裸跑在大模型上，而是把每一个任务塞进独立的 Muse Secure VM 虚拟机沙箱。顶层是代号牛油果的 Muse Spark 推理引擎，底层则是隔离运行的浏览器环境与会话总线，防止恶意脚本注入。",
+      "topologyNodes": [
+        {
+          "id": "goal",
+          "label": "User Goal",
+          "sublabel": "自然语言意图输入",
+          "icon": "💬",
+          "status": "INPUT",
+          "statusColor": "#38bdf8",
+          "x": 10,
+          "y": 50
+        },
+        {
+          "id": "spark",
+          "label": "Muse Spark",
+          "sublabel": "Avocado 推理中枢",
+          "icon": "🧠",
+          "status": "ORCHESTRATE",
+          "statusColor": "#818cf8",
+          "x": 35,
+          "y": 30
+        },
+        {
+          "id": "vm",
+          "label": "Secure VM",
+          "sublabel": "隔离虚拟机安全沙箱",
+          "icon": "🛡️",
+          "status": "SANDBOXED",
+          "statusColor": "#10b981",
+          "x": 65,
+          "y": 50
+        },
+        {
+          "id": "headless",
+          "label": "Headless Web",
+          "sublabel": "无头浏览器跨站执行",
+          "icon": "🌐",
+          "status": "EXECUTING",
+          "statusColor": "#f59e0b",
+          "x": 90,
+          "y": 30
+        },
+        {
+          "id": "bus",
+          "label": "Encrypted Bus",
+          "sublabel": "端到端加密状态同步",
+          "icon": "💾",
+          "status": "COMMITTED",
+          "statusColor": "#a855f7",
+          "x": 65,
+          "y": 75
+        }
+      ],
+      "topologyLinks": [
+        { "from": "goal", "to": "spark", "label": "意图解析" },
+        { "from": "spark", "to": "vm", "label": "安全派发" },
+        { "from": "vm", "to": "headless", "label": "外部交互" },
+        { "from": "vm", "to": "bus", "label": "加密归档" }
+      ]
+    },
+    {
+      "id": "scene_04",
+      "type": "Default",
+      "title": "极客狂欢：GitHub 开源硬件 SDK 与物理外设",
+      "badge": "OPEN SOURCE ECOSYSTEM · 极客生态",
+      "theme": "motion-canvas-warm",
+      "text": "更有意思的是，Meta 刚刚在 GitHub 上开源了硬件开发包。用一块几十块钱的 ESP32 或者树莓派，极客们就能手搓一个专属的物理桌面按键。拍一下按钮，就能唤醒 Muse 直接接管你桌面的智能设备与自动化流程。",
+      "codeTitle": "esp32_muse_gadget.cpp — ESP32 Physical Trigger",
+      "codeLang": "C++ / Arduino",
+      "codeSnippet": "#include <WiFi.h>\n#include <MuseGadgetSDK.h>\n\nMusePuck puck(\"desk-smart-button-01\");\n\nvoid setup() {\n  puck.connectWiFi(\"Lab-Network-5G\", \"auth_token\");\n  puck.bindTrigger(PIN_BUTTON, \"MUSE_EXECUTE_ROUTINE\");\n}\n\nvoid loop() {\n  if (puck.isPressed()) {\n    puck.dispatchAction(\"整理未读邮件，并预订明早八点机场专车\");\n  }\n}"
+    },
+    {
+      "id": "scene_05",
+      "type": "Default",
+      "title": "暗流涌动：系统指令被逆向与人际档案隐私风暴",
+      "badge": "PRIVACY CONTROVERSY · 争议风暴",
+      "theme": "cinema-editorial",
+      "text": "但争议也随之爆发。外媒最新曝光，安全人员逆向了 Muse 的系统指令，发现它在后台为你认识的每一个亲戚、同事和伴侣，暗中建立详尽的人际关系画像档案。甚至多家企业内网已经拉响了未识别浏览器的安全警报。",
+      "cards": [
+        {
+          "title": "深度人际画像档案 (People Pages)",
+          "desc": "自动深度嗅探通讯录与会话，为家人同事暗中生成喜好、偏好与社交权重画像",
+          "tag": "DOSSIER RISK"
+        },
+        {
+          "title": "企业内网流量警报",
+          "desc": "以未识别浏览器形态在企业内网悄无声息穿透，多家跨国安全团队紧急封锁阻断",
+          "tag": "NETWORK ALERT"
+        },
+        {
+          "title": "数字隐私终极大博弈",
+          "desc": "极致便利与全景式监视的零和博弈，这究竟是人类外挂还是数字全景敞视监狱？",
+          "tag": "PRIVACY DILEMMA"
+        }
+      ]
+    },
+    {
+      "id": "scene_06",
+      "type": "Default",
+      "title": "终局反思：2026 个人代理人浪潮已至",
+      "badge": "THE FUTURE IS NOW · 终局启示",
+      "theme": "linear-graphite",
+      "text": "从被动生成文字，到主动接管现实。无论你喜不喜欢，2026 年都已经正式吹响了个人代理人时代的号角。这到底是解放双手的人类外挂，还是无死角的监控网络？答案或许就在每一个人的选择里。",
+      "cards": [
+        {
+          "title": "生成式 AI 范式质变",
+          "desc": "从写诗画画的玩具对话框，全面进化为替人类接管现实任务的行动执行引擎",
+          "tag": "NEXT ERA"
+        },
+        {
+          "title": "人机交互全面重塑",
+          "desc": "传统应用界面与网页退居幕后，个人 Agent 成为物理世界与网络世界的超级入口",
+          "tag": "AGENT AS OS"
+        },
+        {
+          "title": "保持敬畏与清醒",
+          "desc": "在享受极致自动化时代红利的同时，守护好属于人类自己最后的数据主权底线",
+          "tag": "HUMAN AGENCY"
+        }
+      ]
+    }
+  ]
+}

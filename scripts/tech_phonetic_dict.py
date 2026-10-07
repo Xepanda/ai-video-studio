@@ -58,6 +58,7 @@ CASE_SENSITIVE_ACRONYM_MAP: Dict[str, str] = {
     "SFX": "S-F-X",
     "ESP32": "E-S-P 32",
     "RISC-V": "Risk-Five",
+    "VM": "V-M",
 }
 
 # 2. 支持大小写不敏感的专有技术名词 (如 Nginx/nginx/NGINX -> Engine X)
