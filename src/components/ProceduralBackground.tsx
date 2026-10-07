@@ -5,9 +5,11 @@ import { ThemeConfig } from '../styles/theme';
 export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
   const frame = useCurrentFrame();
 
-  // 极缓平滑呼吸漂移与粒子位移
-  const driftY = (frame * 0.25) % 64;
-  const driftX = (frame * 0.15) % 64;
+  const gridSize = theme.gridOverlay?.size && theme.gridOverlay.size > 0 ? theme.gridOverlay.size : 32;
+  // 按照实际网格大小执行严格周期取模，杜绝模数错位造成的跳跃卡顿
+  const posX = (frame * 0.2) % gridSize;
+  const posY = (frame * 0.3) % gridSize;
+
   const glowOpacity = interpolate(
     Math.sin(frame * 0.03),
     [-1, 1],
@@ -25,16 +27,16 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
         }}
       />
 
-      {/* 2. 工科网格/点阵覆盖图层 (纯 CSS 矢量无损极轻量) */}
+      {/* 2. 工科网格/点阵覆盖图层 (通过 backgroundPosition 实现无缝循环滚动) */}
       {theme.gridOverlay && theme.gridOverlay.type === 'dots' && (
         <div
           style={{
             position: 'absolute',
-            inset: '-64px',
+            inset: 0,
             backgroundImage: `radial-gradient(${theme.gridOverlay.color} 1.5px, transparent 1.5px)`,
-            backgroundSize: `${theme.gridOverlay.size}px ${theme.gridOverlay.size}px`,
-            transform: `translate(${driftX}px, ${driftY}px)`,
-            opacity: 0.8,
+            backgroundSize: `${gridSize}px ${gridSize}px`,
+            backgroundPosition: `${posX}px ${posY}px`,
+            opacity: 0.85,
           }}
         />
       )}
@@ -43,13 +45,13 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
         <div
           style={{
             position: 'absolute',
-            inset: '-64px',
+            inset: 0,
             backgroundImage: `
               linear-gradient(to right, ${theme.gridOverlay.color} 1px, transparent 1px),
               linear-gradient(to bottom, ${theme.gridOverlay.color} 1px, transparent 1px)
             `,
-            backgroundSize: `${theme.gridOverlay.size}px ${theme.gridOverlay.size}px`,
-            transform: `translate(${driftX}px, ${driftY}px)`,
+            backgroundSize: `${gridSize}px ${gridSize}px`,
+            backgroundPosition: `${posX}px ${posY}px`,
             opacity: 0.85,
           }}
         />

@@ -106,7 +106,7 @@ export const THEMES: Record<ThemeName, ThemeConfig> = {
 };
 
 export const getTheme = (name?: string): ThemeConfig => {
-  if (name && name in THEMES) {
+  if (name && Object.prototype.hasOwnProperty.call(THEMES, name)) {
     return THEMES[name as ThemeName];
   }
   return THEMES['obsidian-minimal'];

@@ -38,32 +38,24 @@ export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
   );
 
   const currentGlobalFrame = frame + sceneStartFrame;
+  const currentF = isGlobalFormat ? currentGlobalFrame : frame;
 
-  // 找到当前正在发音的一句话
-  let activeWord = words.find((w) => {
-    if (isGlobalFormat) {
-      return currentGlobalFrame >= w.startFrame && currentGlobalFrame < w.endFrame;
-    }
-    return frame >= w.startFrame && frame < w.endFrame;
-  });
+  // 1. 查找当前发音词
+  let activeWord = words.find((w) => currentF >= w.startFrame && currentF < w.endFrame);
 
-  // 容错防闪烁：如果处于短暂停顿微小缝隙，回退至最近生效的句子
+  // 2. 真实防闪烁缝隙桥接：仅当处于两句之间的短暂物理停顿 (<= 12 帧，约 400ms) 时保持上一句，杜绝空隙频繁卸载
   if (!activeWord && words.length > 0) {
-    if (isGlobalFormat) {
-      if (currentGlobalFrame < words[0].startFrame) {
-        activeWord = words[0];
-      } else if (currentGlobalFrame >= words[words.length - 1].endFrame) {
-        activeWord = words[words.length - 1];
-      }
-    } else {
-      if (frame < words[0].startFrame) {
-        activeWord = words[0];
-      } else if (frame >= words[words.length - 1].endFrame) {
-        activeWord = words[words.length - 1];
+    for (let i = 0; i < words.length - 1; i++) {
+      const currentEnd = words[i].endFrame;
+      const nextStart = words[i + 1].startFrame;
+      if (currentF >= currentEnd && currentF < nextStart && (nextStart - currentEnd) <= 12) {
+        activeWord = words[i];
+        break;
       }
     }
   }
 
+  // 3. 发音前静音与分镜尾声超出时自然返回 null，杜绝提前鬼影或死锁在屏幕上
   if (!activeWord) return null;
 
   // 相对发音起始帧计算入场平滑过渡 (微阻尼，杜绝夸张抖动)
@@ -93,7 +85,7 @@ export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '0 60px',
+        padding: '0 40px',
         zIndex: 100,
         pointerEvents: 'none',
       }}
@@ -103,12 +95,13 @@ export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
+          maxWidth: '92%',
           backgroundColor: currentTheme.subtitleBarBg,
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: currentTheme.subtitleBorder,
           borderRadius: '16px',
-          padding: '14px 32px',
+          padding: '14px 28px',
           boxShadow: '0 16px 36px -8px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
           transform: `scale(${scale}) translateY(${translateY}px)`,
           opacity,
@@ -126,15 +119,16 @@ export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
           }}
         />
 
-        {/* 字幕正文：高对比度纯净排版，移除土味黄色大光晕 */}
+        {/* 字幕正文：高对比度纯净排版，支持竖屏文本平衡与自然换行 */}
         <span
           style={{
-            fontSize: '34px',
+            fontSize: '32px',
             fontWeight: 700,
             fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             color: currentTheme.subtitleTextColor,
             letterSpacing: '0.8px',
-            lineHeight: 1.3,
+            lineHeight: 1.35,
+            textAlign: 'center',
             textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
           }}
         >

@@ -155,26 +155,35 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
             />
           </div>
         ) : (
-          <div style={{
-            display: 'flex',
-            gap: '28px',
-            width: '100%',
-            maxWidth: '1440px',
-            transform: `translateY(${interpolate(contentSpring, [0, 1], [24, 0])}px)`,
-            opacity: contentSpring
-          }}>
-            {cards.map((card, i) => {
-              const cardDelay = 12 + i * 5;
-              const cardSpring = spring({ frame: Math.max(0, frame - cardDelay), fps, config: { damping: 16, stiffness: 140 } });
-              return (
-                <React.Fragment key={i}>
-                  {/* 卡片弹出微音效 (layout="none" 杜绝 Flexbox 绝对定位 DOM 污染) */}
-                  {isSfxEnabled && (
-                    <Sequence from={cardDelay} durationInFrames={10} layout="none">
+          <>
+            {/* 独立音效层：完全脱离 Flexbox DOM 结构，且允许 30 帧完整音效尾韵 */}
+            {isSfxEnabled && (
+              <AbsoluteFill style={{ pointerEvents: 'none' }}>
+                {cards.map((_, i) => {
+                  const cardDelay = 12 + i * 5;
+                  return (
+                    <Sequence key={i} from={cardDelay} durationInFrames={30} layout="none">
                       <Audio src={staticFile('audio/sfx_pop.wav')} volume={0.06} />
                     </Sequence>
-                  )}
+                  );
+                })}
+              </AbsoluteFill>
+            )}
+
+            <div style={{
+              display: 'flex',
+              gap: '28px',
+              width: '100%',
+              maxWidth: '1440px',
+              transform: `translateY(${interpolate(contentSpring, [0, 1], [24, 0])}px)`,
+              opacity: contentSpring
+            }}>
+              {cards.map((card, i) => {
+                const cardDelay = 12 + i * 5;
+                const cardSpring = spring({ frame: Math.max(0, frame - cardDelay), fps, config: { damping: 16, stiffness: 140 } });
+                return (
                   <div
+                    key={i}
                     style={{
                       flex: 1,
                       backgroundColor: theme.cardBg,
@@ -238,10 +247,10 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                       width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`
                     }} />
                   </div>
-                </React.Fragment>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </AbsoluteFill>
     </AbsoluteFill>

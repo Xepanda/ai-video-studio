@@ -321,45 +321,48 @@ export const MasterVideo: React.FC = () => {
         />
       )}
 
-      {scenes.map((scene, idx) => (
-        <Sequence
-          key={scene.id}
-          from={scene.startFrame}
-          durationInFrames={scene.durationInFrames}
-        >
-          {/* 配音音频 */}
-          {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
+      {scenes.map((scene, idx) => {
+        const sceneTheme = getTheme((scene as any).theme || (timelineData as any).theme);
+        return (
+          <Sequence
+            key={scene.id}
+            from={scene.startFrame}
+            durationInFrames={scene.durationInFrames}
+          >
+            {/* 配音音频 */}
+            {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
 
-          {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
-          {enableSfx && idx > 0 && (
-            <Sequence from={0} durationInFrames={transitionFrames} layout="none">
-              <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
-            </Sequence>
-          )}
+            {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
+            {enableSfx && idx > 0 && (
+              <Sequence from={0} durationInFrames={transitionFrames} layout="none">
+                <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
+              </Sequence>
+            )}
 
-          {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
-          {(scene as any).title ? (
-            <UniversalScene scene={scene as any} />
-          ) : idx === 0 ? (
-            <Scene01VoiceClone durationInFrames={scene.durationInFrames} />
-          ) : idx === 1 ? (
-            <Scene02Whiteboard durationInFrames={scene.durationInFrames} />
-          ) : idx === 2 ? (
-            <Scene03HandsOn durationInFrames={scene.durationInFrames} />
-          ) : idx === 3 ? (
-            <Scene04HybridLive durationInFrames={scene.durationInFrames} />
-          ) : idx === 4 ? (
-            <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />
-          ) : (
-            <UniversalScene scene={scene as any} />
-          )}
+            {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
+            {(scene as any).title ? (
+              <UniversalScene scene={scene as any} />
+            ) : idx === 0 ? (
+              <Scene01VoiceClone durationInFrames={scene.durationInFrames} />
+            ) : idx === 1 ? (
+              <Scene02Whiteboard durationInFrames={scene.durationInFrames} />
+            ) : idx === 2 ? (
+              <Scene03HandsOn durationInFrames={scene.durationInFrames} />
+            ) : idx === 3 ? (
+              <Scene04HybridLive durationInFrames={scene.durationInFrames} />
+            ) : idx === 4 ? (
+              <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />
+            ) : (
+              <UniversalScene scene={scene as any} />
+            )}
 
-          {/* 逐字动态弹跳大字幕 */}
-          {scene.words && scene.words.length > 0 && (
-            <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} theme={activeTheme} />
-          )}
-        </Sequence>
-      ))}
+            {/* 逐字动态弹跳大字幕 */}
+            {scene.words && scene.words.length > 0 && (
+              <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} theme={sceneTheme} />
+            )}
+          </Sequence>
+        );
+      })}
     </AbsoluteFill>
   );
 };
