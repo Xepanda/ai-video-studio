@@ -2,7 +2,7 @@
   "project": "ai_video_studio_workflow_demo",
   "engine": "chattts",
   "voice": "4444",
-  "theme": "obsidian-minimal",
+  "theme": "linear-graphite",
   "fps": 30,
   "title": "AI Video Studio 工业级全链路视频自动化工作流",
   "scenes": [
@@ -10,7 +10,7 @@
       "id": "scene_01",
       "title": "AI Video Studio：声音先行与代码即视频范式",
       "badge": "PARADIGM SHIFT · 架构范式",
-      "theme": "obsidian-minimal",
+      "theme": "linear-graphite",
       "text": "欢迎进入 AI Video Studio 工业级视频自动化系统。传统视频剪辑依赖人工在时间线上手动拖拽素材，效率低下且无法工程化迭代。我们提出了声音先行原则，将生成的物理音频波形作为不可动摇的时钟底座，让画面动画完全成为代码与状态机的纯函数映射。",
       "cards": [
         {
@@ -35,7 +35,7 @@
       "type": "ArchitectureTopology",
       "title": "端到端五阶自动化流水线全景拓扑",
       "badge": "PIPELINE TOPOLOGY · 拓扑全景",
-      "theme": "obsidian-minimal",
+      "theme": "linear-graphite",
       "text": "整条流水线由五个紧密协同的工业级阶段构成。从一键式脚手架生成分镜契约开始，经过 ChatTTS 随和男声音色合成与发音矫正，再由达摩院 Paraformer 完成毫秒级物理打点，经过质量门禁审查后，由 Remotion 多核无头浏览器集群并行导出成片。",
       "topologyNodes": [
         {
@@ -121,7 +121,7 @@
       "type": "TerminalCodeDemo",
       "title": "极简开发者终端：两行命令全自动交付",
       "badge": "DEVELOPER EXPERIENCE · 终端体验",
-      "theme": "obsidian-minimal",
+      "theme": "linear-graphite",
       "text": "纸上得来终觉浅，绝知此事要躬行。创作者日常生产视频只需在终端敲入两行简洁命令。脚手架自动根据主题解析领域并输出契约，总控管道脚本则在后台并发拉起多进程推理，完成从文案到广播级成片的全生命周期闭环。",
       "codeTitle": "terminal_workflow.sh",
       "codeLang": "bash",
@@ -132,7 +132,7 @@
       "type": "MetricComparison",
       "title": "纯 CPU 环境极致能效与性能基准评测",
       "badge": "BENCHMARK SCORECARD · 性能基准",
-      "theme": "obsidian-minimal",
+      "theme": "linear-graphite",
       "text": "口说无凭，数据说话。在无独立显卡的普通锐龙八核工作站上，系统依靠向量加速展现出了惊人的生产力能效比。达摩院 Paraformer 打点速度高达二十倍超实时，无头浏览器光栅化渲染速度较单核提升超五倍，彻底打破对重型英伟达显卡的昂贵依赖。",
       "metrics": [
         {
@@ -185,7 +185,7 @@
       "id": "scene_05",
       "title": "工程化演进：向更稳健的自动化视界迈进",
       "badge": "PRODUCTION VISION · 演进思考",
-      "theme": "obsidian-minimal",
+      "theme": "linear-graphite",
       "text": "回顾整个工作流的探索历程，从最初单纯的音频合成，演进到今天涵盖去 AI 化质感体系、物理声学微停顿对齐与多项目资产隔离的工程化矩阵。真正的自动化不是盲盒抽卡，而是对每一帧动画、每一个音标的精准敬畏。",
       "cards": [
         {
