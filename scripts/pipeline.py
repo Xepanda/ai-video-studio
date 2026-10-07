@@ -49,6 +49,17 @@ def main():
             [PYTHON_EXE, tts_script, "--script", args.script]
         )
 
+    # 步骤 0.5: 确保全局科技氛围 BGM 与转场/弹入 SFX 音效就绪
+    bgm_file = os.path.join(PROJECT_ROOT, "public", "audio", "bgm_cyber_ambient.wav")
+    sfx_file = os.path.join(PROJECT_ROOT, "public", "audio", "sfx_transition.wav")
+    pop_file = os.path.join(PROJECT_ROOT, "public", "audio", "sfx_pop.wav")
+    if not os.path.exists(bgm_file) or not os.path.exists(sfx_file) or not os.path.exists(pop_file):
+        sfx_script = os.path.join(PROJECT_ROOT, "scripts", "generate_sfx_bgm.py")
+        run_step(
+            "无版权极客氛围音乐与转场音效套件合成",
+            [PYTHON_EXE, sfx_script]
+        )
+
     # 步骤 1: ASR 毫秒打点与 timeline.json 契约生成
     if not args.skip_align:
         align_script = os.path.join(PROJECT_ROOT, "scripts", "sensevoice_aligner.py")
