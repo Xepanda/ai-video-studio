@@ -41,7 +41,12 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const cameraScale = interpolate(sceneProgress, [0, 1], [1.0, 1.025]);
   const cameraTranslateY = interpolate(sceneProgress, [0, 1], [0, -6]);
 
-  // 2. 元素平滑入场弹簧 (沉稳工业阻尼，避免轻浮弹跳)
+  // 2. 长分镜时序逐级高亮联动 (消除长镜头静态疲劳)
+  const activeNodeIndex = (scene.topologyNodes && scene.topologyNodes.length > 0)
+    ? Math.min(scene.topologyNodes.length - 1, Math.floor(sceneProgress * scene.topologyNodes.length))
+    : undefined;
+
+  // 3. 元素平滑入场弹簧 (沉稳工业阻尼，避免轻浮弹跳)
   const titleSpring = spring({ frame, fps, config: { damping: 18, stiffness: 140 } });
   const contentSpring = spring({ frame: Math.max(0, frame - 8), fps, config: { damping: 18, stiffness: 120 } });
 
@@ -129,6 +134,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
             <ArchitectureTopology
               nodes={scene.topologyNodes}
               links={scene.topologyLinks}
+              activeNodeIndex={activeNodeIndex}
             />
           </div>
         ) : (scene.type === 'MetricComparison' || scene.type === 'MetricChart') ? (
@@ -178,77 +184,105 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
               transform: `translateY(${interpolate(contentSpring, [0, 1], [24, 0])}px)`,
               opacity: contentSpring
             }}>
-              {cards.map((card, i) => {
-                const cardDelay = 12 + i * 5;
-                const cardSpring = spring({ frame: Math.max(0, frame - cardDelay), fps, config: { damping: 16, stiffness: 140 } });
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      flex: 1,
-                      backgroundColor: theme.cardBg,
-                      border: theme.cardBorder,
-                      borderRadius: '20px',
-                      padding: '36px 30px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      boxShadow: theme.cardShadow,
-                      backdropFilter: 'blur(16px)',
-                      WebkitBackdropFilter: 'blur(16px)',
-                      transform: `scale(${interpolate(cardSpring, [0, 1], [0.94, 1.0])})`,
-                      opacity: cardSpring
-                    }}
-                  >
-                    <div>
-                      {/* 顶部数字序号与标签 Pill，告别儿童画风格 Emoji */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                        <span style={{
-                          fontFamily: 'JetBrains Mono, monospace, monospace',
-                          fontSize: '18px',
-                          fontWeight: 800,
-                          color: theme.accentColor,
-                          letterSpacing: '1px'
-                        }}>
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                        {card.tag && (
-                          <span style={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                            color: theme.cardTitleColor,
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '12px',
-                            fontWeight: 700,
-                            letterSpacing: '0.5px',
-                            border: '1px solid rgba(255, 255, 255, 0.1)'
-                          }}>
-                            {card.tag}
-                          </span>
-                        )}
+              {(() => {
+                const activeCardIndex = cards.length > 0
+                  ? Math.min(cards.length - 1, Math.floor(sceneProgress * cards.length))
+                  : 0;
+
+                return cards.map((card, i) => {
+                  const cardDelay = 12 + i * 5;
+                  const cardSpring = spring({ frame: Math.max(0, frame - cardDelay), fps, config: { damping: 16, stiffness: 140 } });
+                  const isCardActive = i === activeCardIndex;
+
+                  const baseScale = interpolate(cardSpring, [0, 1], [0.94, 1.0]);
+                  const finalCardScale = isCardActive ? baseScale * 1.025 : baseScale;
+                  const activeBorder = isCardActive ? `1px solid ${theme.accentColor}` : theme.cardBorder;
+                  const activeShadow = isCardActive
+                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 28px ${theme.accentColor}33, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
+                    : theme.cardShadow;
+
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        flex: 1,
+                        backgroundColor: theme.cardBg,
+                        border: activeBorder,
+                        borderRadius: '20px',
+                        padding: '36px 30px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        boxShadow: activeShadow,
+                        backdropFilter: 'blur(16px)',
+                        WebkitBackdropFilter: 'blur(16px)',
+                        transform: `scale(${finalCardScale})`,
+                        opacity: cardSpring,
+                        transition: 'box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease'
+                      }}
+                    >
+                      <div>
+                        {/* 顶部数字序号与标签 Pill，告别儿童画风格 Emoji */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{
+                              fontFamily: 'JetBrains Mono, monospace, monospace',
+                              fontSize: '18px',
+                              fontWeight: 800,
+                              color: theme.accentColor,
+                              letterSpacing: '1px'
+                            }}>
+                              {String(i + 1).padStart(2, '0')}
+                            </span>
+                            {isCardActive && (
+                              <span style={{
+                                width: '6px',
+                                height: '6px',
+                                borderRadius: '50%',
+                                backgroundColor: theme.accentColor,
+                                boxShadow: `0 0 8px ${theme.accentColor}`
+                              }} />
+                            )}
+                          </div>
+                          {card.tag && (
+                            <span style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              color: theme.cardTitleColor,
+                              padding: '4px 10px',
+                              borderRadius: '6px',
+                              fontSize: '12px',
+                              fontWeight: 700,
+                              letterSpacing: '0.5px',
+                              border: '1px solid rgba(255, 255, 255, 0.1)'
+                            }}>
+                              {card.tag}
+                            </span>
+                          )}
+                        </div>
+
+                        <div style={{ fontSize: '24px', fontWeight: 700, color: theme.cardTitleColor, marginBottom: '14px', letterSpacing: '-0.3px' }}>
+                          {card.title}
+                        </div>
+
+                        <div style={{ fontSize: '16px', color: theme.cardDescColor, lineHeight: 1.65 }}>
+                          {card.desc}
+                        </div>
                       </div>
 
-                      <div style={{ fontSize: '24px', fontWeight: 700, color: theme.cardTitleColor, marginBottom: '14px', letterSpacing: '-0.3px' }}>
-                        {card.title}
-                      </div>
-
-                      <div style={{ fontSize: '16px', color: theme.cardDescColor, lineHeight: 1.65 }}>
-                        {card.desc}
-                      </div>
+                      {/* 底部极细工科强调线 */}
+                      <div style={{
+                        height: '2px',
+                        borderRadius: '1px',
+                        background: isCardActive ? theme.accentColor : 'rgba(255, 255, 255, 0.15)',
+                        opacity: isCardActive ? 1.0 : 0.4,
+                        marginTop: '28px',
+                        width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`,
+                        transition: 'background 0.3s ease, opacity 0.3s ease'
+                      }} />
                     </div>
-
-                    {/* 底部极细工科强调线 */}
-                    <div style={{
-                      height: '2px',
-                      borderRadius: '1px',
-                      background: theme.accentColor,
-                      opacity: 0.8,
-                      marginTop: '28px',
-                      width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`
-                    }} />
-                  </div>
-                );
-              })}
+                  );
+                });
+              })()}
             </div>
           </>
         )}
