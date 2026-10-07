@@ -33,13 +33,13 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def master_audio_array(
     data: np.ndarray,
     sr: int,
-    target_rms_db: float = -14.5,
-    target_peak_db: float = -0.8,
-    presence_boost_db: float = 2.5,
-    hpf_freq: float = 80.0
+    target_rms_db: float = -12.5,
+    target_peak_db: float = -0.3,
+    presence_boost_db: float = 3.2,
+    hpf_freq: float = 90.0
 ) -> np.ndarray:
     """
-    对音频数组执行全套移动端人声广播母带处理
+    对音频数组执行全套短视频/移动端商业级广播人声母带增益处理
     """
     if data is None or len(data) == 0:
         return data
@@ -57,15 +57,15 @@ def master_audio_array(
     if current_peak < 1e-5:
         return data
 
-    # 1. 80Hz 2nd order Butterworth 高通滤波 (剥离低频次声与风噪)
+    # 1. 90Hz 2nd order Butterworth 高通滤波 (切除低频低音轰鸣，释放手机喇叭动态余量)
     nyquist = sr / 2.0
     hpf_cutoff = min(max(hpf_freq, 20.0), nyquist - 100.0)
     b_hpf, a_hpf = signal.butter(2, hpf_cutoff / nyquist, btype='high')
     filtered = signal.filtfilt(b_hpf, a_hpf, audio)
 
-    # 2. 3.5kHz 人声存在感与字音清晰度提升 (Peaking EQ)
+    # 2. 3.0kHz 人声咬字穿透力与手机小喇叭存在感提升 (+3.2dB Peaking EQ)
     if presence_boost_db > 0:
-        center_freq = min(3500.0, nyquist - 500.0)
+        center_freq = min(3000.0, nyquist - 500.0)
         A = 10.0 ** (presence_boost_db / 40.0)
         w = 2.0 * np.pi * center_freq / sr
         alpha = np.sin(w) / (2.0 * 1.414)
@@ -73,31 +73,37 @@ def master_audio_array(
         a_eq = np.array([1.0 + alpha / A, -2.0 * np.cos(w), 1.0 - alpha / A])
         filtered = signal.lfilter(b_eq / a_eq[0], a_eq / a_eq[0], filtered)
 
-    # 3. 矢量化滑动窗口动态压缩器 (Compressor)
-    window_len = max(16, int(sr * 0.040))  # 40ms 平滑能量窗
+    # 3. 矢量化滑动窗口动态压缩器 (Compressor - 平滑辅音瞬态突刺)
+    window_len = max(16, int(sr * 0.035))  # 35ms 平滑能量窗
     kernel = np.ones(window_len) / float(window_len)
     power_env = signal.convolve(filtered ** 2, kernel, mode='same')
     rms_env = np.sqrt(np.maximum(1e-9, power_env))
 
-    comp_threshold = 10.0 ** (-16.0 / 20.0)
-    ratio = 2.5
+    comp_threshold = 10.0 ** (-17.0 / 20.0)
+    ratio = 2.8
     gain_multiplier = np.ones_like(rms_env)
     over_mask = rms_env > comp_threshold
     gain_multiplier[over_mask] = (rms_env[over_mask] / comp_threshold) ** (1.0 / ratio - 1.0)
 
     compressed = filtered * gain_multiplier
 
-    # 4. 目标 RMS 补偿增益 (Makeup Gain)
-    comp_rms = np.sqrt(np.mean(compressed ** 2))
+    # 4. 基于有效发音段 (Active Speech VAD) 的目标 RMS 补偿增益
+    # 彻底杜绝句子间静音与停顿拉低平均响度计算的问题
+    active_mask = np.abs(compressed) > 0.025
+    if np.any(active_mask):
+        active_speech_rms = np.sqrt(np.mean(compressed[active_mask] ** 2))
+    else:
+        active_speech_rms = np.sqrt(np.mean(compressed ** 2))
+
     target_rms = 10.0 ** (target_rms_db / 20.0)
-    makeup_gain = target_rms / max(comp_rms, 1e-6)
+    makeup_gain = target_rms / max(active_speech_rms, 1e-6)
     boosted = compressed * makeup_gain
 
-    # 5. 软膝饱和限幅器 (Soft-knee Tanh Peak Limiter)
+    # 5. 仿模拟软膝限幅器 (Soft-knee Tanh Peak Limiter)
     peak_limit = 10.0 ** (target_peak_db / 20.0)
     max_amp = np.max(np.abs(boosted))
     if max_amp > peak_limit:
-        # 使用平滑 tanh 映射超出部分，彻底消除方波毛刺
+        # 平滑 tanh 软饱和限幅，峰值牢牢锁死，零数字削波失真
         boosted = np.tanh(boosted / peak_limit) * peak_limit
 
     # 确保数值边界安全
@@ -111,8 +117,8 @@ def master_audio_array(
 def master_audio_file(
     file_path: str,
     out_path: str = None,
-    target_rms_db: float = -14.5,
-    target_peak_db: float = -0.8
+    target_rms_db: float = -12.5,
+    target_peak_db: float = -0.3
 ) -> bool:
     """
     对指定单个音频文件执行母带增益处理
@@ -156,8 +162,8 @@ def master_audio_file(
 
 def master_project_audio(
     project: str,
-    target_rms_db: float = -14.5,
-    target_peak_db: float = -0.8
+    target_rms_db: float = -12.5,
+    target_peak_db: float = -0.3
 ) -> int:
     """
     对指定项目的全部音频文件执行批量母带优化
@@ -192,8 +198,8 @@ def main():
     parser = argparse.ArgumentParser(description="移动端广播级人声母带增益与动态响度优化器")
     parser.add_argument("--project", type=str, default="", help="项目名称 (例如 meta_muse_agent_deepdive)")
     parser.add_argument("--file", type=str, default="", help="单个音频文件路径")
-    parser.add_argument("--target_rms", type=float, default=-14.5, help="目标 RMS 响度 (dBFS, 默认 -14.5)")
-    parser.add_argument("--target_peak", type=float, default=-0.8, help="目标峰值限制 (dBFS, 默认 -0.8)")
+    parser.add_argument("--target_rms", type=float, default=-12.5, help="目标 RMS 响度 (dBFS, 默认 -12.5)")
+    parser.add_argument("--target_peak", type=float, default=-0.3, help="目标峰值限制 (dBFS, 默认 -0.3)")
     args = parser.parse_args()
 
     if args.file:
