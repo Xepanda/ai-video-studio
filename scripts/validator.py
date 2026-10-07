@@ -3,6 +3,11 @@
 """
 scripts/validator.py
 视频工程数据契约与资产完整性自动化审查工具 (Quality Gate Validator)
+严格校验：
+  1. timeline.json 契约合法性
+  2. 分镜帧数连续性与全局总帧数守恒
+  3. 静态音视频资产存在性与时长容差
+  4. 字幕短句 (words) 声学打点单调性、起止有效性与持续时间门禁
 """
 
 import os
@@ -28,17 +33,81 @@ class BColors:
     BOLD = '\033[1m'
 
 def get_audio_duration_seconds(audio_full_path: str) -> float:
-    """计算音频真实时长 (支持 WAV, MP3, FLAC)"""
+    """计算音频真实时长 (多后端容错: soundfile -> torchaudio -> wave)"""
     try:
         import soundfile as sf
         info = sf.info(audio_full_path)
-        return info.duration
+        return float(info.duration)
     except Exception:
-        try:
-            with wave.open(audio_full_path, 'rb') as wf:
-                return wf.getnframes() / float(wf.getframerate())
-        except Exception:
-            return None
+        pass
+
+    try:
+        import torchaudio
+        info = torchaudio.info(audio_full_path)
+        if info.sample_rate > 0:
+            return float(info.num_frames) / float(info.sample_rate)
+    except Exception:
+        pass
+
+    try:
+        with wave.open(audio_full_path, 'rb') as wf:
+            framerate = wf.getframerate()
+            if framerate > 0:
+                return wf.getnframes() / float(framerate)
+    except Exception:
+        pass
+
+    return None
+
+def validate_words(scene_id: str, scene: dict, duration: int, real_sec: float, fps: int, errors: list, warnings: list):
+    """严格审查分镜内字幕短句 (words) 打点数据契约"""
+    words = scene.get("words", [])
+    if not words:
+        warnings.append(f"分镜 [{scene_id}] 未配置任何字幕打点短句 (words 列表为空)。")
+        return
+
+    prev_start_frame = -1
+    prev_start_ms = -1
+    max_allowed_ms = int(real_sec * 1000) + 200 if real_sec is not None else int((duration / fps) * 1000) + 200
+
+    for idx, w in enumerate(words):
+        w_text = w.get("text", "")
+        start_f = w.get("startFrame")
+        end_f = w.get("endFrame")
+        start_ms = w.get("startMs")
+        end_ms = w.get("endMs")
+
+        if start_f is None or end_f is None:
+            errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 缺少 startFrame 或 endFrame！")
+            continue
+
+        # 1. 严格非负与起止区间
+        if start_f < 0:
+            errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 起始帧小于0: {start_f}")
+        if start_f >= end_f:
+            errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 帧数区间倒置或为零: [{start_f} ~ {end_f}]")
+        if end_f > duration:
+            errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 结束帧 ({end_f}) 超出分镜总时长 ({duration}帧)！")
+
+        # 2. 单调性检查
+        if start_f < prev_start_frame:
+            errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 起始帧出现逆向回跳 (前句: {prev_start_frame}, 当前: {start_f})")
+        prev_start_frame = start_f
+
+        # 3. 毫秒打点检查
+        if start_ms is not None and end_ms is not None:
+            if start_ms >= end_ms:
+                errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 毫秒区间倒置或为零: [{start_ms}ms ~ {end_ms}ms]")
+            if end_ms > max_allowed_ms:
+                warnings.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 结束毫秒 ({end_ms}ms) 超出音频总时长 ({max_allowed_ms}ms)！")
+            if start_ms < prev_start_ms:
+                errors.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 起始毫秒逆向回跳: {start_ms}ms < {prev_start_ms}ms")
+            prev_start_ms = start_ms
+
+        # 4. 短句极短闪现预警 (< 5 帧，约 166ms)
+        chunk_dur = end_f - start_f
+        if chunk_dur < 5:
+            warnings.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 持续时间仅 {chunk_dur} 帧 ({chunk_dur/fps*1000:.0f}ms)，可能导致字幕闪烁。")
 
 def validate():
     print(f"\n{BColors.HEADER}===================================================={BColors.ENDC}")
@@ -81,6 +150,7 @@ def validate():
         duration = scene.get("durationInFrames", 0)
         audio_rel_path = scene.get("audioPath")
         video_rel_path = scene.get("videoSrc")
+        real_sec = None
 
         # 检查时间轴连续性
         if start_frame != current_expected_frame:
@@ -91,18 +161,17 @@ def validate():
         current_expected_frame += duration
         calculated_total_frames += duration
 
-        # 检查音频文件存在性
+        # 检查音频文件存在性与时长
         if audio_rel_path:
             audio_full_path = os.path.join(PUBLIC_DIR, audio_rel_path)
             if not os.path.exists(audio_full_path):
                 errors.append(f"分镜 [{scene_id}] 音频文件不存在: {audio_rel_path}")
             else:
-                # 校验音频物理时长与 Remotion 帧数对齐精度
                 real_sec = get_audio_duration_seconds(audio_full_path)
                 if real_sec is not None:
                     ideal_frames = int(round(real_sec * fps))
                     diff = abs(ideal_frames - duration)
-                    if diff > 3: # 允许 3 帧以内的舍入缓冲
+                    if diff > 3:  # 允许 3 帧以内的舍入缓冲
                         warnings.append(
                             f"分镜 [{scene_id}] 帧数设置({duration}帧)与真实音频时长({real_sec:.2f}s -> {ideal_frames}帧)存在 {diff} 帧偏差！"
                         )
@@ -114,6 +183,9 @@ def validate():
             video_full_path = os.path.join(PUBLIC_DIR, video_rel_path)
             if not os.path.exists(video_full_path):
                 errors.append(f"分镜 [{scene_id}] 视频素材不存在: {video_rel_path}")
+
+        # 深度校验字幕打点数据契约 (words)
+        validate_words(scene_id, scene, duration, real_sec, fps, errors, warnings)
 
     # 检查总帧数一致性
     if total_frames != calculated_total_frames:
