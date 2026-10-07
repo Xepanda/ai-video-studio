@@ -68,16 +68,18 @@ def main():
     # 步骤 1: ASR 毫秒打点与 timeline.json 契约生成
     if not args.skip_align:
         align_script = os.path.join(PROJECT_ROOT, "scripts", "sensevoice_aligner.py")
+        align_cmd = [
+            PYTHON_EXE, align_script,
+            "--fps", str(args.fps),
+            "--script", args.script,
+            "--engine", args.engine,
+            "--device", args.device
+        ]
+        if args.isolated and args.project:
+            align_cmd.extend(["--project", args.project])
         run_step(
             "声学物理打点与时间轴契约生成",
-            [
-                PYTHON_EXE, align_script,
-                "--project", args.project,
-                "--fps", str(args.fps),
-                "--script", args.script,
-                "--engine", args.engine,
-                "--device", args.device
-            ]
+            align_cmd
         )
 
     # 步骤 2: 质量门禁自动审查

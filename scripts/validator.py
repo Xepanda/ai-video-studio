@@ -234,8 +234,6 @@ if __name__ == "__main__":
 
     target_timeline = args.timeline
     if not target_timeline and args.project:
-        proj_tl = os.path.join(PUBLIC_DIR, "projects", args.project, "timeline.json")
-        if os.path.exists(proj_tl):
-            target_timeline = proj_tl
+        target_timeline = os.path.join(PUBLIC_DIR, "projects", args.project, "timeline.json")
 
     validate(timeline_path=target_timeline)
