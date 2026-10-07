@@ -303,20 +303,63 @@ export const MasterVideo: React.FC = () => {
   const fadeOutEnd = Math.max(fadeOutStart + 1, totalDuration);
   const transitionFrames = Math.max(1, Math.round(0.8 * fps));
 
+  // 智能音频闪避 (Audio Ducking): 提取全片声学语音活跃区间
+  const speechIntervals = React.useMemo(() => {
+    return scenes.flatMap((scene) => {
+      if (scene.words && scene.words.length > 0) {
+        return scene.words.map((w: any) => ({
+          start: (w.globalStartFrame ?? (scene.startFrame + w.startFrame)) as number,
+          end: (w.globalEndFrame ?? (scene.startFrame + w.endFrame)) as number,
+        }));
+      }
+      return [{ start: scene.startFrame, end: scene.startFrame + scene.durationInFrames }];
+    });
+  }, [scenes]);
+
+  const enableDucking = (timelineData as any).enableDucking !== false;
+  const duckRatio = (timelineData as any).bgmDuckRatio ?? 0.45;
+
   return (
     <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      {/* 全局极客科技氛围背景音乐 (轻柔垫乐 + 自动循环 + 首尾淡入淡出) */}
+      {/* 全局极客科技氛围背景音乐 (轻柔垫乐 + 自动循环 + 首尾淡入淡出 + 语音智能闪避) */}
       {enableBgm && (
         <Audio
           src={staticFile(bgmPath)}
-          volume={(f) =>
-            interpolate(
+          volume={(f) => {
+            const baseVol = interpolate(
               f,
               [0, fadeInFrames, fadeOutStart, fadeOutEnd],
               [0, bgmVolume, bgmVolume, 0],
               { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-            )
-          }
+            );
+
+            if (!enableDucking || speechIntervals.length === 0) {
+              return baseVol;
+            }
+
+            // 计算当前帧距离最近语音活跃区间的帧距
+            let minDistToSpeech = Infinity;
+            for (const interval of speechIntervals) {
+              if (f >= interval.start && f <= interval.end) {
+                minDistToSpeech = 0;
+                break;
+              }
+              const dist = f < interval.start ? interval.start - f : f - interval.end;
+              if (dist < minDistToSpeech) {
+                minDistToSpeech = dist;
+              }
+            }
+
+            // 平滑过度：0 帧(正讲话)压低至 duckRatio (约 45%)，15 帧(~0.5s 停顿/转场)平滑回升至 100%
+            const duckMultiplier = interpolate(
+              minDistToSpeech,
+              [0, 15],
+              [duckRatio, 1.0],
+              { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+            );
+
+            return baseVol * duckMultiplier;
+          }}
           loop
         />
       )}

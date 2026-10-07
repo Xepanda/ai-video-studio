@@ -45,4 +45,7 @@ desktop.ini
 *.png
 .env
 models/reference_audio/slices/
+public/projects/
+.audio_cache.json
+*.audio_cache.json
 
