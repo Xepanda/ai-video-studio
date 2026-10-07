@@ -37,8 +37,11 @@ def split_long_text(text: str, max_chars: int = 55) -> list:
     """
     智能将较长文案按标点符号切分为自然子句，控制在安全长度内，避免 ChatTTS 自回归崩溃。
     优先按句尾强标点 (。！？!?；;\n) 切分，如果单个片段仍然超长，再按逗号 (,，、) 切分。
+    如果连续单句缺少逗号且超过 max_chars，执行硬截断兜底。
     """
     text = text.strip()
+    if not text:
+        return []
     if len(text) <= max_chars:
         return [text]
 
@@ -73,7 +76,15 @@ def split_long_text(text: str, max_chars: int = 55) -> list:
                 else:
                     if curr.strip():
                         final_chunks.append(curr.strip())
-                    curr = piece
+                    if len(piece) <= max_chars:
+                        curr = piece
+                    else:
+                        # 兜底：处理超长且内部无逗号的连续长从句
+                        for k in range(0, len(piece), max_chars):
+                            sub = piece[k:k+max_chars].strip()
+                            if sub:
+                                final_chunks.append(sub)
+                        curr = ""
                 c_idx += 2
             if curr.strip():
                 final_chunks.append(curr.strip())
@@ -86,9 +97,13 @@ def synthesize_chattts(text: str, out_path: str, seed: int = 4444, speed: float 
     :param text: 输入中文文本
     :param out_path: 输出音频路径 (.wav 或 .mp3)
     :param seed: 音色随机种子
-    :param speed: 语速调节
+    :param speed: 语速调节 (保留参数)
     :return: 实际输出文件绝对路径
     """
+    text = text.strip()
+    if not text:
+        raise ValueError("synthesize_chattts: 输入文本不能为空")
+
     import soundfile as sf
 
     chat = get_chat_model()
@@ -106,37 +121,29 @@ def synthesize_chattts(text: str, out_path: str, seed: int = 4444, speed: float 
     )
 
     chunks = split_long_text(text, max_chars=55)
+    if not chunks:
+        raise ValueError("synthesize_chattts: 文本分句后无有效文本片段")
 
-    if len(chunks) <= 1:
-        # 单句直接推理
-        wavs = chat.infer([chunks[0]], params_infer_code=params_infer_code, use_decoder=True)
+    all_wav_arrays = []
+    silence_samples = int(24000 * 0.2)  # 句间注入 200ms 自然换气微停顿
+    silence_arr = np.zeros(silence_samples, dtype=np.float32)
+
+    for chunk in chunks:
+        wavs = chat.infer([chunk], params_infer_code=params_infer_code, use_decoder=True)
         if not wavs or len(wavs) == 0:
-            raise RuntimeError("ChatTTS 未生成任何有效音频波形")
+            continue
         wav_data = wavs[0]
-        wav_array = wav_data if isinstance(wav_data, np.ndarray) else wav_data.cpu().numpy()
-        if wav_array.ndim > 1:
-            wav_array = wav_array.squeeze()
-    else:
-        # 超长文本分句顺序推理并注入 200ms 自然换气停顿
-        all_wav_arrays = []
-        silence_samples = int(24000 * 0.2)  # 200ms 静音
-        silence_arr = np.zeros(silence_samples, dtype=np.float32)
+        arr = wav_data if isinstance(wav_data, np.ndarray) else wav_data.cpu().numpy()
+        arr = np.atleast_1d(np.squeeze(arr))
+        if arr.size == 0:
+            continue
+        if all_wav_arrays and len(silence_arr) > 0:
+            all_wav_arrays.append(silence_arr)
+        all_wav_arrays.append(arr)
 
-        for idx, chunk in enumerate(chunks):
-            wavs = chat.infer([chunk], params_infer_code=params_infer_code, use_decoder=True)
-            if not wavs or len(wavs) == 0:
-                continue
-            wav_data = wavs[0]
-            arr = wav_data if isinstance(wav_data, np.ndarray) else wav_data.cpu().numpy()
-            if arr.ndim > 1:
-                arr = arr.squeeze()
-            if idx > 0 and len(silence_arr) > 0:
-                all_wav_arrays.append(silence_arr)
-            all_wav_arrays.append(arr)
-
-        if not all_wav_arrays:
-            raise RuntimeError("ChatTTS 未生成任何有效音频波形")
-        wav_array = np.concatenate(all_wav_arrays)
+    if not all_wav_arrays:
+        raise RuntimeError("ChatTTS 未生成任何有效音频波形")
+    wav_array = np.concatenate(all_wav_arrays)
 
     wav_path = os.path.splitext(out_path)[0] + ".wav"
     os.makedirs(os.path.dirname(os.path.abspath(wav_path)), exist_ok=True)
