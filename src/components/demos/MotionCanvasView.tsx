@@ -22,7 +22,10 @@ export const MotionCanvasView: React.FC = () => {
   const words = scene.words || [];
 
   // 镜头微动
-  const cameraScale = interpolate(frame, [0, 288], [1.0, 1.05]);
+  const cameraScale = interpolate(frame, [0, 288], [1.0, 1.05], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
 
   // 传送带位移计算
   const conveyorOffset = (frame * 3.5) % 360;
@@ -227,7 +230,6 @@ export const MotionCanvasView: React.FC = () => {
                     transform: isCurrent
                       ? `scale(${interpolate(stampImpact, [0, 1], [0.95, 1.05])})`
                       : 'scale(1.0)',
-                    transition: 'border 0.2s, box-shadow 0.2s',
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>

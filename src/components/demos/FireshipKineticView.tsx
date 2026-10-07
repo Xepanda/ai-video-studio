@@ -129,7 +129,6 @@ export const FireshipKineticView: React.FC = () => {
                 fontWeight: 700,
                 color: '#f87171',
                 opacity: strikeProgress > 30 ? 1 : 0,
-                transition: 'opacity 0.2s',
               }}
             >
               改了一个字，整个时间轴全废！
@@ -140,7 +139,7 @@ export const FireshipKineticView: React.FC = () => {
         {/* ============================================================== */}
         {/* 阶段 2 (82 - 210 帧): 3D 透视悬浮 IDE 与纯代码直出 */}
         {/* ============================================================== */}
-        {frame >= 82 && frame < 215 && (
+        {frame >= 82 && frame < 210 && (
           <div
             style={{
               width: '100%',
@@ -149,7 +148,7 @@ export const FireshipKineticView: React.FC = () => {
               flexDirection: 'column',
               alignItems: 'center',
               transform: `scale(${ideSpring})`,
-              opacity: interpolate(frame, [82, 92], [0, 1]),
+              opacity: interpolate(frame, [82, 92], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
             }}
           >
             {/* 顶部标语 */}
@@ -270,7 +269,7 @@ export const FireshipKineticView: React.FC = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: interpolate(frame, [210, 218], [0, 1]),
+              opacity: interpolate(frame, [210, 218], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
             }}
           >
             <div

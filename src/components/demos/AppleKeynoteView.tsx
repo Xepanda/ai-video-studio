@@ -22,7 +22,10 @@ export const AppleKeynoteView: React.FC = () => {
   const words = scene.words || [];
 
   // 运镜推移与微距景深
-  const cameraScale = interpolate(frame, [0, 298], [1.0, 1.06]);
+  const cameraScale = interpolate(frame, [0, 298], [1.0, 1.06], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
   const explodeProgress = interpolate(frame, [85, 130], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -119,7 +122,6 @@ export const AppleKeynoteView: React.FC = () => {
               justifyContent: 'space-between',
               zIndex: 30,
               opacity: explodeProgress > 0.1 ? 1 : 0.9,
-              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -183,7 +185,6 @@ export const AppleKeynoteView: React.FC = () => {
               justifyContent: 'space-between',
               zIndex: 10,
               opacity: explodeProgress > 0.1 ? 1 : 0.8,
-              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
