@@ -8,6 +8,7 @@ import { PhoneFrame } from './components/PhoneFrame';
 import { CalloutPointer } from './components/CalloutPointer';
 import { PinoutStream } from './components/PinoutStream';
 import { UniversalScene } from './components/UniversalScene';
+import { getTheme } from './styles/theme';
 
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
@@ -293,6 +294,7 @@ export const MasterVideo: React.FC = () => {
   const bgmVolume = (timelineData as any).bgmVolume ?? 0.10;
   const enableBgm = (timelineData as any).enableBgm !== false;
   const enableSfx = (timelineData as any).enableSfx !== false;
+  const activeTheme = getTheme((timelineData as any).theme);
 
   // 严格单调递增区间计算，杜绝短视频测试时总帧数过少引发的 interpolate 崩溃
   const fadeInFrames = Math.max(1, Math.min(45, Math.floor(totalDuration * 0.25)));
@@ -319,45 +321,48 @@ export const MasterVideo: React.FC = () => {
         />
       )}
 
-      {scenes.map((scene, idx) => (
-        <Sequence
-          key={scene.id}
-          from={scene.startFrame}
-          durationInFrames={scene.durationInFrames}
-        >
-          {/* 配音音频 */}
-          {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
+      {scenes.map((scene, idx) => {
+        const sceneTheme = getTheme((scene as any).theme || (timelineData as any).theme);
+        return (
+          <Sequence
+            key={scene.id}
+            from={scene.startFrame}
+            durationInFrames={scene.durationInFrames}
+          >
+            {/* 配音音频 */}
+            {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
 
-          {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
-          {enableSfx && idx > 0 && (
-            <Sequence from={0} durationInFrames={transitionFrames} layout="none">
-              <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
-            </Sequence>
-          )}
+            {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
+            {enableSfx && idx > 0 && (
+              <Sequence from={0} durationInFrames={transitionFrames} layout="none">
+                <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
+              </Sequence>
+            )}
 
-          {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
-          {(scene as any).title ? (
-            <UniversalScene scene={scene as any} />
-          ) : idx === 0 ? (
-            <Scene01VoiceClone durationInFrames={scene.durationInFrames} />
-          ) : idx === 1 ? (
-            <Scene02Whiteboard durationInFrames={scene.durationInFrames} />
-          ) : idx === 2 ? (
-            <Scene03HandsOn durationInFrames={scene.durationInFrames} />
-          ) : idx === 3 ? (
-            <Scene04HybridLive durationInFrames={scene.durationInFrames} />
-          ) : idx === 4 ? (
-            <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />
-          ) : (
-            <UniversalScene scene={scene as any} />
-          )}
+            {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
+            {(scene as any).title ? (
+              <UniversalScene scene={scene as any} />
+            ) : idx === 0 ? (
+              <Scene01VoiceClone durationInFrames={scene.durationInFrames} />
+            ) : idx === 1 ? (
+              <Scene02Whiteboard durationInFrames={scene.durationInFrames} />
+            ) : idx === 2 ? (
+              <Scene03HandsOn durationInFrames={scene.durationInFrames} />
+            ) : idx === 3 ? (
+              <Scene04HybridLive durationInFrames={scene.durationInFrames} />
+            ) : idx === 4 ? (
+              <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />
+            ) : (
+              <UniversalScene scene={scene as any} />
+            )}
 
-          {/* 逐字动态弹跳大字幕 */}
-          {scene.words && scene.words.length > 0 && (
-            <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} />
-          )}
-        </Sequence>
-      ))}
+            {/* 逐字动态弹跳大字幕 */}
+            {scene.words && scene.words.length > 0 && (
+              <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} theme={sceneTheme} />
+            )}
+          </Sequence>
+        );
+      })}
     </AbsoluteFill>
   );
 };
