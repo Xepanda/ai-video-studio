@@ -189,6 +189,22 @@ def validate(timeline_path: str = None):
         # 深度校验字幕打点数据契约 (words)
         validate_words(scene_id, scene, duration, real_sec, fps, errors, warnings)
 
+        # 视效组件契约深度审查 (Visual Component Schema Gate)
+        scene_type = scene.get("type", "Default")
+        if scene_type in ["MetricComparison", "MetricChart"]:
+            metrics = scene.get("metrics", [])
+            if not metrics:
+                errors.append(f"分镜 [{scene_id}] 声明类型为 {scene_type}，但未提供 metrics 数据数组！")
+            for m_idx, cat in enumerate(metrics):
+                if not isinstance(cat, dict):
+                    errors.append(f"分镜 [{scene_id}] 指标项 #{m_idx+1} 不是合法字典对象！")
+                elif not cat.get("items") and not cat.get("value") and not cat.get("label") and not cat.get("title"):
+                    errors.append(f"分镜 [{scene_id}] 指标项 #{m_idx+1} 缺少 items 或 value/label 核心字段！")
+        elif scene_type in ["ArchitectureTopology", "TopologyFlow"]:
+            nodes = scene.get("topologyNodes", [])
+            if not nodes:
+                errors.append(f"分镜 [{scene_id}] 声明类型为 {scene_type}，但未提供 topologyNodes 节点列表！")
+
     # 检查总帧数一致性
     if total_frames != calculated_total_frames:
         errors.append(

@@ -255,6 +255,8 @@ def main():
     parser.add_argument("--ref_text", type=str, default=None, help="参考音频对应文本")
     parser.add_argument("--normalize_phonetics", action="store_true", default=True, help="启用技术专有名词与多音字发音规范化 (默认启用)")
     parser.add_argument("--no_normalize_phonetics", dest="normalize_phonetics", action="store_false", help="禁用技术专有名词发音规范化")
+    parser.add_argument("--master_audio", action="store_true", default=True, help="启用移动端广播级人声母带增益与动态优化 (默认启用)")
+    parser.add_argument("--no_master_audio", dest="master_audio", action="store_false", help="禁用人声母带增益优化")
     parser.add_argument("--force", action="store_true", default=False, help="强制重新生成所有分镜音频，忽略 MD5 缓存")
     args = parser.parse_args()
 
@@ -382,6 +384,15 @@ def main():
 
         out_file = os.path.join(output_dir, f"{scene_id}.mp3")
         actual_file = generate_scene_audio(text, out_file, env, normalize_phonetics=args.normalize_phonetics) or out_file
+
+        # 移动端广播级人声母带增益优化 (Loudness & Presence Boost)
+        if args.master_audio and actual_file and actual_file.endswith(".wav") and os.path.exists(actual_file):
+            try:
+                from audio_mastering import master_audio_file
+                master_audio_file(actual_file, actual_file)
+            except Exception as e:
+                print(f"    ⚠️ 母带增益优化跳过: {e}")
+
         portable_file = os.path.relpath(actual_file, PROJECT_ROOT).replace("\\", "/")
         cache_data[scene_id] = {
             "key": cache_key,
