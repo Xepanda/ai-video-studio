@@ -1,529 +1,615 @@
 {
-  "project": "ai_video_studio_workflow_demo",
+  "project": "meta_muse_agent_deepdive",
   "theme": "linear-graphite",
   "fps": 30,
-  "totalDurationInFrames": 3157,
+  "totalDurationInFrames": 3307,
   "scenes": [
     {
       "id": "scene_01",
-      "type": "ExplainerWhiteboard",
+      "type": "MetricComparison",
       "startFrame": 0,
-      "durationInFrames": 701,
-      "audioPath": "projects/ai_video_studio_workflow_demo/audio/scene_01.wav",
-      "text": "欢迎进入 AI Video Studio 工业级视频自动化系统。传统视频剪辑依赖人工在时间线上手动拖拽素材，效率低下且无法工程化迭代。我们提出了声音先行原则，将生成的物理音频波形作为不可动摇的时钟底座，让画面动画完全成为代码与状态机的纯函数映射。",
-      "rawText": "欢 迎 进 入 AI video studio 工 业 级 视 频 自 动 化 系 统 传 统 视 频 剪 辑 依 赖 人 工 在 时 间 线 上 手 动 拖 拽 素 材 效 率 低 下 且 无 法 工 程 化 迭 代 我 们 提 出 了 声 音 先 行 原 则 将 生 成 的 物 理 音 频 波 形 作 为 不 可 动 摇 的 时 钟 底 座 让 画 面 动 画 完 全 成 为 代 码 与 状 态 机 的 这 种 纯 函 数 映 射",
+      "durationInFrames": 508,
+      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_01.wav",
+      "text": "如果你最近刷推特或者关注科技圈，一定被一个叫 Muse 的名字彻底刷屏了。仅仅上线二十二天，狂揽五百万下载，直接登顶苹果应用商店第一。甚至在海外社区诞生了一个新热搜，叫 Musemaxxing。",
+      "rawText": "如 果 你 最 近 刷 推 特 或 者 关 注 科 技 圈 一 定 被 一 个 叫 muse 的 名 字 彻 底 刷 屏 了 仅 仅 上 线 二 十 二 天 狂 揽 五 百 万 下 载 直 接 登 顶 苹 果 应 用 商 店 第 一 甚 至 在 海 外 社 区 诞 生 了 一 个 新 热 搜 就 叫 muse max sexting",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "欢迎进入 AI Video Studio 工业级视频自动化系统",
-          "startFrame": 4,
-          "endFrame": 123,
-          "globalStartFrame": 4,
-          "globalEndFrame": 123,
-          "startMs": 150,
-          "endMs": 4110
+          "text": "如果你最近刷推特或者关注科技圈",
+          "startFrame": 11,
+          "endFrame": 95,
+          "globalStartFrame": 11,
+          "globalEndFrame": 95,
+          "startMs": 380,
+          "endMs": 3160
         },
         {
-          "text": "传统视频剪辑依赖人工在时间线上手动拖拽素材",
-          "startFrame": 145,
-          "endFrame": 276,
-          "globalStartFrame": 145,
-          "globalEndFrame": 276,
-          "startMs": 4830,
-          "endMs": 9210
+          "text": "一定被一个叫 Muse 的名字彻底刷屏了",
+          "startFrame": 95,
+          "endFrame": 166,
+          "globalStartFrame": 95,
+          "globalEndFrame": 166,
+          "startMs": 3180,
+          "endMs": 5540
         },
         {
-          "text": "效率低下且无法工程化迭代",
-          "startFrame": 276,
-          "endFrame": 337,
-          "globalStartFrame": 276,
-          "globalEndFrame": 337,
-          "startMs": 9210,
-          "endMs": 11230
+          "text": "仅仅上线二十二天",
+          "startFrame": 195,
+          "endFrame": 236,
+          "globalStartFrame": 195,
+          "globalEndFrame": 236,
+          "startMs": 6500,
+          "endMs": 7880
         },
         {
-          "text": "我们提出了声音先行原则",
-          "startFrame": 352,
-          "endFrame": 403,
-          "globalStartFrame": 352,
-          "globalEndFrame": 403,
-          "startMs": 11750,
-          "endMs": 13430
+          "text": "狂揽五百万下载",
+          "startFrame": 247,
+          "endFrame": 289,
+          "globalStartFrame": 247,
+          "globalEndFrame": 289,
+          "startMs": 8220,
+          "endMs": 9620
         },
         {
-          "text": "将生成的物理音频波形作为不可动摇的时钟底座",
-          "startFrame": 411,
-          "endFrame": 541,
-          "globalStartFrame": 411,
-          "globalEndFrame": 541,
-          "startMs": 13710,
-          "endMs": 18030
+          "text": "直接登顶苹果应用商店第一",
+          "startFrame": 289,
+          "endFrame": 355,
+          "globalStartFrame": 289,
+          "globalEndFrame": 355,
+          "startMs": 9620,
+          "endMs": 11820
         },
         {
-          "text": "让画面动画完全成为代码与状态机的纯函数映射",
-          "startFrame": 558,
-          "endFrame": 696,
-          "globalStartFrame": 558,
-          "globalEndFrame": 696,
-          "startMs": 18590,
-          "endMs": 23185
+          "text": "甚至在海外社区诞生了一个新热搜",
+          "startFrame": 377,
+          "endFrame": 457,
+          "globalStartFrame": 377,
+          "globalEndFrame": 457,
+          "startMs": 12580,
+          "endMs": 15220
+        },
+        {
+          "text": "叫 Musemaxxing",
+          "startFrame": 461,
+          "endFrame": 503,
+          "globalStartFrame": 461,
+          "globalEndFrame": 503,
+          "startMs": 15380,
+          "endMs": 16775
         }
       ],
-      "title": "AI Video Studio：声音先行与代码即视频范式",
-      "badge": "PARADIGM SHIFT · 架构范式",
-      "cards": [
+      "title": "22天狂揽500万下载：Meta Muse 引爆科技圈",
+      "badge": "VIRAL PHENOMENON · 现象级爆发",
+      "metrics": [
         {
-          "title": "声音绝对时钟",
-          "desc": "以实际声学波形物理时长作为顶层单一真实时钟，画面全自动适配",
-          "tag": "AUDIO FIRST"
+          "label": "App Store 登顶耗时",
+          "value": "22 天",
+          "baseline": "45 天 (ChatGPT)",
+          "unit": "天",
+          "highlight": true
         },
         {
-          "title": "纯函数状态机",
-          "desc": "Scene = f(frame)，所有动画均由数学公式和物理阻尼计算，零盲盒抽卡",
-          "tag": "DETERMINISTIC"
+          "label": "首月下载量突破",
+          "value": "500 万+",
+          "baseline": "180 万 (行业均值)",
+          "unit": "次",
+          "highlight": true
         },
         {
-          "title": "工业级去 AI 味",
-          "desc": "告别土味荧光黄字与儿童画 emoji，采用黑曜极简与 Apple 悬浮字幕 Dock",
-          "tag": "DE-AI CRAFT"
+          "label": "周活跃独立用户",
+          "value": "320 万",
+          "baseline": "100 万 (基准线)",
+          "unit": "人",
+          "highlight": false
         }
       ],
       "theme": "linear-graphite"
     },
     {
       "id": "scene_02",
-      "type": "ArchitectureTopology",
-      "startFrame": 701,
-      "durationInFrames": 660,
-      "audioPath": "projects/ai_video_studio_workflow_demo/audio/scene_02.wav",
-      "text": "整条流水线由五个紧密协同的工业级阶段构成。从一键式脚手架生成分镜契约开始，经过 ChatTTS 随和男声音色合成与发音矫正，再由达摩院 Paraformer 完成毫秒级物理打点，经过质量门禁审查后，由 Remotion 多核无头浏览器集群并行导出成片。",
-      "rawText": "整 条 流 水 线 由 五 个 紧 密 协 同 的 工 业 级 阶 段 构 成 从 一 键 式 脚 手 架 生 成 分 镜 契 约 开 始 经 过 chad 仪 器 随 和 男 声 音 色 合 成 与 发 音 矫 正 再 由 达 摩 院 paratformer 完 成 毫 秒 级 物 理 打 点 经 过 质 量 问 题 检 查 后 由 remotion 多 核 无 头 浏 览 器 集 群 并 行 导 出 成 片",
+      "type": "Default",
+      "startFrame": 508,
+      "durationInFrames": 540,
+      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_02.wav",
+      "text": "但它绝不是另一个陪你聊天的机器人。过去的大模型是你问一句它答一段，而 Muse 是一个拥有自主执行权限的后台代理人。给它一句话，它自己在后台去开浏览器、比价订票、采购物品、甚至回复复杂的商务邮件。",
+      "rawText": "但 他 绝 不 是 另 一 个 陪 你 聊 天 的 机 器 人 我 觉 得 大 模 型 是 你 问 一 句 他 答 一 段 而 muse 是 一 个 拥 有 自 主 执 行 权 限 的 后 台 代 理 人 给 他 一 句 话 他 自 己 在 后 台 去 开 浏 览 器 比 价 订 票 采 购 物 品 甚 至 回 复 复 杂 的 商 务 邮 件",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "整条流水线由五个紧密协同的工业级阶段构成",
-          "startFrame": 4,
-          "endFrame": 122,
-          "globalStartFrame": 705,
-          "globalEndFrame": 823,
-          "startMs": 130,
-          "endMs": 4050
+          "text": "但它绝不是另一个陪你聊天的机器人",
+          "startFrame": 6,
+          "endFrame": 93,
+          "globalStartFrame": 514,
+          "globalEndFrame": 601,
+          "startMs": 190,
+          "endMs": 3090
         },
         {
-          "text": "从一键式脚手架生成分镜契约开始",
-          "startFrame": 135,
-          "endFrame": 214,
-          "globalStartFrame": 836,
-          "globalEndFrame": 915,
-          "startMs": 4490,
-          "endMs": 7150
+          "text": "过去的大模型是你问一句它答一段",
+          "startFrame": 100,
+          "endFrame": 186,
+          "globalStartFrame": 608,
+          "globalEndFrame": 694,
+          "startMs": 3330,
+          "endMs": 6190
         },
         {
-          "text": "经过 ChatTTS 随和男声音色合成与发音矫正",
-          "startFrame": 224,
-          "endFrame": 356,
-          "globalStartFrame": 925,
-          "globalEndFrame": 1057,
-          "startMs": 7470,
-          "endMs": 11870
+          "text": "而 Muse 是一个拥有自主执行权限的后台代理人",
+          "startFrame": 192,
+          "endFrame": 318,
+          "globalStartFrame": 700,
+          "globalEndFrame": 826,
+          "startMs": 6390,
+          "endMs": 10610
         },
         {
-          "text": "再由达摩院 Paraformer 完成毫秒级物理打点",
+          "text": "给它一句话",
+          "startFrame": 327,
+          "endFrame": 349,
+          "globalStartFrame": 835,
+          "globalEndFrame": 857,
+          "startMs": 10890,
+          "endMs": 11630
+        },
+        {
+          "text": "它自己在后台去开浏览器",
           "startFrame": 356,
-          "endFrame": 455,
-          "globalStartFrame": 1057,
-          "globalEndFrame": 1156,
+          "endFrame": 413,
+          "globalStartFrame": 864,
+          "globalEndFrame": 921,
           "startMs": 11870,
-          "endMs": 15170
+          "endMs": 13770
         },
         {
-          "text": "经过质量门禁审查后",
-          "startFrame": 484,
-          "endFrame": 525,
-          "globalStartFrame": 1185,
-          "globalEndFrame": 1226,
-          "startMs": 16129,
-          "endMs": 17490
+          "text": "比价订票",
+          "startFrame": 422,
+          "endFrame": 449,
+          "globalStartFrame": 930,
+          "globalEndFrame": 957,
+          "startMs": 14050,
+          "endMs": 14970
         },
         {
-          "text": "由 Remotion 多核无头浏览器集群并行导出成片",
-          "startFrame": 529,
-          "endFrame": 653,
-          "globalStartFrame": 1230,
-          "globalEndFrame": 1354,
-          "startMs": 17630,
-          "endMs": 21775
+          "text": "采购物品",
+          "startFrame": 450,
+          "endFrame": 469,
+          "globalStartFrame": 958,
+          "globalEndFrame": 977,
+          "startMs": 14990,
+          "endMs": 15630
+        },
+        {
+          "text": "甚至回复复杂的商务邮件",
+          "startFrame": 480,
+          "endFrame": 537,
+          "globalStartFrame": 988,
+          "globalEndFrame": 1045,
+          "startMs": 15990,
+          "endMs": 17905
         }
       ],
-      "title": "端到端五阶自动化流水线全景拓扑",
-      "badge": "PIPELINE TOPOLOGY · 拓扑全景",
+      "title": "终结聊天机器人：从被动问答到主动接管",
+      "badge": "PARADIGM SHIFT · 范式跃迁",
+      "cards": [
+        {
+          "title": "被动问答时代终结",
+          "desc": "传统 Chatbot 只能在对话框里干瞪眼，输出文字等待人类手动复制操作",
+          "tag": "PASSIVE CHAT"
+        },
+        {
+          "title": "主动代理人跃迁",
+          "desc": "自主拆解多步真实任务，无头浏览器后台自主冲浪执行，无需人类干预",
+          "tag": "AUTONOMOUS AGENT"
+        },
+        {
+          "title": "真实世界任务履约",
+          "desc": "直接接管订票、支付结账、日程编排与跨应用协同，完成闭环交付",
+          "tag": "REAL WORLD ACTION"
+        }
+      ],
+      "theme": "vercel-geist"
+    },
+    {
+      "id": "scene_03",
+      "type": "ArchitectureTopology",
+      "startFrame": 1048,
+      "durationInFrames": 591,
+      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_03.wav",
+      "text": "在底层架构上，它没有裸跑在大模型上，而是把每一个任务塞进独立的 Muse Secure VM 虚拟机沙箱。顶层是代号牛油果的 Muse Spark 推理引擎，底层则是隔离运行的浏览器环境与会话总线，防止恶意脚本注入。",
+      "rawText": "在 底 层 架 构 上 它 没 有 裸 跑 在 大 模 型 上 而 是 把 每 一 个 任 务 塞 进 独 立 的 milsecure v 呃 m 就 是 呃 虚 拟 机 商 箱 顶 层 是 代 号 牛 油 果 的 milal spark 推 理 引 擎 底 层 则 是 隔 离 运 行 的 浏 览 器 环 境 与 绘 画 总 线 防 止 恶 意 脚 本 注 入",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "在底层架构上",
+          "startFrame": 6,
+          "endFrame": 50,
+          "globalStartFrame": 1054,
+          "globalEndFrame": 1098,
+          "startMs": 190,
+          "endMs": 1670
+        },
+        {
+          "text": "它没有裸跑在大模型上",
+          "startFrame": 50,
+          "endFrame": 105,
+          "globalStartFrame": 1098,
+          "globalEndFrame": 1153,
+          "startMs": 1670,
+          "endMs": 3510
+        },
+        {
+          "text": "而是把每一个任务塞进独立的 Muse Secure VM 虚拟机沙箱",
+          "startFrame": 108,
+          "endFrame": 292,
+          "globalStartFrame": 1156,
+          "globalEndFrame": 1340,
+          "startMs": 3590,
+          "endMs": 9750
+        },
+        {
+          "text": "顶层是代号牛油果的 Muse Spark 推理引擎",
+          "startFrame": 292,
+          "endFrame": 393,
+          "globalStartFrame": 1340,
+          "globalEndFrame": 1441,
+          "startMs": 9750,
+          "endMs": 13090
+        },
+        {
+          "text": "底层则是隔离运行的浏览器环境与会话总线",
+          "startFrame": 393,
+          "endFrame": 502,
+          "globalStartFrame": 1441,
+          "globalEndFrame": 1550,
+          "startMs": 13090,
+          "endMs": 16730
+        },
+        {
+          "text": "防止恶意脚本注入",
+          "startFrame": 502,
+          "endFrame": 585,
+          "globalStartFrame": 1550,
+          "globalEndFrame": 1633,
+          "startMs": 16730,
+          "endMs": 19495
+        }
+      ],
+      "title": "硬核解构：Muse Secure VM 隔离沙箱与大脑",
+      "badge": "CORE ARCHITECTURE · 核心架构",
       "topologyNodes": [
         {
-          "id": "scaffold",
-          "label": "CLI Scaffold",
-          "sublabel": "一键主题与分镜契约",
-          "icon": "📝",
-          "status": "GENERATED",
+          "id": "goal",
+          "label": "User Goal",
+          "sublabel": "自然语言意图输入",
+          "icon": "💬",
+          "status": "INPUT",
           "statusColor": "#38bdf8",
           "x": 10,
           "y": 50
         },
         {
-          "id": "tts",
-          "label": "ChatTTS Engine",
-          "sublabel": "Seed 4444 + G2P 纠音",
-          "icon": "🎙️",
-          "status": "SYNTHESIZED",
+          "id": "spark",
+          "label": "Muse Spark",
+          "sublabel": "Avocado 推理中枢",
+          "icon": "🧠",
+          "status": "ORCHESTRATE",
           "statusColor": "#818cf8",
-          "x": 30,
+          "x": 35,
           "y": 30
         },
         {
-          "id": "asr",
-          "label": "Paraformer ASR",
-          "sublabel": "物理声学字级毫秒打点",
-          "icon": "⏱️",
-          "status": "ALIGNED",
-          "statusColor": "#10b981",
-          "x": 55,
-          "y": 30
-        },
-        {
-          "id": "gate",
-          "label": "Quality Gate",
-          "sublabel": "单调性与数据契约门禁",
+          "id": "vm",
+          "label": "Secure VM",
+          "sublabel": "隔离虚拟机安全沙箱",
           "icon": "🛡️",
-          "status": "VERIFIED",
-          "statusColor": "#f59e0b",
-          "x": 55,
-          "y": 70
+          "status": "SANDBOXED",
+          "statusColor": "#10b981",
+          "x": 65,
+          "y": 50
         },
         {
-          "id": "render",
-          "label": "Remotion Cluster",
-          "sublabel": "多核并行光栅化导出",
-          "icon": "🖥️",
-          "status": "RENDERED",
+          "id": "headless",
+          "label": "Headless Web",
+          "sublabel": "无头浏览器跨站执行",
+          "icon": "🌐",
+          "status": "EXECUTING",
+          "statusColor": "#f59e0b",
+          "x": 90,
+          "y": 30
+        },
+        {
+          "id": "bus",
+          "label": "Encrypted Bus",
+          "sublabel": "端到端加密状态同步",
+          "icon": "💾",
+          "status": "COMMITTED",
           "statusColor": "#a855f7",
-          "x": 85,
-          "y": 50
+          "x": 65,
+          "y": 75
         }
       ],
       "topologyLinks": [
         {
-          "from": "scaffold",
-          "to": "tts",
-          "label": "Script JSON",
-          "active": true
+          "from": "goal",
+          "to": "spark",
+          "label": "意图解析"
         },
         {
-          "from": "tts",
-          "to": "asr",
-          "label": "Audio Stream",
-          "active": true
+          "from": "spark",
+          "to": "vm",
+          "label": "安全派发"
         },
         {
-          "from": "asr",
-          "to": "gate",
-          "label": "Timeline Data",
-          "active": true
+          "from": "vm",
+          "to": "headless",
+          "label": "外部交互"
         },
         {
-          "from": "gate",
-          "to": "render",
-          "label": "Passed Contract",
-          "active": true
+          "from": "vm",
+          "to": "bus",
+          "label": "加密归档"
         }
       ],
-      "theme": "linear-graphite"
-    },
-    {
-      "id": "scene_03",
-      "type": "TerminalCodeDemo",
-      "startFrame": 1361,
-      "durationInFrames": 586,
-      "audioPath": "projects/ai_video_studio_workflow_demo/audio/scene_03.wav",
-      "text": "纸上得来终觉浅，绝知此事要躬行。创作者日常生产视频只需在终端敲入两行简洁命令。脚手架自动根据主题解析领域并输出契约，总控管道脚本则在后台并发拉起多进程推理，完成从文案到广播级成片的全生命周期闭环。",
-      "rawText": "纸 上 得 来 终 觉 浅 绝 知 此 事 也 要 共 行 创 作 者 日 常 生 产 视 频 只 需 在 终 端 敲 入 两 行 简 洁 命 令 脚 手 架 自 动 根 据 主 题 解 析 领 域 并 输 出 契 约 总 控 管 道 脚 本 则 在 后 台 并 发 拉 起 多 进 程 推 理 完 成 从 文 案 到 广 播 集 成 片 的 全 生 命 周 期 闭 环",
-      "emotion": "<|NEUTRAL|>",
-      "words": [
-        {
-          "text": "纸上得来终觉浅",
-          "startFrame": 6,
-          "endFrame": 48,
-          "globalStartFrame": 1367,
-          "globalEndFrame": 1409,
-          "startMs": 210,
-          "endMs": 1590
-        },
-        {
-          "text": "绝知此事要躬行",
-          "startFrame": 54,
-          "endFrame": 84,
-          "globalStartFrame": 1415,
-          "globalEndFrame": 1445,
-          "startMs": 1790,
-          "endMs": 2790
-        },
-        {
-          "text": "创作者日常生产视频只需在终端敲入两行简洁命令",
-          "startFrame": 84,
-          "endFrame": 214,
-          "globalStartFrame": 1445,
-          "globalEndFrame": 1575,
-          "startMs": 2790,
-          "endMs": 7150
-        },
-        {
-          "text": "脚手架自动根据主题解析领域并输出契约",
-          "startFrame": 214,
-          "endFrame": 331,
-          "globalStartFrame": 1575,
-          "globalEndFrame": 1692,
-          "startMs": 7150,
-          "endMs": 11030
-        },
-        {
-          "text": "总控管道脚本则在后台并发拉起多进程推理",
-          "startFrame": 331,
-          "endFrame": 442,
-          "globalStartFrame": 1692,
-          "globalEndFrame": 1803,
-          "startMs": 11030,
-          "endMs": 14730
-        },
-        {
-          "text": "完成从文案到广播级成片的全生命周期闭环",
-          "startFrame": 442,
-          "endFrame": 577,
-          "globalStartFrame": 1803,
-          "globalEndFrame": 1938,
-          "startMs": 14730,
-          "endMs": 19225
-        }
-      ],
-      "title": "极简开发者终端：两行命令全自动交付",
-      "badge": "DEVELOPER EXPERIENCE · 终端体验",
-      "codeSnippet": "python scripts/create_script_from_topic.py --topic \"Redis核心架构\" --project redis_demo\npython scripts/pipeline.py --script content/scripts/redis_demo.json --project redis_demo --isolated\nnpx remotion render src/index.ts MasterVideo out/redis_demo.mp4 --concurrency=6",
-      "codeLang": "bash",
-      "codeTitle": "terminal_workflow.sh",
-      "theme": "linear-graphite"
+      "theme": "cyber-blueprint"
     },
     {
       "id": "scene_04",
-      "type": "MetricComparison",
-      "startFrame": 1947,
-      "durationInFrames": 639,
-      "audioPath": "projects/ai_video_studio_workflow_demo/audio/scene_04.wav",
-      "text": "口说无凭，数据说话。在无独立显卡的普通锐龙八核工作站上，系统依靠向量加速展现出了惊人的生产力能效比。达摩院 Paraformer 打点速度高达二十倍超实时，无头浏览器光栅化渲染速度较单核提升超五倍，彻底打破对重型英伟达显卡的昂贵依赖。",
-      "rawText": "口 说 无 凭 数 据 说 话 在 无 独 立 显 卡 的 普 通 锐 龙 八 核 工 作 站 上 系 统 依 靠 向 量 加 速 展 现 出 了 惊 人 的 生 产 力 能 效 比 达 摩 院 开 尔 former 打 点 速 度 高 达 二 十 倍 超 时 时 无 头 浏 览 器 光 扎 化 渲 染 速 度 叫 单 核 提 升 超 五 倍 彻 底 打 破 对 重 型 英 伟 达 显 卡 的 昂 贵 依 赖",
+      "type": "Default",
+      "startFrame": 1639,
+      "durationInFrames": 611,
+      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_04.wav",
+      "text": "更有意思的是，Meta 刚刚在 GitHub 上开源了硬件开发包。用一块几十块钱的 ESP32 或者树莓派，极客们就能手搓一个专属的物理桌面按键。拍一下按钮，就能唤醒 Muse 直接接管你桌面的智能设备与自动化流程。",
+      "rawText": "更 有 意 思 的 是 meta 刚 刚 在 githup 上 开 源 了 硬 件 开 发 包 用 一 块 几 十 块 钱 的 e 比 如 说 IS 比 如 说 p 或 者 树 莓 派 极 客 们 就 能 手 搓 一 个 专 属 的 物 理 桌 面 按 键 拍 一 下 按 钮 就 能 唤 醒 muse 直 接 接 管 你 桌 面 的 智 能 设 备 与 自 动 化 流 程",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "口说无凭",
-          "startFrame": 3,
-          "endFrame": 24,
-          "globalStartFrame": 1950,
-          "globalEndFrame": 1971,
-          "startMs": 110,
-          "endMs": 790
+          "text": "更有意思的是",
+          "startFrame": 4,
+          "endFrame": 29,
+          "globalStartFrame": 1643,
+          "globalEndFrame": 1668,
+          "startMs": 130,
+          "endMs": 970
         },
         {
-          "text": "数据说话",
-          "startFrame": 24,
-          "endFrame": 42,
-          "globalStartFrame": 1971,
-          "globalEndFrame": 1989,
-          "startMs": 790,
-          "endMs": 1410
+          "text": "Meta 刚刚在 GitHub 上开源了硬件开发包",
+          "startFrame": 29,
+          "endFrame": 138,
+          "globalStartFrame": 1668,
+          "globalEndFrame": 1777,
+          "startMs": 970,
+          "endMs": 4610
         },
         {
-          "text": "在无独立显卡的普通锐龙八核工作站上",
-          "startFrame": 57,
-          "endFrame": 140,
-          "globalStartFrame": 2004,
-          "globalEndFrame": 2087,
-          "startMs": 1890,
-          "endMs": 4650
+          "text": "用一块几十块钱的 ESP32 或者树莓派",
+          "startFrame": 152,
+          "endFrame": 285,
+          "globalStartFrame": 1791,
+          "globalEndFrame": 1924,
+          "startMs": 5070,
+          "endMs": 9490
         },
         {
-          "text": "系统依靠向量加速展现出了惊人的生产力能效比",
-          "startFrame": 148,
-          "endFrame": 276,
-          "globalStartFrame": 2095,
-          "globalEndFrame": 2223,
-          "startMs": 4930,
-          "endMs": 9190
-        },
-        {
-          "text": "达摩院 Paraformer 打点速度高达二十倍超实时",
+          "text": "极客们就能手搓一个专属的物理桌面按键",
           "startFrame": 292,
-          "endFrame": 420,
-          "globalStartFrame": 2239,
-          "globalEndFrame": 2367,
+          "endFrame": 392,
+          "globalStartFrame": 1931,
+          "globalEndFrame": 2031,
           "startMs": 9730,
-          "endMs": 13990
+          "endMs": 13050
         },
         {
-          "text": "无头浏览器光栅化渲染速度较单核提升超五倍",
-          "startFrame": 420,
-          "endFrame": 550,
-          "globalStartFrame": 2367,
-          "globalEndFrame": 2497,
-          "startMs": 13990,
-          "endMs": 18350
+          "text": "拍一下按钮",
+          "startFrame": 392,
+          "endFrame": 413,
+          "globalStartFrame": 2031,
+          "globalEndFrame": 2052,
+          "startMs": 13050,
+          "endMs": 13770
         },
         {
-          "text": "彻底打破对重型英伟达显卡的昂贵依赖",
-          "startFrame": 550,
-          "endFrame": 633,
-          "globalStartFrame": 2497,
-          "globalEndFrame": 2580,
-          "startMs": 18350,
-          "endMs": 21085
+          "text": "就能唤醒 Muse 直接接管你桌面的智能设备与自动化流程",
+          "startFrame": 428,
+          "endFrame": 603,
+          "globalStartFrame": 2067,
+          "globalEndFrame": 2242,
+          "startMs": 14270,
+          "endMs": 20095
         }
       ],
-      "title": "纯 CPU 环境极致能效与性能基准评测",
-      "badge": "BENCHMARK SCORECARD · 性能基准",
-      "metrics": [
-        {
-          "title": "ASR 打点实时率 RTF (越低越快)",
-          "badge": "ALIGNMENT SPEED",
-          "pill": "20x 超实时",
-          "items": [
-            {
-              "name": "云端 API 往返网络开销",
-              "value": 1.85,
-              "maxValue": 2.0,
-              "unit": "RTF",
-              "color": "#ef4444"
-            },
-            {
-              "name": "FunASR 本地 AVX2 向量加速",
-              "value": 0.05,
-              "maxValue": 2.0,
-              "unit": "RTF",
-              "color": "#10b981",
-              "highlight": true
-            }
-          ]
-        },
-        {
-          "title": "成片光栅化渲染帧率 (FPS 吞吐)",
-          "badge": "RENDER THROUGHPUT",
-          "pill": "5.6x 并行提速",
-          "items": [
-            {
-              "name": "单进程串行光栅化",
-              "value": 12,
-              "maxValue": 80,
-              "unit": "fps",
-              "color": "#64748b"
-            },
-            {
-              "name": "Remotion 6核并行集群",
-              "value": 68,
-              "maxValue": 80,
-              "unit": "fps",
-              "color": "#38bdf8",
-              "highlight": true
-            }
-          ]
-        }
-      ],
-      "theme": "linear-graphite"
+      "title": "极客狂欢：GitHub 开源硬件 SDK 与物理外设",
+      "badge": "OPEN SOURCE ECOSYSTEM · 极客生态",
+      "codeSnippet": "#include <WiFi.h>\n#include <MuseGadgetSDK.h>\n\nMusePuck puck(\"desk-smart-button-01\");\n\nvoid setup() {\n  puck.connectWiFi(\"Lab-Network-5G\", \"auth_token\");\n  puck.bindTrigger(PIN_BUTTON, \"MUSE_EXECUTE_ROUTINE\");\n}\n\nvoid loop() {\n  if (puck.isPressed()) {\n    puck.dispatchAction(\"整理未读邮件，并预订明早八点机场专车\");\n  }\n}",
+      "codeLang": "C++ / Arduino",
+      "codeTitle": "esp32_muse_gadget.cpp — ESP32 Physical Trigger",
+      "theme": "motion-canvas-warm"
     },
     {
       "id": "scene_05",
-      "type": "ExplainerWhiteboard",
-      "startFrame": 2586,
-      "durationInFrames": 571,
-      "audioPath": "projects/ai_video_studio_workflow_demo/audio/scene_05.wav",
-      "text": "回顾整个工作流的探索历程，从最初单纯的音频合成，演进到今天涵盖去 AI 化质感体系、物理声学微停顿对齐与多项目资产隔离的工程化矩阵。真正的自动化不是盲盒抽卡，而是对每一帧动画、每一个音标的精准敬畏。",
-      "rawText": "回 顾 整 个 工 作 流 的 探 索 历 程 从 最 初 单 纯 的 音 频 合 成 演 进 到 今 天 涵 麦 区 AI 化 质 感 体 系 物 理 声 学 微 停 顿 对 齐 与 多 项 目 资 产 隔 离 的 工 程 化 矩 阵 真 正 的 自 动 化 不 是 盲 盒 抽 卡 而 是 对 每 一 帧 动 画 每 一 个 音 标 的 精 准 敬 畏",
+      "type": "Default",
+      "startFrame": 2250,
+      "durationInFrames": 575,
+      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_05.wav",
+      "text": "但争议也随之爆发。外媒最新曝光，安全人员逆向了 Muse 的系统指令，发现它在后台为你认识的每一个亲戚、同事和伴侣，暗中建立详尽的人际关系画像档案。甚至多家企业内网已经拉响了未识别浏览器的安全警报。",
+      "rawText": "但 争 议 随 之 爆 发 外 媒 最 新 曝 光 安 全 人 员 逆 向 了 muse 的 这 个 系 统 指 令 发 现 他 在 后 台 为 你 认 识 的 每 一 个 亲 戚 同 事 和 伴 侣 暗 中 建 立 详 尽 的 人 际 关 系 画 像 档 案 甚 至 多 家 企 业 内 网 已 经 拉 响 了 未 识 别 浏 览 器 的 安 全 警 报",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "回顾整个工作流的探索历程",
-          "startFrame": 4,
-          "endFrame": 68,
-          "globalStartFrame": 2590,
-          "globalEndFrame": 2654,
-          "startMs": 130,
-          "endMs": 2250
+          "text": "但争议也随之爆发",
+          "startFrame": 5,
+          "endFrame": 64,
+          "globalStartFrame": 2255,
+          "globalEndFrame": 2314,
+          "startMs": 170,
+          "endMs": 2130
         },
         {
-          "text": "从最初单纯的音频合成",
-          "startFrame": 75,
-          "endFrame": 145,
-          "globalStartFrame": 2661,
-          "globalEndFrame": 2731,
-          "startMs": 2510,
-          "endMs": 4830
+          "text": "外媒最新曝光",
+          "startFrame": 64,
+          "endFrame": 91,
+          "globalStartFrame": 2314,
+          "globalEndFrame": 2341,
+          "startMs": 2130,
+          "endMs": 3030
         },
         {
-          "text": "演进到今天涵盖去 AI 化质感体系",
-          "startFrame": 153,
-          "endFrame": 231,
-          "globalStartFrame": 2739,
-          "globalEndFrame": 2817,
-          "startMs": 5090,
-          "endMs": 7690
+          "text": "安全人员逆向了 Muse 的系统指令",
+          "startFrame": 91,
+          "endFrame": 166,
+          "globalStartFrame": 2341,
+          "globalEndFrame": 2416,
+          "startMs": 3030,
+          "endMs": 5530
         },
         {
-          "text": "物理声学微停顿对齐与多项目资产隔离的工程化矩阵",
-          "startFrame": 239,
-          "endFrame": 372,
-          "globalStartFrame": 2825,
-          "globalEndFrame": 2958,
-          "startMs": 7970,
-          "endMs": 12410
+          "text": "发现它在后台为你认识的每一个亲戚",
+          "startFrame": 166,
+          "endFrame": 263,
+          "globalStartFrame": 2416,
+          "globalEndFrame": 2513,
+          "startMs": 5530,
+          "endMs": 8770
         },
         {
-          "text": "真正的自动化不是盲盒抽卡",
-          "startFrame": 388,
-          "endFrame": 444,
-          "globalStartFrame": 2974,
-          "globalEndFrame": 3030,
-          "startMs": 12930,
-          "endMs": 14790
+          "text": "同事和伴侣",
+          "startFrame": 263,
+          "endFrame": 309,
+          "globalStartFrame": 2513,
+          "globalEndFrame": 2559,
+          "startMs": 8770,
+          "endMs": 10310
         },
         {
-          "text": "而是对每一帧动画",
-          "startFrame": 453,
-          "endFrame": 499,
-          "globalStartFrame": 3039,
-          "globalEndFrame": 3085,
-          "startMs": 15090,
-          "endMs": 16650
+          "text": "暗中建立详尽的人际关系画像档案",
+          "startFrame": 309,
+          "endFrame": 412,
+          "globalStartFrame": 2559,
+          "globalEndFrame": 2662,
+          "startMs": 10310,
+          "endMs": 13730
         },
         {
-          "text": "每一个音标的精准敬畏",
-          "startFrame": 504,
-          "endFrame": 565,
-          "globalStartFrame": 3090,
-          "globalEndFrame": 3151,
-          "startMs": 16810,
-          "endMs": 18835
+          "text": "甚至多家企业内网已经拉响了未识别浏览器的安全警报",
+          "startFrame": 412,
+          "endFrame": 570,
+          "globalStartFrame": 2662,
+          "globalEndFrame": 2820,
+          "startMs": 13730,
+          "endMs": 18985
         }
       ],
-      "title": "工程化演进：向更稳健的自动化视界迈进",
-      "badge": "PRODUCTION VISION · 演进思考",
+      "title": "暗流涌动：系统指令被逆向与人际档案隐私风暴",
+      "badge": "PRIVACY CONTROVERSY · 争议风暴",
       "cards": [
         {
-          "title": "全链路数据可溯",
-          "desc": "从原始文案、分词时间戳到渲染配置全部纯文本化，无缝纳管 Git 版本控制",
-          "tag": "GIT OPS"
+          "title": "深度人际画像档案 (People Pages)",
+          "desc": "自动深度嗅探通讯录与会话，为家人同事暗中生成喜好、偏好与社交权重画像",
+          "tag": "DOSSIER RISK"
         },
         {
-          "title": "自愈式资产容错",
-          "desc": "音频缺失自动合成补齐、字数溢出自动分句截断，构建高弹性健壮流水线",
-          "tag": "RESILIENCE"
+          "title": "企业内网流量警报",
+          "desc": "以未识别浏览器形态在企业内网悄无声息穿透，多家跨国安全团队紧急封锁阻断",
+          "tag": "NETWORK ALERT"
         },
         {
-          "title": "矩阵化多端交付",
-          "desc": "同源时钟契约横竖屏自适应光栅化，一键辐射宽屏长视频与手机短视频",
-          "tag": "OMNICHANNEL"
+          "title": "数字隐私终极大博弈",
+          "desc": "极致便利与全景式监视的零和博弈，这究竟是人类外挂还是数字全景敞视监狱？",
+          "tag": "PRIVACY DILEMMA"
+        }
+      ],
+      "theme": "cinema-editorial"
+    },
+    {
+      "id": "scene_06",
+      "type": "Default",
+      "startFrame": 2825,
+      "durationInFrames": 482,
+      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_06.wav",
+      "text": "从被动生成文字，到主动接管现实。无论你喜不喜欢，2026 年都已经正式吹响了个人代理人时代的号角。这到底是解放双手的人类外挂，还是无死角的监控网络？答案或许就在每一个人的选择里。",
+      "rawText": "从 被 动 生 成 文 字 到 主 动 接 管 现 实 无 论 你 喜 不 喜 欢 年 都 已 经 正 式 吹 响 了 个 人 代 理 人 时 代 的 号 角 这 到 底 是 解 放 双 手 的 人 类 外 挂 还 是 无 死 角 的 监 控 网 络 答 案 或 许 就 在 每 一 个 人 的 选 择 里",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "从被动生成文字",
+          "startFrame": 4,
+          "endFrame": 46,
+          "globalStartFrame": 2829,
+          "globalEndFrame": 2871,
+          "startMs": 150,
+          "endMs": 1530
+        },
+        {
+          "text": "到主动接管现实",
+          "startFrame": 46,
+          "endFrame": 82,
+          "globalStartFrame": 2871,
+          "globalEndFrame": 2907,
+          "startMs": 1530,
+          "endMs": 2730
+        },
+        {
+          "text": "无论你喜不喜欢",
+          "startFrame": 93,
+          "endFrame": 119,
+          "globalStartFrame": 2918,
+          "globalEndFrame": 2944,
+          "startMs": 3090,
+          "endMs": 3970
+        },
+        {
+          "text": "2026 年都已经正式吹响了个人代理人时代的号角",
+          "startFrame": 119,
+          "endFrame": 280,
+          "globalStartFrame": 2944,
+          "globalEndFrame": 3105,
+          "startMs": 3970,
+          "endMs": 9350
+        },
+        {
+          "text": "这到底是解放双手的人类外挂",
+          "startFrame": 280,
+          "endFrame": 347,
+          "globalStartFrame": 3105,
+          "globalEndFrame": 3172,
+          "startMs": 9350,
+          "endMs": 11570
+        },
+        {
+          "text": "还是无死角的监控网络",
+          "startFrame": 347,
+          "endFrame": 435,
+          "globalStartFrame": 3172,
+          "globalEndFrame": 3260,
+          "startMs": 11570,
+          "endMs": 14490
+        },
+        {
+          "text": "答案或许就在每一个人的选择里",
+          "startFrame": 435,
+          "endFrame": 477,
+          "globalStartFrame": 3260,
+          "globalEndFrame": 3302,
+          "startMs": 14490,
+          "endMs": 15895
+        }
+      ],
+      "title": "终局反思：2026 个人代理人浪潮已至",
+      "badge": "THE FUTURE IS NOW · 终局启示",
+      "cards": [
+        {
+          "title": "生成式 AI 范式质变",
+          "desc": "从写诗画画的玩具对话框，全面进化为替人类接管现实任务的行动执行引擎",
+          "tag": "NEXT ERA"
+        },
+        {
+          "title": "人机交互全面重塑",
+          "desc": "传统应用界面与网页退居幕后，个人 Agent 成为物理世界与网络世界的超级入口",
+          "tag": "AGENT AS OS"
+        },
+        {
+          "title": "保持敬畏与清醒",
+          "desc": "在享受极致自动化时代红利的同时，守护好属于人类自己最后的数据主权底线",
+          "tag": "HUMAN AGENCY"
         }
       ],
       "theme": "linear-graphite"
