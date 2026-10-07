@@ -143,25 +143,25 @@ async def synthesize_edge_tts(text: str, out_path: str, voice: str = "zh-CN-Yunx
             await asyncio.sleep(2)
 
 def generate_scene_audio(text: str, out_path: str, env: dict):
-    provider = env.get("TTS_PROVIDER", "edge_tts").lower()
+    provider = env.get("TTS_PROVIDER", "chattts").lower()
     edge_voice = env.get("EDGE_TTS_VOICE", "zh-CN-YunxiNeural")
     sf_key = env.get("SILICONFLOW_API_KEY")
     sf_voice = env.get("CUSTOM_VOICE_ID")
     sf_model = env.get("SILICONFLOW_MODEL", "FunAudioLLM/CosyVoice2-0.5B")
 
-    # 0. 优先尝试 Kokoro-82M 超轻量极速 CPU 引擎
-    if provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
-        from scripts.tts_kokoro import synthesize_kokoro
-        kokoro_voice = env.get("KOKORO_VOICE", "zm_031")
-        print(f"    [Kokoro-82M] 正在使用本地 CPU 极速合成 (音色: {kokoro_voice})...")
-        return synthesize_kokoro(text, out_path, voice=kokoro_voice)
-
-    # 1. 优先尝试 ChatTTS 口语化对话引擎
-    elif provider in ("chattts", "chat_tts"):
+    # 1. 主力引擎: ChatTTS 本地口语化对话与多元种子声学引擎
+    if provider in ("chattts", "chat_tts"):
         from scripts.tts_chattts import synthesize_chattts
         seed = int(env.get("CHATTTS_SEED", 2222))
         print(f"    [ChatTTS] 正在使用本地极速口语合成 (Seed: {seed})...")
         return synthesize_chattts(text, out_path, seed=seed)
+
+    # 2. Kokoro-82M 超轻量极速 CPU 引擎 (保留)
+    elif provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
+        from scripts.tts_kokoro import synthesize_kokoro
+        kokoro_voice = env.get("KOKORO_VOICE", "zm_031")
+        print(f"    [Kokoro-82M] 正在使用本地 CPU 极速合成 (音色: {kokoro_voice})...")
+        return synthesize_kokoro(text, out_path, voice=kokoro_voice)
 
     # 2. 优先尝试 F5-TTS 扩散流匹配引擎
     elif provider in ("f5_tts", "f5tts", "f5"):
@@ -294,7 +294,7 @@ def main():
         env["GPT_SOVITS_PROMPT_TEXT"] = args.ref_text
         env["F5_REF_TEXT"] = args.ref_text
 
-    provider = env.get("TTS_PROVIDER", "edge_tts")
+    provider = env.get("TTS_PROVIDER", "chattts")
     custom_voice = env.get("KOKORO_VOICE") or env.get("CHATTTS_SEED") or env.get("EDGE_TTS_VOICE") or env.get("CUSTOM_VOICE_ID", "默认/未配置")
 
     print(f"\n=======================================================")
