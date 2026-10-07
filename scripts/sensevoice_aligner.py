@@ -195,7 +195,11 @@ def align_audio_files(
         # 视觉元数据无缝继承
         if script_meta_map and scene_id in script_meta_map:
             meta = script_meta_map[scene_id]
-            for field in ["title", "badge", "subtitle", "cards", "bulletPoints", "codeSnippet", "codeLang", "type"]:
+            for field in [
+                "title", "badge", "subtitle", "cards", "bulletPoints",
+                "codeSnippet", "codeLang", "type",
+                "topologyNodes", "topologyLinks", "metrics"
+            ]:
                 if field in meta:
                     scene_data[field] = meta[field]
 
