@@ -36,6 +36,8 @@ def main():
     parser.add_argument("--skip_align", action="store_true", help="跳过 ASR 毫秒打点")
     parser.add_argument("--skip_validate", action="store_true", help="跳过静态审查")
     parser.add_argument("--render", action="store_true", help="直接调用 Remotion 渲染出最终 MP4")
+    parser.add_argument("--engine", type=str, choices=["auto", "paraformer", "sensevoice"], default="auto", help="ASR 对齐引擎 (auto/paraformer/sensevoice)")
+    parser.add_argument("--device", type=str, default="cpu", help="ASR 推理设备 (cpu/cuda)")
     parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 
@@ -51,8 +53,15 @@ def main():
     if not args.skip_align:
         align_script = os.path.join(PROJECT_ROOT, "scripts", "sensevoice_aligner.py")
         run_step(
-            "SenseVoice 毫秒打点与时间轴契约生成",
-            [PYTHON_EXE, align_script, "--project", args.project, "--fps", str(args.fps), "--script", args.script]
+            "声学物理打点与时间轴契约生成",
+            [
+                PYTHON_EXE, align_script,
+                "--project", args.project,
+                "--fps", str(args.fps),
+                "--script", args.script,
+                "--engine", args.engine,
+                "--device", args.device
+            ]
         )
 
     # 步骤 2: 质量门禁自动审查
