@@ -32,8 +32,8 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const { fps, width, height } = useVideoConfig();
   const isVertical = width < height;
 
-  // 获取活动主题 (优先分镜声明，次选全局时间轴，默认 obsidian-minimal)
-  const activeThemeName = scene.theme || (timelineData as any).theme || 'obsidian-minimal';
+  // 获取活动主题 (优先分镜声明，次选全局时间轴，由 getTheme 统一提供默认回退)
+  const activeThemeName = scene.theme || (timelineData as any).theme;
   const theme: ThemeConfig = getTheme(activeThemeName);
 
   const isSfxEnabled = (timelineData as any).enableSfx !== false && scene.enableSfx !== false;

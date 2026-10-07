@@ -7,23 +7,27 @@ export type ThemeName =
   | 'blueprint-engineering'// 兼容旧版蓝图别名
   | 'cinema-editorial';    // 影视杂志风
 
+export interface SpotlightConfig {
+  color: string;
+  opacity: number;
+  size?: string;
+  position?: string;
+}
+
+export interface GridOverlayConfig {
+  type: 'dots' | 'grid' | 'none';
+  color: string;
+  size: number;
+  opacity?: number;
+}
+
 export interface ThemeConfig {
   name: ThemeName;
   displayName: string;
   description: string;
   background: string;
-  spotlight?: {
-    color: string;
-    opacity: number;
-    size?: string;
-    position?: string;
-  };
-  gridOverlay?: {
-    type: 'dots' | 'grid' | 'none';
-    color: string;
-    size: number;
-    opacity?: number;
-  };
+  spotlight?: SpotlightConfig;
+  gridOverlay?: GridOverlayConfig;
   titleGradient: string;
   titleColor: string;
   badgeBg: string;

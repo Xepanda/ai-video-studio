@@ -294,7 +294,6 @@ export const MasterVideo: React.FC = () => {
   const bgmVolume = (timelineData as any).bgmVolume ?? 0.10;
   const enableBgm = (timelineData as any).enableBgm !== false;
   const enableSfx = (timelineData as any).enableSfx !== false;
-  const activeTheme = getTheme((timelineData as any).theme);
 
   // 严格单调递增区间计算，杜绝短视频测试时总帧数过少引发的 interpolate 崩溃
   const fadeInFrames = Math.max(1, Math.min(45, Math.floor(totalDuration * 0.25)));
@@ -482,7 +481,8 @@ export const RemotionRoot: React.FC = () => {
       {/* 4 大顶级设计流派样片演示 Composition (方便即时比对风格) */}
       <Composition
         id="DemoLinearGraphite"
-        component={() => <ThemeShowcase themeName="linear-graphite" />}
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'linear-graphite' as ThemeName }}
         durationInFrames={120}
         fps={30}
         width={1920}
@@ -490,7 +490,8 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="DemoVercelGeist"
-        component={() => <ThemeShowcase themeName="vercel-geist" />}
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'vercel-geist' as ThemeName }}
         durationInFrames={120}
         fps={30}
         width={1920}
@@ -498,7 +499,8 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="DemoMotionCanvasWarm"
-        component={() => <ThemeShowcase themeName="motion-canvas-warm" />}
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'motion-canvas-warm' as ThemeName }}
         durationInFrames={120}
         fps={30}
         width={1920}
@@ -506,7 +508,8 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="DemoCyberBlueprint"
-        component={() => <ThemeShowcase themeName="cyber-blueprint" />}
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'cyber-blueprint' as ThemeName }}
         durationInFrames={120}
         fps={30}
         width={1920}

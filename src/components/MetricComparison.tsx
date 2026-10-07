@@ -1,6 +1,8 @@
 import React from 'react';
 import { useCurrentFrame, useVideoConfig, interpolate, spring } from 'remotion';
 
+import { safeColorWithAlpha } from '../styles/theme';
+
 export interface MetricItem {
   name: string;
   value: number;
@@ -22,14 +24,6 @@ export interface MetricComparisonProps {
   metrics?: MetricCategory[];
   title?: string;
 }
-
-const safeColorWithAlpha = (color: string | undefined, alphaHex: string, fallback: string = '#38bdf8') => {
-  const base = color || fallback;
-  if (base.startsWith('#') && (base.length === 7 || base.length === 4)) {
-    return `${base}${alphaHex}`;
-  }
-  return base;
-};
 
 export const MetricComparison: React.FC<MetricComparisonProps> = ({
   metrics: customMetrics,

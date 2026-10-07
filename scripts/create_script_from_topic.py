@@ -526,7 +526,21 @@ def main():
     parser.add_argument("--topic", type=str, required=True, help="视频核心主题 (例如: 'Redis 核心架构与高性能底层原理')")
     parser.add_argument("--project", type=str, default="", help="项目隔离标识 (默认由 topic 自动生成)")
     parser.add_argument("--scenes", type=int, default=5, choices=range(1, 6), help="生成的分镜数 (1 ~ 5 幕，默认 5 幕)")
-    parser.add_argument("--theme", type=str, choices=["obsidian-minimal", "blueprint-engineering", "cinema-editorial"], default="obsidian-minimal", help="视频视觉主题风格")
+    parser.add_argument(
+        "--theme",
+        type=str,
+        choices=[
+            "linear-graphite",
+            "vercel-geist",
+            "motion-canvas-warm",
+            "cyber-blueprint",
+            "obsidian-minimal",
+            "blueprint-engineering",
+            "cinema-editorial",
+        ],
+        default="linear-graphite",
+        help="视频视觉主题风格 (默认 linear-graphite 旗舰冷灰风)",
+    )
     parser.add_argument("--engine", type=str, default="chattts", help="TTS 配音服务商 (默认 chattts)")
     parser.add_argument("--voice", type=str, default="4444", help="TTS 配音音色 Seed (默认 4444 随和生活男声)")
     parser.add_argument("--domain", type=str, choices=["auto", "system_architecture", "ai_agent", "database_storage", "devops_infra", "hardware_iot"], default="auto", help="技术领域预设")

@@ -10,11 +10,7 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
   const posX = (frame * 0.2) % gridSize;
   const posY = (frame * 0.3) % gridSize;
 
-  const glowOpacity = interpolate(
-    Math.sin(frame * 0.03),
-    [-1, 1],
-    [0.15, 0.28]
-  );
+  const gridOpacity = theme.gridOverlay?.opacity ?? 0.75;
 
   return (
     <AbsoluteFill style={{ overflow: 'hidden', pointerEvents: 'none' }}>
@@ -36,7 +32,7 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
             backgroundImage: `radial-gradient(${theme.gridOverlay.color} 1.5px, transparent 1.5px)`,
             backgroundSize: `${gridSize}px ${gridSize}px`,
             backgroundPosition: `${posX}px ${posY}px`,
-            opacity: 0.85,
+            opacity: gridOpacity,
           }}
         />
       )}
@@ -52,29 +48,29 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
             `,
             backgroundSize: `${gridSize}px ${gridSize}px`,
             backgroundPosition: `${posX}px ${posY}px`,
-            opacity: 0.85,
+            opacity: gridOpacity,
           }}
         />
       )}
 
-      {/* 3. 摄影棚级环境聚光灯 (Aceternity / Linear Spotlight 漫射顶光) */}
+      {/* 3. 摄影棚级环境聚光灯 (Aceternity / Linear Spotlight 漫射顶光，几何定位与轻量化光栅优化) */}
       {theme.spotlight && (
         <div
           style={{
             position: 'absolute',
-            top: '-25%',
-            left: '10%',
-            width: '80%',
-            height: '70%',
+            top: theme.spotlight.position?.split(' ')[1] || '-15%',
+            left: '50%',
+            transform: 'translateX(-50%) translateZ(0)',
+            width: theme.spotlight.size?.split(' ')[0] || '80%',
+            height: theme.spotlight.size?.split(' ')[1] || '55%',
             borderRadius: '50%',
-            background: `radial-gradient(ellipse at 50% 30%, ${theme.spotlight.color} 0%, transparent 75%)`,
+            background: `radial-gradient(ellipse at 50% 35%, ${theme.spotlight.color} 0%, transparent 75%)`,
             opacity: theme.spotlight.opacity * interpolate(
               Math.sin(frame * 0.025),
               [-1, 1],
               [0.88, 1.0]
             ),
-            filter: 'blur(90px)',
-            transform: 'translateZ(0)',
+            filter: 'blur(45px)',
           }}
         />
       )}
