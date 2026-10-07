@@ -152,8 +152,8 @@ def generate_scene_audio(text: str, out_path: str, env: dict):
     # 1. 主力引擎: ChatTTS 本地口语化对话与多元种子声学引擎
     if provider in ("chattts", "chat_tts"):
         from scripts.tts_chattts import synthesize_chattts
-        seed = int(env.get("CHATTTS_SEED", 2222))
-        print(f"    [ChatTTS] 正在使用本地极速口语合成 (Seed: {seed})...")
+        seed = int(env.get("CHATTTS_SEED", 4444))
+        print(f"    [ChatTTS] 正在使用本地极速口语合成 (Seed: {seed} · 随和生活男声)...")
         return synthesize_chattts(text, out_path, seed=seed)
 
     # 2. Kokoro-82M 超轻量极速 CPU 引擎 (保留)
@@ -271,7 +271,7 @@ def main():
             try:
                 env["CHATTTS_SEED"] = int(v)
             except Exception:
-                env["CHATTTS_SEED"] = 2222
+                env["CHATTTS_SEED"] = 4444
         elif env.get("TTS_PROVIDER") == "edge_tts":
             env["EDGE_TTS_VOICE"] = v
         else:

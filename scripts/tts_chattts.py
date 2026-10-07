@@ -33,7 +33,7 @@ def get_chat_model():
         print(">>> ChatTTS 模型就绪！")
     return _chat_instance
 
-def synthesize_chattts(text: str, out_path: str, seed: int = 2222, speed: float = 1.0) -> str:
+def synthesize_chattts(text: str, out_path: str, seed: int = 4444, speed: float = 1.0) -> str:
     """
     使用 ChatTTS 合成音频
     :param text: 输入中文文本
@@ -91,5 +91,5 @@ def synthesize_chattts(text: str, out_path: str, seed: int = 2222, speed: float 
 if __name__ == "__main__":
     test_out = os.path.join(PROJECT_ROOT, "test_chattts_standalone.wav")
     print(f"正在测试 ChatTTS 独立运行: {test_out} ...")
-    res = synthesize_chattts("大家好！这是 ChatTTS 本地运行生成的极客闲聊语音，带有自然的呼吸与停顿。", test_out, seed=2222)
+    res = synthesize_chattts("大家好！这是 ChatTTS 本地运行生成的随和生活语音，带有自然的呼吸与停顿。", test_out, seed=4444)
     print(f"ChatTTS Standalone Success: {res}")
