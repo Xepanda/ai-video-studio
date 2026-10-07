@@ -111,10 +111,12 @@ def align_audio_files(
     model, engine_used, postprocess_fn = load_aligner_model(engine=engine, device=device)
 
     script_meta_map = {}
+    global_theme = "obsidian-minimal"
     if script_path and os.path.exists(script_path):
         try:
             with open(script_path, "r", encoding="utf-8") as f:
                 s_data = json.load(f)
+                global_theme = s_data.get("theme", "obsidian-minimal")
                 for sc in s_data.get("scenes", []):
                     if "id" in sc:
                         script_meta_map[sc["id"]] = sc
@@ -197,8 +199,8 @@ def align_audio_files(
             meta = script_meta_map[scene_id]
             for field in [
                 "title", "badge", "subtitle", "cards", "bulletPoints",
-                "codeSnippet", "codeLang", "type",
-                "topologyNodes", "topologyLinks", "metrics"
+                "codeSnippet", "codeLang", "codeTitle", "type",
+                "topologyNodes", "topologyLinks", "metrics", "theme"
             ]:
                 if field in meta:
                     scene_data[field] = meta[field]
@@ -303,6 +305,7 @@ def align_audio_files(
 
     timeline_data = {
         "project": project_name,
+        "theme": global_theme,
         "fps": fps,
         "totalDurationInFrames": current_start_frame,
         "scenes": scenes
