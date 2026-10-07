@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 tests/test_audio_mastering.py
-测试商业短视频级移动端广播人声母带增益优化器
+测试商业短视频级移动端广播人声母带增益优化器与音轨标准化引擎
 """
 
 import unittest
@@ -13,7 +13,12 @@ import sys
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(PROJECT_ROOT, "scripts"))
 
-from audio_mastering import master_audio_array, master_audio_file, master_video_file, find_ffmpeg
+from audio_mastering import (
+    master_audio_array,
+    master_audio_file,
+    master_video_file,
+    find_ffmpeg
+)
 
 
 class TestAudioMastering(unittest.TestCase):
@@ -52,6 +57,13 @@ class TestAudioMastering(unittest.TestCase):
         self.assertFalse(np.isnan(out).any())
         self.assertFalse(np.isinf(out).any())
 
+    def test_short_signal_safety(self):
+        # 极短信号 (< 16 采样点) 必须安全直通，杜绝 filtfilt padlen 越界异常 (IMP-02)
+        short_signal = np.array([0.1, -0.2, 0.3])
+        out = master_audio_array(short_signal, self.sr)
+        self.assertEqual(len(out), len(short_signal))
+        np.testing.assert_array_equal(out, short_signal)
+
     def test_stereo_compatibility(self):
         # 双声道立体声输入测试
         stereo = np.column_stack([self.quiet_signal, self.quiet_signal])
@@ -64,6 +76,11 @@ class TestAudioMastering(unittest.TestCase):
         ffmpeg_bin = find_ffmpeg()
         self.assertTrue(bool(ffmpeg_bin))
         self.assertTrue(os.path.exists(ffmpeg_bin))
+
+    def test_master_video_missing_file_safety(self):
+        # 不存在的文件必须安全返回 False，不抛出未经处理的异常
+        res = master_video_file("non_existent_video_path_xyz.mp4")
+        self.assertFalse(res)
 
 
 if __name__ == "__main__":

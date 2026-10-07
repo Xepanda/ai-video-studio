@@ -356,7 +356,7 @@ export const MasterVideo: React.FC = () => {
               }
             }
 
-            // 平滑过渡：0 帧(正讲话)压低至 duckRatio (约 45%)，duckFrames 帧(~0.5s 停顿/转场)平滑回升至 100%
+            // 平滑过渡：0 帧(正讲话)压低至 duckRatio (约 20%)，duckFrames 帧(~0.5s 停顿/转场)平滑回升至 100%
             const duckMultiplier = interpolate(
               minDistToSpeech,
               [0, duckFrames],

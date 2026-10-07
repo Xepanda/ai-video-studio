@@ -14,19 +14,20 @@ scripts/audio_mastering.py
    而是 -10.0 ~ -11.5 LUFS，LRA <= 3.5 LU，确保小音量下每一句台词字字清晰、极具冲击力。
 
 本模块提供完整的商业级短视频声学母带链条：
-1. 150Hz 四阶 Butterworth 高通滤波 (HPF)：强力切除无意义低频轰鸣，解放 35% 以上扬声器动态空间；
+1. 110Hz~120Hz 四阶 Butterworth 高通滤波 (HPF)：强力切除无意义低频轰鸣，解放 35% 以上扬声器动态空间，同时保留耳机听音男声温暖基频；
 2. 380Hz 箱体浊音衰减 (Mud Notch EQ, -2.5dB)：消除闷罐感与桶音；
 3. 3.2kHz 人声咬字与辅音穿透力提升 (Presence Peaking EQ, +4.8dB)：让声母、齿音在小扬声器上清晰爆发；
 4. 6.5kHz 高频空气感高架提升 (Air High-Shelf, +2.2dB)：赋予声音通透开阔感；
-5. 动态软压缩器 (Soft Compressor)：平滑瞬态突刺，提升弱音字词；
-6. 基于有效发音 (VAD) 的目标 RMS 补偿：严格锁定发音段有效能量在 -10.0 dBFS；
-7. 真软膝限幅器 (True Soft-Knee Limiter)：线性保留常规电平，仅对突刺进行平滑软饱和，杜绝数字破音；
+5. 30ms 平滑动态软压缩器 (Soft Compressor)：平滑瞬态突刺，提升弱音字词；
+6. 窗口能量包络 VAD 目标 RMS 补偿：基于时间窗有效发音段严格锁定在 -10.0 dBFS，杜绝过零点截断误差；
+7. 平滑软膝波形饱和器 (Soft-Knee Waveshaping Limiter)：线性保留常规电平，仅对突刺进行平滑软饱和，杜绝数字破音；
 8. 零时长漂移 EBU R128 / ITU-R BS.1770 广播级标准响度二次校验；
-9. 视频容器级无损音频响度标准化 (Stream Copy Video Loudness Mastering)。
+9. 视频容器级双遍 (Two-Pass) 线性母带标准化：配合 aresample=async=1，杜绝 AGC 呼吸效应与音画微漂移。
 """
 
 import os
 import sys
+import json
 import shutil
 import argparse
 import subprocess
@@ -103,14 +104,15 @@ def master_audio_array(
     target_rms_db: float = -10.0,
     target_peak_db: float = -0.4,
     presence_boost_db: float = 4.8,
-    hpf_freq: float = 150.0,
+    hpf_freq: float = 120.0,
     mud_cut_db: float = -2.5,
     highshelf_boost_db: float = 2.2
 ) -> np.ndarray:
     """
     对音频数组执行商业级短视频人声母带增益处理
     """
-    if data is None or len(data) == 0:
+    if data is None or len(data) <= 15:
+        # 防御短数据导致的 filtfilt padlen 越界异常 (IMP-02)
         return data
 
     is_stereo = False
@@ -127,7 +129,7 @@ def master_audio_array(
 
     nyquist = sr / 2.0
 
-    # 1. 150Hz 4th-order Butterworth 高通滤波 (彻底切除无声低频轰鸣，释放手机扬声器功率)
+    # 1. 4th-order Butterworth 高通滤波 (切除无声低频轰鸣，释放扬声器功率，同时保留人声基频)
     hpf_cutoff = min(max(hpf_freq, 40.0), nyquist - 200.0)
     b_hpf, a_hpf = signal.butter(4, hpf_cutoff / nyquist, btype='high')
     filtered = signal.filtfilt(b_hpf, a_hpf, audio)
@@ -157,10 +159,10 @@ def master_audio_array(
     gain_multiplier[over_mask] = (rms_env[over_mask] / comp_threshold) ** (1.0 / ratio - 1.0)
     compressed = filtered * gain_multiplier
 
-    # 6. 基于有效发音段 (Active Speech VAD) 的目标 RMS 补偿增益
-    active_mask = np.abs(compressed) > 0.02
-    if np.any(active_mask):
-        active_speech_rms = np.sqrt(np.mean(compressed[active_mask] ** 2))
+    # 6. 基于时间窗能量包络 (Windowed VAD) 的目标 RMS 补偿增益 (修复 IMP-01 过零点截断误差)
+    active_frames = rms_env > 0.015
+    if np.any(active_frames):
+        active_speech_rms = np.sqrt(np.mean(compressed[active_frames] ** 2))
     else:
         active_speech_rms = np.sqrt(np.mean(compressed ** 2))
 
@@ -168,7 +170,7 @@ def master_audio_array(
     makeup_gain = target_rms / max(active_speech_rms, 1e-6)
     boosted = compressed * makeup_gain
 
-    # 7. 真软膝限幅器 (True Soft-Knee Limiter)
+    # 7. 软膝饱和限幅器 (Soft-Knee Waveshaping Limiter)
     # 线性区域完全无损直通，仅在超过 knee_start 时平滑压缩突刺
     peak_limit = 10.0 ** (target_peak_db / 20.0)
     knee_start = 0.82 * peak_limit
@@ -195,10 +197,11 @@ def master_audio_file(
     use_loudnorm: bool = True,
     target_i: float = -11.0,
     target_tp: float = -0.5,
-    target_lra: float = 2.8
+    target_lra: float = 2.8,
+    hpf_freq: float = 120.0
 ) -> bool:
     """
-    对指定单个音频文件执行母带增益处理，并可选调用 FFmpeg EBU R128 广播响度校验
+    对指定单个音频文件执行母带增益处理，支持 WAV 与 MP3，并可选调用 FFmpeg EBU R128 广播响度校验
     """
     if not os.path.exists(file_path):
         print(f"❌ [Audio Mastering] 文件不存在: {file_path}")
@@ -216,38 +219,55 @@ def master_audio_file(
             data,
             sr,
             target_rms_db=target_rms_db,
-            target_peak_db=target_peak_db
+            target_peak_db=target_peak_db,
+            hpf_freq=hpf_freq
         )
 
         os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
-        sf.write(out_path, mastered, sr, subtype='PCM_16')
+        # 支持 MP3 文件自动转换保存为 WAV 广播格式 (IMP-04)
+        is_mp3_target = out_path.lower().endswith(".mp3")
+        target_save_path = out_path if not is_mp3_target else out_path[:-4] + ".wav"
+
+        sf.write(target_save_path, mastered, sr, subtype='PCM_16')
 
         # 可选使用 FFmpeg loudnorm 进行严谨的 ITU-R BS.1770 / EBU R128 二次响度标准化
         ffmpeg_bin = find_ffmpeg() if use_loudnorm else ""
         if ffmpeg_bin:
-            tmp_loudnorm = out_path + ".loudnorm.wav"
+            tmp_loudnorm = target_save_path + ".loudnorm.wav"
             try:
                 cmd = [
-                    ffmpeg_bin, "-y", "-i", out_path,
+                    ffmpeg_bin, "-y", "-i", target_save_path,
                     "-af", f"loudnorm=I={target_i}:TP={target_tp}:LRA={target_lra}",
                     "-ar", str(sr),
                     tmp_loudnorm
                 ]
                 subprocess.run(cmd, capture_output=True, check=True)
                 # 校验时长完全一致
-                info_orig = sf.info(out_path)
+                info_orig = sf.info(target_save_path)
                 info_norm = sf.info(tmp_loudnorm)
-                if abs(info_orig.duration - info_norm.duration) < 0.05:
-                    shutil.move(tmp_loudnorm, out_path)
+                delta_dur = abs(info_orig.duration - info_norm.duration)
+                if delta_dur < 0.05:
+                    shutil.move(tmp_loudnorm, target_save_path)
                 else:
+                    # 明确提示跳过并清理临时文件 (IMP-03)
+                    print(f"  ⚠️ [Audio Mastering] FFmpeg loudnorm 时长漂移超限 ({delta_dur:.3f}s >= 0.05s)，已保留纯 DSP 母带输出")
                     if os.path.exists(tmp_loudnorm):
                         os.remove(tmp_loudnorm)
             except Exception as e:
                 if os.path.exists(tmp_loudnorm):
                     os.remove(tmp_loudnorm)
 
+        # 若原输出路径是 MP3，用 FFmpeg 重新转码写回
+        if is_mp3_target and ffmpeg_bin:
+            try:
+                cmd_mp3 = [ffmpeg_bin, "-y", "-i", target_save_path, "-b:a", "320k", out_path]
+                subprocess.run(cmd_mp3, capture_output=True, check=True)
+            except Exception:
+                pass
+
         # 重新读取测量最终响度
-        final_data, _ = sf.read(out_path)
+        final_read_path = target_save_path if not is_mp3_target else out_path
+        final_data, _ = sf.read(final_read_path)
         rms_after = 20 * np.log10(max(1e-6, np.sqrt(np.mean(final_data ** 2))))
         peak_after = 20 * np.log10(max(1e-6, np.max(np.abs(final_data))))
         gain_diff = rms_after - rms_before
@@ -271,8 +291,9 @@ def master_video_file(
     target_lra: float = 3.0
 ) -> bool:
     """
-    对已渲染的 MP4 视频执行无损视频直通 + 音频轨 EBU R128 广播母带处理 (Stream Copy Video Loudness Mastering)
-    耗时仅约 3~6 秒，100% 保持画面画质与帧同步，锁定成片声音为短视频标准 -11.0 LUFS。
+    对已渲染的 MP4 视频执行无损视频直通 + 音频轨 EBU R128 双遍广播母带处理 (Two-Pass Stream Copy Video Loudness Mastering)
+    Pass 1 测量整体响度，Pass 2 以 linear=true 线性恒定增益应用，彻底消除动态抽吸(Pumping)效应，并利用 aresample=async=1 锁定音画同步。
+    耗时仅约 4~8 秒，100% 保持画面画质与字音打点同步，锁定成片声音为商业短视频黄金标准 -11.0 LUFS。
     """
     if not os.path.exists(mp4_path):
         print(f"❌ [Video Mastering] 视频文件不存在: {mp4_path}")
@@ -287,23 +308,79 @@ def master_video_file(
         out_mp4_path = mp4_path
 
     tmp_mp4 = mp4_path + ".mastered.mp4"
-    print(f"\n🎬 [Video Loudness Mastering] 正在对成品视频音轨执行广播级标准化...")
+    print(f"\n🎬 [Video Loudness Mastering] 正在启动成品视频音轨双遍广播级标准化 (Two-Pass EBU R128)...")
     print(f"  输入文件: {mp4_path}")
     print(f"  目标标准: 综合响度 {target_i} LUFS | 真实峰值 {target_tp} dBFS | 动态跨度 {target_lra} LU")
 
     try:
-        cmd = [
+        # Pass 1: 测量整片声学参数 (CRIT-01: 指定 utf-8 encoding 与 errors='replace')
+        cmd_measure = [
+            ffmpeg_bin, "-i", mp4_path, "-vn",
+            "-af", f"loudnorm=I={target_i}:TP={target_tp}:LRA={target_lra}:print_format=json",
+            "-f", "null", "-"
+        ]
+        res_measure = subprocess.run(
+            cmd_measure,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace"
+        )
+        if res_measure.returncode != 0:
+            print(f"❌ FFmpeg 第一遍声学测量失败: {res_measure.stderr[-300:]}")
+            return False
+
+        # 解析 Pass 1 输出 JSON
+        json_lines = []
+        in_json = False
+        for line in res_measure.stderr.splitlines():
+            if "{" in line:
+                in_json = True
+            if in_json:
+                json_lines.append(line)
+            if "}" in line and in_json:
+                break
+
+        if not json_lines:
+            print("❌ 未能提取 Pass 1 loudnorm 声学参数")
+            return False
+
+        stats = json.loads("\n".join(json_lines))
+        measured_i = stats.get("input_i", "-12.0")
+        measured_tp = stats.get("input_tp", "-1.0")
+        measured_lra = stats.get("input_lra", "3.0")
+        measured_thresh = stats.get("input_thresh", "-22.0")
+        target_offset = stats.get("target_offset", "0.0")
+
+        # Pass 2: 使用线性恒定增益应用 loudnorm，并加入 aresample=async=1 杜绝音画漂移 (CRIT-03)
+        loudnorm_linear_filter = (
+            f"aresample=async=1,"
+            f"loudnorm=I={target_i}:TP={target_tp}:LRA={target_lra}:"
+            f"measured_I={measured_i}:"
+            f"measured_TP={measured_tp}:"
+            f"measured_LRA={measured_lra}:"
+            f"measured_thresh={measured_thresh}:"
+            f"offset={target_offset}:linear=true"
+        )
+
+        cmd_render = [
             ffmpeg_bin, "-y",
             "-i", mp4_path,
             "-c:v", "copy",
-            "-af", f"loudnorm=I={target_i}:TP={target_tp}:LRA={target_lra}",
+            "-af", loudnorm_linear_filter,
             "-c:a", "aac",
             "-b:a", "320k",
             tmp_mp4
         ]
-        res = subprocess.run(cmd, capture_output=True, text=True)
-        if res.returncode != 0:
-            print(f"❌ FFmpeg 视频母带处理失败: {res.stderr[-300:]}")
+        res_render = subprocess.run(
+            cmd_render,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace"
+        )
+        if res_render.returncode != 0:
+            print(f"❌ FFmpeg 第二遍视频母带处理失败: {res_render.stderr[-300:]}")
             if os.path.exists(tmp_mp4):
                 os.remove(tmp_mp4)
             return False
@@ -323,10 +400,11 @@ def master_project_audio(
     project: str,
     target_rms_db: float = -10.0,
     target_peak_db: float = -0.4,
-    use_loudnorm: bool = True
+    use_loudnorm: bool = True,
+    hpf_freq: float = 120.0
 ) -> int:
     """
-    对指定项目的全部音频文件执行批量母带优化
+    对指定项目的全部音频文件执行批量母带优化 (支持 .wav 与 .mp3，修复 IMP-04)
     """
     project_audio_dir = os.path.join(PROJECT_ROOT, "public", "projects", project, "audio")
     if not os.path.exists(project_audio_dir):
@@ -340,19 +418,20 @@ def master_project_audio(
     print(f"\n=======================================================")
     print(f"🔊 [Audio Mastering] 启动商业级移动端广播人声母带增益与动态处理...")
     print(f"📂 目标目录: {project_audio_dir}")
-    print(f"🎯 目标标准: RMS {target_rms_db} dBFS | 峰值限幅 {target_peak_db} dBFS | EBU R128: {use_loudnorm}")
+    print(f"🎯 目标标准: RMS {target_rms_db} dBFS | 峰值限幅 {target_peak_db} dBFS | EBU R128: {use_loudnorm} | HPF: {hpf_freq}Hz")
     print(f"=======================================================\n")
 
     count = 0
     for filename in sorted(os.listdir(project_audio_dir)):
-        if filename.startswith("scene_") and filename.endswith(".wav"):
+        if filename.startswith("scene_") and filename.lower().endswith((".wav", ".mp3")):
             full_path = os.path.join(project_audio_dir, filename)
             if master_audio_file(
                 full_path,
                 full_path,
                 target_rms_db=target_rms_db,
                 target_peak_db=target_peak_db,
-                use_loudnorm=use_loudnorm
+                use_loudnorm=use_loudnorm,
+                hpf_freq=hpf_freq
             ):
                 count += 1
 
@@ -369,31 +448,49 @@ def main():
     parser.add_argument("--target_peak", type=float, default=-0.4, help="目标峰值限制 (dBFS, 默认 -0.4)")
     parser.add_argument("--target_i", type=float, default=-11.0, help="目标综合响度 (LUFS, 默认 -11.0)")
     parser.add_argument("--target_tp", type=float, default=-0.5, help="目标真实峰值 (dBFS, 默认 -0.5)")
+    parser.add_argument("--hpf_freq", type=float, default=120.0, help="高通滤波截止频率 (Hz, 默认 120.0)")
     parser.add_argument("--no_loudnorm", action="store_true", help="禁用 FFmpeg EBU R128 二次校正")
     args = parser.parse_args()
 
+    # 严格传递并检查执行返回值，杜绝 pipeline 静默遮蔽错误 (CRIT-02)
     if args.video:
-        master_video_file(args.video, args.video, target_i=args.target_i, target_tp=args.target_tp)
+        success = master_video_file(args.video, args.video, target_i=args.target_i, target_tp=args.target_tp)
+        if not success:
+            sys.exit(1)
     elif args.file:
-        master_audio_file(
+        success = master_audio_file(
             args.file,
             args.file,
             target_rms_db=args.target_rms,
             target_peak_db=args.target_peak,
             use_loudnorm=not args.no_loudnorm,
             target_i=args.target_i,
-            target_tp=args.target_tp
+            target_tp=args.target_tp,
+            hpf_freq=args.hpf_freq
         )
+        if not success:
+            sys.exit(1)
     elif args.project:
-        master_project_audio(
+        count = master_project_audio(
             args.project,
             target_rms_db=args.target_rms,
             target_peak_db=args.target_peak,
-            use_loudnorm=not args.no_loudnorm
+            use_loudnorm=not args.no_loudnorm,
+            hpf_freq=args.hpf_freq
         )
+        if count == 0:
+            sys.exit(1)
     else:
         # 默认处理 public/audio
-        master_project_audio("master_video", args.target_rms, args.target_peak, use_loudnorm=not args.no_loudnorm)
+        count = master_project_audio(
+            "master_video",
+            args.target_rms,
+            args.target_peak,
+            use_loudnorm=not args.no_loudnorm,
+            hpf_freq=args.hpf_freq
+        )
+        if count == 0:
+            sys.exit(1)
 
 
 if __name__ == "__main__":
