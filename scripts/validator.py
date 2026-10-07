@@ -14,12 +14,13 @@ import os
 import sys
 import json
 import wave
+import argparse
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TIMELINE_PATH = os.path.join(PROJECT_ROOT, "public", "timeline.json")
+DEFAULT_TIMELINE_PATH = os.path.join(PROJECT_ROOT, "public", "timeline.json")
 PUBLIC_DIR = os.path.join(PROJECT_ROOT, "public")
 
 class BColors:
@@ -109,7 +110,7 @@ def validate_words(scene_id: str, scene: dict, duration: int, real_sec: float, f
         if chunk_dur < 5:
             warnings.append(f"分镜 [{scene_id}] 短句 #{idx+1} '{w_text}' 持续时间仅 {chunk_dur} 帧 ({chunk_dur/fps*1000:.0f}ms)，可能导致字幕闪烁。")
 
-def validate():
+def validate(timeline_path: str = None):
     print(f"\n{BColors.HEADER}===================================================={BColors.ENDC}")
     print(f"{BColors.BOLD}🔍 [Quality Gate] 启动视频数据契约与静态资产审查...{BColors.ENDC}")
     print(f"{BColors.HEADER}===================================================={BColors.ENDC}\n")
@@ -117,17 +118,18 @@ def validate():
     errors = []
     warnings = []
 
+    target_timeline = timeline_path or DEFAULT_TIMELINE_PATH
     # 1. 检查 timeline.json 存在性
-    if not os.path.exists(TIMELINE_PATH):
-        print(f"{BColors.FAIL}[ERROR] 关键契约缺失: 找不到 {TIMELINE_PATH}{BColors.ENDC}")
+    if not os.path.exists(target_timeline):
+        print(f"{BColors.FAIL}[ERROR] 关键契约缺失: 找不到 {target_timeline}{BColors.ENDC}")
         print("请先运行 scripts/pipeline.py 或 scripts/sensevoice_aligner.py 生成时间轴！")
         sys.exit(1)
 
-    with open(TIMELINE_PATH, 'r', encoding='utf-8') as f:
+    with open(target_timeline, 'r', encoding='utf-8') as f:
         try:
             data = json.load(f)
         except Exception as e:
-            print(f"{BColors.FAIL}[ERROR] timeline.json JSON 解析失败: {e}{BColors.ENDC}")
+            print(f"{BColors.FAIL}[ERROR] {target_timeline} JSON 解析失败: {e}{BColors.ENDC}")
             sys.exit(1)
 
     fps = data.get("fps", 30)
@@ -225,4 +227,13 @@ def validate():
         print(f"{BColors.OKGREEN}🚀 可以安全启动 Remotion Studio 或执行 MP4 导出。{BColors.ENDC}\n")
 
 if __name__ == "__main__":
-    validate()
+    parser = argparse.ArgumentParser(description="视频工程数据契约与静态资产审查 (Quality Gate)")
+    parser.add_argument("--timeline", type=str, default=None, help="指定待审查的 timeline.json 路径")
+    parser.add_argument("--project", type=str, default=None, help="项目名称 (自动寻找 public/projects/{project}/timeline.json)")
+    args = parser.parse_args()
+
+    target_timeline = args.timeline
+    if not target_timeline and args.project:
+        target_timeline = os.path.join(PUBLIC_DIR, "projects", args.project, "timeline.json")
+
+    validate(timeline_path=target_timeline)

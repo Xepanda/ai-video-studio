@@ -128,7 +128,7 @@ def align_audio_files(
 
     for i, audio_file in enumerate(audio_files):
         audio_name = os.path.basename(audio_file)
-        rel_audio_path = os.path.join("audio", audio_name).replace("\\", "/")
+        rel_audio_path = os.path.relpath(audio_file, PUBLIC_DIR).replace("\\", "/")
         scene_id = os.path.splitext(audio_name)[0]
 
         duration_sec = get_audio_duration_seconds(audio_file)
@@ -313,6 +313,15 @@ def align_audio_files(
     with open(out_file, "w", encoding="utf-8") as f:
         json.dump(timeline_data, f, ensure_ascii=False, indent=2)
 
+    # 若输出至项目隔离路径，同步镜像更新一份至 public/timeline.json，以便 Remotion Studio 即时预览
+    if os.path.abspath(out_file) != os.path.abspath(DEFAULT_TIMELINE):
+        try:
+            with open(DEFAULT_TIMELINE, "w", encoding="utf-8") as f:
+                json.dump(timeline_data, f, ensure_ascii=False, indent=2)
+            print(f"    (已同步镜像至全局活动时间轴: {DEFAULT_TIMELINE})")
+        except Exception as e:
+            print(f"⚠️ [WARN] 镜像同步至 {DEFAULT_TIMELINE} 失败: {e}")
+
     print(f"\n>>> 成功生成标准时间轴契约文件: {out_file}")
     print(f"    总分镜: {len(scenes)} | 总帧数: {current_start_frame} ({current_start_frame / fps:.2f}秒)\n")
 
@@ -320,27 +329,40 @@ def main():
     parser = argparse.ArgumentParser(description="声学物理打点与时间轴契约生成")
     parser.add_argument("--audio_dir", type=str, default=AUDIO_DIR, help="音频目录")
     parser.add_argument("--fps", type=int, default=30, help="视频帧率")
-    parser.add_argument("--project", type=str, default="auto_video_project", help="项目名称")
+    parser.add_argument("--project", type=str, default=None, help="项目名称")
     parser.add_argument("--script", type=str, default=None, help="分镜脚本路径以继承元数据")
     parser.add_argument("--engine", type=str, choices=["auto", "paraformer", "sensevoice"], default="auto", help="对齐引擎")
     parser.add_argument("--device", type=str, default="cpu", help="推理设备 (cpu/cuda)")
     parser.add_argument("--timeline", type=str, default=DEFAULT_TIMELINE, help="输出时间轴文件路径")
     args = parser.parse_args()
 
-    if not os.path.exists(args.audio_dir):
-        os.makedirs(args.audio_dir, exist_ok=True)
+    # 多项目隔离自动目录适配 (采用 normpath 规避 Windows 反斜杠/相对路径匹配缺陷)
+    target_audio_dir = args.audio_dir
+    target_timeline = args.timeline
+
+    is_default_audio = os.path.normpath(args.audio_dir) == os.path.normpath(AUDIO_DIR)
+    is_default_timeline = os.path.normpath(args.timeline) == os.path.normpath(DEFAULT_TIMELINE)
+
+    if args.project:
+        if is_default_audio:
+            target_audio_dir = os.path.join(PUBLIC_DIR, "projects", args.project, "audio")
+        if is_default_timeline:
+            target_timeline = os.path.join(PUBLIC_DIR, "projects", args.project, "timeline.json")
+
+    if not os.path.exists(target_audio_dir):
+        os.makedirs(target_audio_dir, exist_ok=True)
 
     SUPPORTED_EXTS = (".wav", ".mp3", ".flac", ".m4a", ".aac")
     audio_files = [
-        os.path.join(args.audio_dir, f)
-        for f in sorted(os.listdir(args.audio_dir), key=natural_sort_key)
+        os.path.join(target_audio_dir, f)
+        for f in sorted(os.listdir(target_audio_dir), key=natural_sort_key)
         if f.lower().endswith(SUPPORTED_EXTS)
     ]
 
     if not audio_files:
-        print(f"[!] {args.audio_dir} 目录下未找到任何音频文件。")
+        print(f"[!] {target_audio_dir} 目录下未找到任何音频文件。")
         print("请先放置或生成分镜音频 (如 scene_01.wav, scene_02.wav)！")
-        sys.exit(0)
+        sys.exit(1)
 
     align_audio_files(
         audio_files,
@@ -349,7 +371,7 @@ def main():
         script_path=args.script,
         engine=args.engine,
         device=args.device,
-        timeline_path=args.timeline
+        timeline_path=target_timeline
     )
 
 if __name__ == "__main__":

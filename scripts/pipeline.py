@@ -38,15 +38,20 @@ def main():
     parser.add_argument("--render", action="store_true", help="直接调用 Remotion 渲染出最终 MP4")
     parser.add_argument("--engine", type=str, choices=["auto", "paraformer", "sensevoice"], default="auto", help="ASR 对齐引擎 (auto/paraformer/sensevoice)")
     parser.add_argument("--device", type=str, default="cpu", help="ASR 推理设备 (cpu/cuda)")
+    parser.add_argument("--isolated", action="store_true", default=True, help="启用项目资产隔离 (输出至 public/projects/{project})")
+    parser.add_argument("--no_isolated", action="store_false", dest="isolated", help="禁用项目资产隔离 (直接使用根目录 public/audio)")
     parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 
     # 步骤 0: 专属音色 TTS 配音生成
     if not args.skip_tts:
         tts_script = os.path.join(PROJECT_ROOT, "scripts", "generate_audio.py")
+        tts_cmd = [PYTHON_EXE, tts_script, "--script", args.script]
+        if args.isolated and args.project:
+            tts_cmd.extend(["--project", args.project])
         run_step(
             "专属克隆音色分镜配音生成",
-            [PYTHON_EXE, tts_script, "--script", args.script]
+            tts_cmd
         )
 
     # 步骤 0.5: 确保全局科技氛围 BGM 与转场/弹入 SFX 音效就绪
@@ -63,24 +68,29 @@ def main():
     # 步骤 1: ASR 毫秒打点与 timeline.json 契约生成
     if not args.skip_align:
         align_script = os.path.join(PROJECT_ROOT, "scripts", "sensevoice_aligner.py")
+        align_cmd = [
+            PYTHON_EXE, align_script,
+            "--fps", str(args.fps),
+            "--script", args.script,
+            "--engine", args.engine,
+            "--device", args.device
+        ]
+        if args.isolated and args.project:
+            align_cmd.extend(["--project", args.project])
         run_step(
             "声学物理打点与时间轴契约生成",
-            [
-                PYTHON_EXE, align_script,
-                "--project", args.project,
-                "--fps", str(args.fps),
-                "--script", args.script,
-                "--engine", args.engine,
-                "--device", args.device
-            ]
+            align_cmd
         )
 
     # 步骤 2: 质量门禁自动审查
     if not args.skip_validate:
         validator_script = os.path.join(PROJECT_ROOT, "scripts", "validator.py")
+        val_cmd = [PYTHON_EXE, validator_script]
+        if args.isolated and args.project:
+            val_cmd.extend(["--project", args.project])
         run_step(
             "数据契约与静态资产审查 (Quality Gate)",
-            [PYTHON_EXE, validator_script]
+            val_cmd
         )
 
     # 步骤 3: 可选一键多核渲染
