@@ -1,6 +1,6 @@
 {
   "project": "ai_video_studio_workflow_demo",
-  "theme": "obsidian-minimal",
+  "theme": "linear-graphite",
   "fps": 30,
   "totalDurationInFrames": 3157,
   "scenes": [
@@ -88,7 +88,7 @@
           "tag": "DE-AI CRAFT"
         }
       ],
-      "theme": "obsidian-minimal"
+      "theme": "linear-graphite"
     },
     {
       "id": "scene_02",
@@ -235,7 +235,7 @@
           "active": true
         }
       ],
-      "theme": "obsidian-minimal"
+      "theme": "linear-graphite"
     },
     {
       "id": "scene_03",
@@ -307,7 +307,7 @@
       "codeSnippet": "python scripts/create_script_from_topic.py --topic \"Redis核心架构\" --project redis_demo\npython scripts/pipeline.py --script content/scripts/redis_demo.json --project redis_demo --isolated\nnpx remotion render src/index.ts MasterVideo out/redis_demo.mp4 --concurrency=6",
       "codeLang": "bash",
       "codeTitle": "terminal_workflow.sh",
-      "theme": "obsidian-minimal"
+      "theme": "linear-graphite"
     },
     {
       "id": "scene_04",
@@ -431,7 +431,7 @@
           ]
         }
       ],
-      "theme": "obsidian-minimal"
+      "theme": "linear-graphite"
     },
     {
       "id": "scene_05",
@@ -526,7 +526,7 @@
           "tag": "OMNICHANNEL"
         }
       ],
-      "theme": "obsidian-minimal"
+      "theme": "linear-graphite"
     }
   ]
 }
