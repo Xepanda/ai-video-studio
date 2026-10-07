@@ -1,5 +1,5 @@
 {
-  "project": "06_three_video_pipelines_chattts",
+  "project": "flagship_demo",
   "fps": 30,
   "totalDurationInFrames": 5001,
   "scenes": [
@@ -9,103 +9,85 @@
       "startFrame": 0,
       "durationInFrames": 634,
       "audioPath": "audio/scene_01.wav",
-      "text": "回顾近两年的 AI 视频浪潮，从最初简单的图生视频玩具，演进到今天涵盖白板手绘、极客终端、实拍混剪与映画运镜的全链路工业化体系。面对五花八门的技术栈，创作者往往陷入选型迷茫。今天我们将全面拆解当前三大最具代表性的视频自动化流派。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>回顾近两年的AI视频浪潮，从最初简单的徒生视频玩具演镜到今天，涵盖白板手绘、即客终端实拍混剪与硬化运进的全链路工业化体系。面对五花八门的技术战，创作者往往陷入选型迷茫。今天我们将全面拆解当前三大最具代表性的视频自动化流派。",
+      "text": "在自然语言处理的早期时代，循环神经网络 RNN 和长短期记忆网络 LSTM 长期统治着时序建模领域。然而，由于隐藏状态必须按时序严格串行传递，早期的架构存在严重的梯度消失与并行计算瓶颈。Transformer 的诞生彻底打破了这一桎梏。",
+      "rawText": "回 顾 近 两 年 的 AI 视 频 浪 潮 从 最 初 简 单 的 图 声 视 频 玩 具 演 进 到 今 天 涵 盖 白 板 手 绘 极 客 终 端 实 拍 混 剪 与 硬 化 运 镜 的 全 链 路 工 业 化 体 系 面 对 五 花 八 门 的 技 术 战 创 作 者 往 往 陷 入 选 型 迷 茫 今 天 我 们 将 全 面 拆 解 当 前 三 大 最 具 代 表 性 的 视 频 自 动 化 流 派",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "回顾近两年的 AI 视频浪潮",
-          "startFrame": 0,
-          "endFrame": 84,
-          "globalStartFrame": 0,
-          "globalEndFrame": 84,
-          "startMs": 0,
-          "endMs": 2800
+          "text": "在自然语言处理的早期时代",
+          "startFrame": 4,
+          "endFrame": 64,
+          "globalStartFrame": 4,
+          "globalEndFrame": 64,
+          "startMs": 130,
+          "endMs": 2130
         },
         {
-          "text": "从最初简单的图生视频玩具",
-          "startFrame": 84,
-          "endFrame": 156,
-          "globalStartFrame": 84,
-          "globalEndFrame": 156,
-          "startMs": 2800,
-          "endMs": 5200
+          "text": "循环神经网络 RNN 和长短期记忆网络 LSTM 长期统治着时序建模领域",
+          "startFrame": 72,
+          "endFrame": 284,
+          "globalStartFrame": 72,
+          "globalEndFrame": 284,
+          "startMs": 2390,
+          "endMs": 9450
         },
         {
-          "text": "演进到今天涵盖白板手绘",
-          "startFrame": 156,
-          "endFrame": 222,
-          "globalStartFrame": 156,
-          "globalEndFrame": 222,
-          "startMs": 5200,
-          "endMs": 7400
+          "text": "然而",
+          "startFrame": 284,
+          "endFrame": 296,
+          "globalStartFrame": 284,
+          "globalEndFrame": 296,
+          "startMs": 9450,
+          "endMs": 9870
         },
         {
-          "text": "极客终端",
-          "startFrame": 222,
-          "endFrame": 246,
-          "globalStartFrame": 222,
-          "globalEndFrame": 246,
-          "startMs": 7400,
-          "endMs": 8200
+          "text": "由于隐藏状态必须按时序严格串行传递",
+          "startFrame": 296,
+          "endFrame": 408,
+          "globalStartFrame": 296,
+          "globalEndFrame": 408,
+          "startMs": 9870,
+          "endMs": 13610
         },
         {
-          "text": "实拍混剪与映画运镜的全链路工业化体系",
-          "startFrame": 246,
-          "endFrame": 354,
-          "globalStartFrame": 246,
-          "globalEndFrame": 354,
-          "startMs": 8200,
-          "endMs": 11800
+          "text": "早期的架构存在严重的梯度消失与并行计算瓶颈",
+          "startFrame": 408,
+          "endFrame": 536,
+          "globalStartFrame": 408,
+          "globalEndFrame": 536,
+          "startMs": 13610,
+          "endMs": 17850
         },
         {
-          "text": "面对五花八门的技术栈",
-          "startFrame": 354,
-          "endFrame": 414,
-          "globalStartFrame": 354,
-          "globalEndFrame": 414,
-          "startMs": 11800,
-          "endMs": 13800
-        },
-        {
-          "text": "创作者往往陷入选型迷茫",
-          "startFrame": 414,
-          "endFrame": 480,
-          "globalStartFrame": 414,
-          "globalEndFrame": 480,
-          "startMs": 13800,
-          "endMs": 16000
-        },
-        {
-          "text": "今天我们将全面拆解当前三大最具代表性的视频自动化流派",
-          "startFrame": 480,
-          "endFrame": 634,
-          "globalStartFrame": 480,
-          "globalEndFrame": 634,
-          "startMs": 16000,
-          "endMs": 21133
+          "text": "Transformer 的诞生彻底打破了这一桎梏",
+          "startFrame": 536,
+          "endFrame": 629,
+          "globalStartFrame": 536,
+          "globalEndFrame": 629,
+          "startMs": 17850,
+          "endMs": 20965
         }
       ],
-      "title": "AI 视频制作进入工业化分水岭",
-      "badge": "INDUSTRY LANDSCAPE · 行业现状",
+      "title": "从循环神经网络到 Attention 的伟大飞跃",
+      "badge": "HISTORICAL CONTEXT · 历史变革",
       "cards": [
         {
-          "title": "告别玩具阶段",
-          "desc": "视频制作从随机抽卡的盲盒模式，全面转向严谨、可控的代码工程阶段",
-          "tag": "INDUSTRIAL",
-          "icon": "🏭"
+          "title": "RNN 串行瓶颈",
+          "desc": "第 N 个时间步必须等待前 N-1 步计算完毕，完全无法发挥 GPU 并行优势",
+          "tag": "RNN BOTTLENECK",
+          "icon": "⛓️"
         },
         {
-          "title": "核心场景分化",
-          "desc": "科普解说、编程教学、实物带货与自媒体短视频各具独特的最优解法",
-          "tag": "SCENARIOS",
-          "icon": "🎯"
+          "title": "长程依赖遗忘",
+          "desc": "随着上下文距离拉长，早期的关键语义信息在多次矩阵连乘中被稀释殆尽",
+          "tag": "MEMORY DECAY",
+          "icon": "📉"
         },
         {
-          "title": "全链路数据贯通",
-          "desc": "文案、配音、打点、渲染无缝衔接，构筑可持续迭代的自动化流水线",
-          "tag": "PIPELINE",
-          "icon": "🔄"
+          "title": "并行计算的曙光",
+          "desc": "利用矩阵全互联一次性计算全局上下文关系，训练吞吐提升两个数量级",
+          "tag": "PARALLEL ERA",
+          "icon": "⚡"
         }
       ]
     },
@@ -115,85 +97,85 @@
       "startFrame": 634,
       "durationInFrames": 599,
       "audioPath": "audio/scene_02.wav",
-      "text": "第一种流派是主打知识科普的白板手绘与矢量活化技术。通过提取故事脉络，AI 自动生成草图线稿，并配合骨骼插值生成拟真手部绘制动画。这种风格具有天然的亲和力与教学沉浸感，极度适合解释复杂的抽象算法与历史演进脉络。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第一种流派是主打知识科普的白板手绘与矢量活化技术，通过提取故事脉络，AI自动生成炒作线稿，并配合骨骼差值生成理真手部绘制动画。这种风格具有天然的亲和力与教学沉浸感，极度适合解释复杂的抽象算法与历史演镜脉络。",
+      "text": "自注意力机制的核心在于让序列中的每个词都能与其他所有词计算相关度。通过将输入向量分别投影为查询向量 Q、键向量 K 和值向量 V，模型通过 Q 和 K 的点积计算相似度矩阵，并在除以根号维数后经过 Softmax 归一化，最终对 V 进行加权求和。",
+      "rawText": "第 一 种 流 派 是 主 打 知 识 科 普 的 白 板 手 绘 与 矢 量 活 化 技 术 通 过 提 取 故 事 脉 络 AI 自 动 生 成 草 作 线 稿 并 配 合 骨 骼 差 值 生 成 拟 真 手 部 绘 制 动 画 这 种 风 格 具 有 天 然 的 亲 和 力 与 教 学 沉 浸 感 极 度 适 合 解 释 复 杂 的 抽 象 算 法 与 历 史 演 进 脉 络",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "第一种流派是主打知识科普的白板手绘与矢量活化技术",
-          "startFrame": 0,
-          "endFrame": 147,
-          "globalStartFrame": 634,
-          "globalEndFrame": 781,
-          "startMs": 0,
-          "endMs": 4900
+          "text": "自注意力机制的核心在于让序列中的每个词都能与其他所有词计算相关度",
+          "startFrame": 7,
+          "endFrame": 177,
+          "globalStartFrame": 641,
+          "globalEndFrame": 811,
+          "startMs": 230,
+          "endMs": 5890
         },
         {
-          "text": "通过提取故事脉络",
-          "startFrame": 147,
-          "endFrame": 196,
-          "globalStartFrame": 781,
-          "globalEndFrame": 830,
-          "startMs": 4900,
-          "endMs": 6533
+          "text": "通过将输入向量分别投影为查询向量 Q",
+          "startFrame": 183,
+          "endFrame": 290,
+          "globalStartFrame": 817,
+          "globalEndFrame": 924,
+          "startMs": 6110,
+          "endMs": 9670
         },
         {
-          "text": "AI 自动生成草图线稿",
-          "startFrame": 196,
-          "endFrame": 263,
-          "globalStartFrame": 830,
-          "globalEndFrame": 897,
-          "startMs": 6533,
-          "endMs": 8766
+          "text": "键向量 K 和值向量 V",
+          "startFrame": 290,
+          "endFrame": 338,
+          "globalStartFrame": 924,
+          "globalEndFrame": 972,
+          "startMs": 9670,
+          "endMs": 11270
         },
         {
-          "text": "并配合骨骼插值生成拟真手部绘制动画",
-          "startFrame": 263,
-          "endFrame": 367,
-          "globalStartFrame": 897,
-          "globalEndFrame": 1001,
-          "startMs": 8766,
-          "endMs": 12233
+          "text": "模型通过 Q 和 K 的点积计算相似度矩阵",
+          "startFrame": 338,
+          "endFrame": 438,
+          "globalStartFrame": 972,
+          "globalEndFrame": 1072,
+          "startMs": 11270,
+          "endMs": 14610
         },
         {
-          "text": "这种风格具有天然的亲和力与教学沉浸感",
-          "startFrame": 367,
-          "endFrame": 477,
-          "globalStartFrame": 1001,
-          "globalEndFrame": 1111,
-          "startMs": 12233,
-          "endMs": 15900
+          "text": "并在除以根号维数后经过 Softmax 归一化",
+          "startFrame": 438,
+          "endFrame": 566,
+          "globalStartFrame": 1072,
+          "globalEndFrame": 1200,
+          "startMs": 14610,
+          "endMs": 18870
         },
         {
-          "text": "极度适合解释复杂的抽象算法与历史演进脉络",
-          "startFrame": 477,
-          "endFrame": 599,
-          "globalStartFrame": 1111,
-          "globalEndFrame": 1233,
-          "startMs": 15900,
-          "endMs": 19966
+          "text": "最终对 V 进行加权求和",
+          "startFrame": 566,
+          "endFrame": 584,
+          "globalStartFrame": 1200,
+          "globalEndFrame": 1218,
+          "startMs": 18870,
+          "endMs": 19465
         }
       ],
-      "title": "流派一：科普白板手绘与矢量活化流",
-      "badge": "PIPELINE A · 白板手绘流",
+      "title": "Self-Attention 自注意力机制数学本质",
+      "badge": "MATH FOUNDATION · 数学本质",
       "cards": [
         {
-          "title": "手绘笔触模拟",
-          "desc": "贝塞尔曲线路径插值算法，生动还原白板手绘草图的逐笔勾勒质感",
-          "tag": "STROKE ANIM",
-          "icon": "✏️"
+          "title": "QKV 空间三投影",
+          "desc": "查询、匹配键与内容值三者分立，分别负责主动寻找、被动匹配与语义承载",
+          "tag": "QKV TRIPLET",
+          "icon": "📐"
         },
         {
-          "title": "降低认知负荷",
-          "desc": "将复杂晦涩的论文概念具象为简单线条，极大提升观众完播率与理解度",
-          "tag": "COGNITIVE",
-          "icon": "🧠"
+          "title": "根号 D 缩放因子",
+          "desc": "抵消高维向量点积导致的方差膨胀，防止 Softmax 进入梯度饱和区",
+          "tag": "SCALING FACTOR",
+          "icon": "⚖️"
         },
         {
-          "title": "高信息密度传达",
-          "desc": "结合高亮荧光笔标注与重点箭头引导，牢牢抓住观众每一秒的视觉焦点",
-          "tag": "HIGHLIGHT",
-          "icon": "🎯"
+          "title": "加权语义重构",
+          "desc": "根据注意力权重重新融合上下文特征，使代词能够精准解析其先行词语义",
+          "tag": "CONTEXT RECON",
+          "icon": "🧩"
         }
       ]
     },
@@ -203,85 +185,76 @@
       "startFrame": 1233,
       "durationInFrames": 606,
       "audioPath": "audio/scene_03.wav",
-      "text": "第二种流派专为程序员与嵌入式硬件创作者定制。它摒弃了冗余的插画修饰，直接将现代深色极客终端、动态语法高亮代码块、以及微控制器引脚高频脉冲流光搬上屏幕。这种硬核视觉让技术教程视频呈现出工业级软件评测的严谨与说服力。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第二种流派专为程序员与嵌入式硬件创作者定制，他摒弃了冗余的插画修饰，直接将现代深色极客终端动态语法高亮代码块以及微控制器引角高频脉冲流光搬上屏幕。这种硬核视觉，让技术教程，视频呈现出工业级软件评测的严谨与说服力。",
+      "text": "单一注意力头往往只能捕捉某种特定的语义关系。多头注意力机制通过将隐层维度拆分为多个低维子空间，让不同的注意力头独立学习不同的语法和逻辑规律：有的头专注于代词指代，有的头专注于主谓宾搭配，最后将各头输出拼接后投影整合。",
+      "rawText": "第 二 种 流 派 专 为 程 序 员 与 嵌 入 式 硬 件 创 作 者 定 制 他 摒 弃 了 冗 余 的 插 画 修 饰 直 接 将 现 代 声 色 极 客 终 端 动 态 语 法 高 亮 代 码 块 以 及 微 控 制 器 引 角 高 频 脉 冲 流 光 搬 上 屏 幕 这 种 硬 核 视 觉 让 技 术 教 程 视 频 呈 现 出 工 业 级 软 件 评 测 的 严 谨 与 说 服 力",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "第二种流派专为程序员与嵌入式硬件创作者定制",
-          "startFrame": 0,
-          "endFrame": 127,
-          "globalStartFrame": 1233,
-          "globalEndFrame": 1360,
-          "startMs": 0,
-          "endMs": 4233
+          "text": "单一注意力头往往只能捕捉某种特定的语义关系",
+          "startFrame": 10,
+          "endFrame": 120,
+          "globalStartFrame": 1243,
+          "globalEndFrame": 1353,
+          "startMs": 350,
+          "endMs": 4010
         },
         {
-          "text": "它摒弃了冗余的插画修饰",
-          "startFrame": 127,
-          "endFrame": 194,
-          "globalStartFrame": 1360,
-          "globalEndFrame": 1427,
-          "startMs": 4233,
-          "endMs": 6466
+          "text": "多头注意力机制通过将隐层维度拆分为多个低维子空间",
+          "startFrame": 126,
+          "endFrame": 258,
+          "globalStartFrame": 1359,
+          "globalEndFrame": 1491,
+          "startMs": 4210,
+          "endMs": 8590
         },
         {
-          "text": "直接将现代深色极客终端",
-          "startFrame": 194,
-          "endFrame": 261,
-          "globalStartFrame": 1427,
-          "globalEndFrame": 1494,
-          "startMs": 6466,
-          "endMs": 8700
+          "text": "让不同的注意力头独立学习不同的语法和逻辑规律：有的头专注于代词指代",
+          "startFrame": 258,
+          "endFrame": 466,
+          "globalStartFrame": 1491,
+          "globalEndFrame": 1699,
+          "startMs": 8590,
+          "endMs": 15550
         },
         {
-          "text": "动态语法高亮代码块",
-          "startFrame": 261,
-          "endFrame": 316,
-          "globalStartFrame": 1494,
-          "globalEndFrame": 1549,
-          "startMs": 8700,
-          "endMs": 10533
+          "text": "有的头专注于主谓宾搭配",
+          "startFrame": 466,
+          "endFrame": 538,
+          "globalStartFrame": 1699,
+          "globalEndFrame": 1771,
+          "startMs": 15550,
+          "endMs": 17930
         },
         {
-          "text": "以及微控制器引脚高频脉冲流光搬上屏幕",
-          "startFrame": 316,
-          "endFrame": 425,
-          "globalStartFrame": 1549,
-          "globalEndFrame": 1658,
-          "startMs": 10533,
-          "endMs": 14166
-        },
-        {
-          "text": "这种硬核视觉让技术教程视频呈现出工业级软件评测的严谨与说服力",
-          "startFrame": 425,
-          "endFrame": 606,
-          "globalStartFrame": 1658,
-          "globalEndFrame": 1839,
-          "startMs": 14166,
-          "endMs": 20200
+          "text": "最后将各头输出拼接后投影整合",
+          "startFrame": 538,
+          "endFrame": 602,
+          "globalStartFrame": 1771,
+          "globalEndFrame": 1835,
+          "startMs": 17930,
+          "endMs": 20055
         }
       ],
-      "title": "流派二：项目实战与极客终端引脚流",
-      "badge": "PIPELINE B · 极客终端流",
+      "title": "Multi-Head Attention 多头注意力机制",
+      "badge": "MULTI-HEAD ARCH · 多头表征",
       "cards": [
         {
-          "title": "打字机代码推演",
-          "desc": "真实还原开发者编码与排障时的键盘节奏，代码逐行高亮推演逻辑",
-          "tag": "TYPING TERMINAL",
-          "icon": "💻"
+          "title": "多子空间独立表征",
+          "desc": "在不同投影空间中并行发掘时序序列内部丰富的句法、语义与层级结构",
+          "tag": "MULTI-HEAD",
+          "icon": "🧠"
         },
         {
-          "title": "芯片引脚脉冲流光",
-          "desc": "用流动光斑直观展示 SPI、I2C 硬件通信时序，硬件原理一目了然",
-          "tag": "PINOUT GLOW",
-          "icon": "⚡"
+          "title": "拼接线性降维",
+          "desc": "Concatenate 操作融合所有头的局部视野，线性投影层无损还原隐层维度",
+          "tag": "LINEAR MERGE",
+          "icon": "🔀"
         },
         {
-          "title": "架构双卡阻尼对比",
-          "desc": "Before 与 After 方案同屏物理弹簧阻尼入场，技术优劣一目了然",
-          "tag": "SPRING CARDS",
-          "icon": "⚖️"
+          "title": "增强模型鲁棒性",
+          "desc": "多头互为冗余与互补，有效抑制单头计算可能出现的局部偏执与噪声",
+          "tag": "ROBUSTNESS",
+          "icon": "🛡️"
         }
       ]
     },
@@ -291,85 +264,85 @@
       "startFrame": 1839,
       "durationInFrames": 636,
       "audioPath": "audio/scene_04.wav",
-      "text": "第三种流派是软硬结合的高阶形态。创作者手持真实硬件拍摄简短素材，Remotion 将实拍视频装入带有高光反射的 3D 悬浮手机模型中循环播放。同时，屏幕上射出动态 HUD 激光扫描线与折线发光引线，精准锁定并标注电路板上的核心芯片元器件。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>第三种流派是软硬结合的高阶形态，创作者手持真实硬件拍摄，简短素材remotion，将实拍视频装入带有高光反射的低悬浮手机模型中循环播放。同时，屏幕上射出动态LUD激光扫描线与折线发光影线精准锁定，并标注电路板上的核心芯片元器件。",
+      "text": "由于自注意力机制在本质上是全互联对称的，如果不引入额外信息，模型根本无法区分词语的前后顺序。从原始论文的绝对正余弦位置编码，演进到如今现代大模型普遍标配的 RoPE 旋转位置编码，通过复数向量旋转将相对位置自然融入内积。",
+      "rawText": "第 三 种 流 派 是 软 硬 结 合 的 高 阶 形 态 创 作 者 手 持 真 实 硬 件 拍 摄 简 短 素 材 remotion 将 实 拍 视 频 装 入 带 有 高 光 反 射 的 低 悬 浮 手 机 模 型 中 循 环 播 放 同 时 屏 幕 上 射 出 动 态 LUD 激 光 扫 描 线 与 折 线 发 光 引 线 精 准 锁 定 并 标 注 电 路 板 上 的 核 心 芯 片 元 器 件",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "第三种流派是软硬结合的高阶形态",
-          "startFrame": 0,
-          "endFrame": 84,
-          "globalStartFrame": 1839,
-          "globalEndFrame": 1923,
-          "startMs": 0,
-          "endMs": 2800
+          "text": "由于自注意力机制在本质上是全互联对称的",
+          "startFrame": 6,
+          "endFrame": 98,
+          "globalStartFrame": 1845,
+          "globalEndFrame": 1937,
+          "startMs": 190,
+          "endMs": 3270
         },
         {
-          "text": "创作者手持真实硬件拍摄简短素材",
-          "startFrame": 84,
-          "endFrame": 168,
-          "globalStartFrame": 1923,
-          "globalEndFrame": 2007,
-          "startMs": 2800,
-          "endMs": 5600
+          "text": "如果不引入额外信息",
+          "startFrame": 98,
+          "endFrame": 163,
+          "globalStartFrame": 1937,
+          "globalEndFrame": 2002,
+          "startMs": 3270,
+          "endMs": 5430
         },
         {
-          "text": "Remotion 将实拍视频装入带有高光反射的 3D 悬浮手机模型中循环播放",
-          "startFrame": 168,
-          "endFrame": 382,
-          "globalStartFrame": 2007,
-          "globalEndFrame": 2221,
-          "startMs": 5600,
-          "endMs": 12733
+          "text": "模型根本无法区分词语的前后顺序",
+          "startFrame": 165,
+          "endFrame": 234,
+          "globalStartFrame": 2004,
+          "globalEndFrame": 2073,
+          "startMs": 5510,
+          "endMs": 7810
         },
         {
-          "text": "同时",
-          "startFrame": 382,
-          "endFrame": 397,
-          "globalStartFrame": 2221,
-          "globalEndFrame": 2236,
-          "startMs": 12733,
-          "endMs": 13233
+          "text": "从原始论文的绝对正余弦位置编码",
+          "startFrame": 236,
+          "endFrame": 309,
+          "globalStartFrame": 2075,
+          "globalEndFrame": 2148,
+          "startMs": 7870,
+          "endMs": 10310
         },
         {
-          "text": "屏幕上射出动态 HUD 激光扫描线与折线发光引线",
-          "startFrame": 397,
-          "endFrame": 532,
-          "globalStartFrame": 2236,
-          "globalEndFrame": 2371,
-          "startMs": 13233,
-          "endMs": 17733
+          "text": "演进到如今现代大模型普遍标配的 RoPE 旋转位置编码",
+          "startFrame": 309,
+          "endFrame": 472,
+          "globalStartFrame": 2148,
+          "globalEndFrame": 2311,
+          "startMs": 10310,
+          "endMs": 15750
         },
         {
-          "text": "精准锁定并标注电路板上的核心芯片元器件",
-          "startFrame": 532,
-          "endFrame": 636,
-          "globalStartFrame": 2371,
-          "globalEndFrame": 2475,
-          "startMs": 17733,
-          "endMs": 21200
+          "text": "通过复数向量旋转将相对位置自然融入内积",
+          "startFrame": 472,
+          "endFrame": 598,
+          "globalStartFrame": 2311,
+          "globalEndFrame": 2437,
+          "startMs": 15750,
+          "endMs": 19950
         }
       ],
-      "title": "流派三：实拍混剪与 HUD 激光发光引线流",
-      "badge": "PIPELINE C · 实拍混剪流",
+      "title": "位置编码：从正余弦到 RoPE 旋转位置编码",
+      "badge": "POSITION ENCODING · 位置之谜",
       "cards": [
         {
-          "title": "3D 拟真手机画中画",
-          "desc": "原生圆角裁切与悬浮阻尼浮动微动效，瞬间提升实拍素材的高级感",
-          "tag": "3D PHONE",
-          "icon": "📱"
+          "title": "绝对正余弦编码",
+          "desc": "利用不同频率的正弦余弦周期波形，为每个绝对索引赋予独特的几何指纹",
+          "tag": "SIN-COS",
+          "icon": "🌊"
         },
         {
-          "title": "HUD 激光循环扫描",
-          "desc": "科幻感十足的半透明蓝色扫描线掠过实物表面，极客氛围直接拉满",
-          "tag": "LASER SCAN",
-          "icon": "🌐"
+          "title": "RoPE 旋转位置编码",
+          "desc": "通过正交旋转矩阵将相对距离映射为两向量旋转角之差，完美支持外推",
+          "tag": "ROPE ROTARY",
+          "icon": "🔄"
         },
         {
-          "title": "Callout 折线引线",
-          "desc": "发光折线从芯片引脚飞出展开参数卡片，实物与虚拟数据完美交融",
-          "tag": "POINTER HUD",
-          "icon": "📍"
+          "title": "超长上下文扩展",
+          "desc": "结合插值与外推算法，使模型能够轻松处理三万二千甚至百万级的上下文长度",
+          "tag": "LONG CONTEXT",
+          "icon": "📚"
         }
       ]
     },
@@ -379,103 +352,85 @@
       "startFrame": 2475,
       "durationInFrames": 633,
       "audioPath": "audio/scene_05.wav",
-      "text": "我们从制作周期、硬件算力门槛、信息传达效率以及观众留存率四个维度对三大流派进行严格横评。手绘白板流视觉最亲民但资产生成最慢；终端引脚流完全代码驱动、渲染速度最快且最具硬核专业度；而实拍混剪流最具真实感，带货转化率最高。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>我们从制作周期、硬件算力、门槛、信息传达效率以及观众留存率四个维度，对三大流派进行严格横屏。手绘白板流视觉最轻名淡资产生成最慢，终端引角流完全代码驱动渲染速度最快且最具硬核专业度，而实拍混简流最具真实感，带货转化率最高。",
+      "text": "在每个注意力块之后，都紧跟着一个两层的前馈神经网络 FFN。学术界普遍认为，注意力机制负责信息的动态路由，而 FFN 则充当了参数化事实知识库的记忆体。现代大模型已经将经典的 ReLU 替换为平滑可导且表现更优异的 SwiGLU 门控激活函数。",
+      "rawText": "我 们 从 制 作 周 期 硬 件 算 力 门 槛 信 息 传 达 效 率 以 及 关 注 留 存 率 四 个 维 度 对 三 大 流 派 进 行 严 格 衡 评 手 绘 白 板 流 视 觉 最 亲 民 但 资 产 生 成 最 慢 终 端 引 角 流 完 全 代 码 驱 动 渲 染 速 度 最 快 且 最 具 硬 核 专 业 度 而 实 拍 混 剪 流 最 具 真 实 感 带 货 转 化 率 最 高",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "我们从制作周期",
-          "startFrame": 0,
-          "endFrame": 44,
-          "globalStartFrame": 2475,
-          "globalEndFrame": 2519,
-          "startMs": 0,
-          "endMs": 1466
+          "text": "在每个注意力块之后",
+          "startFrame": 5,
+          "endFrame": 55,
+          "globalStartFrame": 2480,
+          "globalEndFrame": 2530,
+          "startMs": 170,
+          "endMs": 1830
         },
         {
-          "text": "硬件算力门槛",
-          "startFrame": 44,
-          "endFrame": 82,
-          "globalStartFrame": 2519,
-          "globalEndFrame": 2557,
-          "startMs": 1466,
-          "endMs": 2733
+          "text": "都紧跟着一个两层的前馈神经网络 FFN",
+          "startFrame": 56,
+          "endFrame": 148,
+          "globalStartFrame": 2531,
+          "globalEndFrame": 2623,
+          "startMs": 1850,
+          "endMs": 4950
         },
         {
-          "text": "信息传达效率以及观众留存率四个维度对三大流派进行严格横评",
-          "startFrame": 82,
-          "endFrame": 257,
-          "globalStartFrame": 2557,
-          "globalEndFrame": 2732,
-          "startMs": 2733,
-          "endMs": 8566
+          "text": "学术界普遍认为",
+          "startFrame": 148,
+          "endFrame": 184,
+          "globalStartFrame": 2623,
+          "globalEndFrame": 2659,
+          "startMs": 4950,
+          "endMs": 6130
         },
         {
-          "text": "手绘白板流视觉最亲民但资产生成最慢",
-          "startFrame": 257,
-          "endFrame": 364,
-          "globalStartFrame": 2732,
-          "globalEndFrame": 2839,
-          "startMs": 8566,
-          "endMs": 12133
+          "text": "注意力机制负责信息的动态路由",
+          "startFrame": 184,
+          "endFrame": 279,
+          "globalStartFrame": 2659,
+          "globalEndFrame": 2754,
+          "startMs": 6130,
+          "endMs": 9290
         },
         {
-          "text": "终端引脚流完全代码驱动",
-          "startFrame": 364,
-          "endFrame": 433,
-          "globalStartFrame": 2839,
-          "globalEndFrame": 2908,
-          "startMs": 12133,
-          "endMs": 14433
+          "text": "而 FFN 则充当了参数化事实知识库的记忆体",
+          "startFrame": 279,
+          "endFrame": 412,
+          "globalStartFrame": 2754,
+          "globalEndFrame": 2887,
+          "startMs": 9290,
+          "endMs": 13730
         },
         {
-          "text": "渲染速度最快且最具硬核专业度",
-          "startFrame": 433,
-          "endFrame": 521,
-          "globalStartFrame": 2908,
-          "globalEndFrame": 2996,
-          "startMs": 14433,
-          "endMs": 17366
-        },
-        {
-          "text": "而实拍混剪流最具真实感",
-          "startFrame": 521,
-          "endFrame": 590,
-          "globalStartFrame": 2996,
-          "globalEndFrame": 3065,
-          "startMs": 17366,
-          "endMs": 19666
-        },
-        {
-          "text": "带货转化率最高",
-          "startFrame": 590,
-          "endFrame": 633,
-          "globalStartFrame": 3065,
-          "globalEndFrame": 3108,
-          "startMs": 19666,
-          "endMs": 21100
+          "text": "现代大模型已经将经典的 ReLU 替换为平滑可导且表现更优异的 SwiGLU 门控激活函数",
+          "startFrame": 412,
+          "endFrame": 627,
+          "globalStartFrame": 2887,
+          "globalEndFrame": 3102,
+          "startMs": 13730,
+          "endMs": 20905
         }
       ],
-      "title": "三大视频生产流派的核心指标横评",
-      "badge": "BENCHMARK · 多维指标横评",
+      "title": "前馈神经网络与 SwiGLU 激活函数演化",
+      "badge": "FFN & ACTIVATION · 知识存储",
       "cards": [
         {
-          "title": "白板手绘：留存之王",
-          "desc": "极高完播率与点赞互动率，适合破圈科普与泛技术知识沉淀传播",
-          "tag": "RETENTION",
-          "icon": "🏆"
+          "title": "参数化记忆体",
+          "desc": "占据整个网络三分之二的权重参数，专门负责沉淀海量客观世界知识",
+          "tag": "MEMORY BANK",
+          "icon": "💾"
         },
         {
-          "title": "极客终端：效率之王",
-          "desc": "全代码渲染无渲染素材瓶颈，单机秒级导出，适合高频实战干货",
-          "tag": "EFFICIENCY",
-          "icon": "⚡"
+          "title": "SwiGLU 门控机制",
+          "desc": "通过逐元素点乘的门控通道控制信息流动，显著改善深层网络的梯度流",
+          "tag": "SWIGLU",
+          "icon": "🚪"
         },
         {
-          "title": "实拍混剪：信任之王",
-          "desc": "所见即所得的真实硬件质感，适合产品发布、开箱评测与商用演示",
-          "tag": "CONVERSION",
-          "icon": "💎"
+          "title": "非线性维度扩展",
+          "desc": "中间隐藏层通常升采样至四倍或八倍维度，赋予网络极强的特征表达容量",
+          "tag": "EXPANSION",
+          "icon": "📈"
         }
       ]
     },
@@ -485,85 +440,94 @@
       "startFrame": 3108,
       "durationInFrames": 636,
       "audioPath": "audio/scene_06.wav",
-      "text": "除了上述三种骨干流派，近期兴起的 Google Flow 与 Veo 视频模型为技术视频注入了电影级质感。在介绍复杂宏观架构或前瞻愿景时，穿插几秒带有微距景深、变形镜头光晕和慢速推镜的芯片特写映画空镜，能够让视频整体质感瞬间飞跃至纪录片水准。",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>除了上述三种骨干流派，近期兴起的google flow与标多视频模型为技术视频，注入了电影机制感，在介绍复杂宏观架构或潜瞻愿景时，穿插几秒，带有微距景深、变形镜头光晕和慢速推进的军舰特写硬化空镜，能够让视频整体质感瞬间飞跃至纪录片水准。",
+      "text": "构建上百层的超深层神经网络时，梯度能否平稳回传是生死攸关的大事。早期原始 Transformer 采用 Post-LN 架构，在网络极深时容易发生梯度爆炸；现代大模型全线迁移至 Pre-LN 甚至 RMSNorm 架构，将归一化放在子模块运算之前，极大提升了训练稳定性。",
+      "rawText": "除 了 上 述 三 种 骨 干 流 派 近 期 兴 起 的 google flow 与 多 视 频 模 型 为 技 术 视 频 注 入 了 电 影 机 质 感 在 介 绍 复 杂 宏 观 架 构 或 前 瞻 愿 景 时 穿 插 几 秒 带 有 微 距 景 深 变 形 镜 头 光 晕 和 慢 速 推 进 的 镜 片 特 写 硬 化 空 镜 能 够 让 视 频 整 体 质 感 瞬 间 飞 跃 至 纪 录 片 水 准",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "除了上述三种骨干流派",
-          "startFrame": 0,
-          "endFrame": 55,
-          "globalStartFrame": 3108,
-          "globalEndFrame": 3163,
-          "startMs": 0,
-          "endMs": 1833
+          "text": "构建上百层的超深层神经网络时",
+          "startFrame": 6,
+          "endFrame": 89,
+          "globalStartFrame": 3114,
+          "globalEndFrame": 3197,
+          "startMs": 190,
+          "endMs": 2970
         },
         {
-          "text": "近期兴起的 Google Flow 与 Veo 视频模型为技术视频注入了电影级质感",
-          "startFrame": 55,
-          "endFrame": 282,
-          "globalStartFrame": 3163,
-          "globalEndFrame": 3390,
-          "startMs": 1833,
-          "endMs": 9400
+          "text": "梯度能否平稳回传是生死攸关的大事",
+          "startFrame": 89,
+          "endFrame": 142,
+          "globalStartFrame": 3197,
+          "globalEndFrame": 3250,
+          "startMs": 2970,
+          "endMs": 4730
         },
         {
-          "text": "在介绍复杂宏观架构或前瞻愿景时",
-          "startFrame": 282,
-          "endFrame": 365,
-          "globalStartFrame": 3390,
-          "globalEndFrame": 3473,
-          "startMs": 9400,
-          "endMs": 12166
+          "text": "早期原始 Transformer 采用 Post-LN 架构",
+          "startFrame": 142,
+          "endFrame": 293,
+          "globalStartFrame": 3250,
+          "globalEndFrame": 3401,
+          "startMs": 4730,
+          "endMs": 9770
         },
         {
-          "text": "穿插几秒带有微距景深",
-          "startFrame": 365,
-          "endFrame": 420,
-          "globalStartFrame": 3473,
-          "globalEndFrame": 3528,
-          "startMs": 12166,
-          "endMs": 14000
+          "text": "在网络极深时容易发生梯度爆炸",
+          "startFrame": 293,
+          "endFrame": 384,
+          "globalStartFrame": 3401,
+          "globalEndFrame": 3492,
+          "startMs": 9770,
+          "endMs": 12810
         },
         {
-          "text": "变形镜头光晕和慢速推镜的芯片特写映画空镜",
-          "startFrame": 420,
-          "endFrame": 531,
-          "globalStartFrame": 3528,
-          "globalEndFrame": 3639,
-          "startMs": 14000,
-          "endMs": 17700
+          "text": "现代大模型全线迁移至 Pre-LN 甚至 RMSNorm 架构",
+          "startFrame": 387,
+          "endFrame": 546,
+          "globalStartFrame": 3495,
+          "globalEndFrame": 3654,
+          "startMs": 12910,
+          "endMs": 18210
         },
         {
-          "text": "能够让视频整体质感瞬间飞跃至纪录片水准",
-          "startFrame": 531,
+          "text": "将归一化放在子模块运算之前",
+          "startFrame": 546,
+          "endFrame": 632,
+          "globalStartFrame": 3654,
+          "globalEndFrame": 3740,
+          "startMs": 18210,
+          "endMs": 21055
+        },
+        {
+          "text": "极大提升了训练稳定性",
+          "startFrame": 632,
           "endFrame": 636,
-          "globalStartFrame": 3639,
+          "globalStartFrame": 3740,
           "globalEndFrame": 3744,
-          "startMs": 17700,
-          "endMs": 21200
+          "startMs": 21055,
+          "endMs": 21190
         }
       ],
-      "title": "Google Flow 与映画级 AI 镜头补充",
-      "badge": "CINEMATIC B-ROLL · 映画镜头",
+      "title": "残差连接与 Pre-LN 归一化稳定性",
+      "badge": "NORMALIZATION · 深层训练基石",
       "cards": [
         {
-          "title": "电影级运镜推演",
-          "desc": "慢速推拉摇移平滑运镜搭配大光圈虚化，呈现好莱坞级工业科技质感",
-          "tag": "CINEMATIC",
-          "icon": "🎥"
+          "title": "残差直通高速公路",
+          "desc": "跳跃连接为反向传播提供无阻碍梯度直通道，彻底破除梯度消散魔咒",
+          "tag": "RESIDUAL",
+          "icon": "🛣️"
         },
         {
-          "title": "4K 60FPS 极清细节",
-          "desc": "纳米级光刻电路与金线键合的超写实光影漫反射，震撼视觉冲击力",
-          "tag": "4K MACRO",
-          "icon": "✨"
+          "title": "Pre-LN 稳定收敛",
+          "desc": "子层输入均保持恒定分布方差，免去漫长脆弱的学习率预热阶段",
+          "tag": "PRE-LN",
+          "icon": "⚖️"
         },
         {
-          "title": "情绪节奏缓冲器",
-          "desc": "在密集的硬核技术卡片之间适度穿插空镜，给予观众消化思考的呼吸空间",
-          "tag": "PACING",
-          "icon": "🧘"
+          "title": "RMSNorm 极速算子",
+          "desc": "舍弃均值计算仅保留均方根缩放，性能提升百分之十且完全不损精度",
+          "tag": "RMSNORM",
+          "icon": "⚡"
         }
       ]
     },
@@ -573,85 +537,85 @@
       "startFrame": 3744,
       "durationInFrames": 637,
       "audioPath": "audio/scene_07.wav",
-      "text": "成熟的技术团队不应拘泥于单一风格。最高明的策略是建立混合管线：开篇使用白板手绘引出痛点背景，主体部分由极客终端和引脚流光展开深度剖析，实物落地阶段调出实拍手机壳与发光引线，结尾穿插映画空镜升华主题，达成完美的视听闭环！",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>成熟的技术团队不应拘泥于单一风格，最高明的策略是建立混合管线，开篇使用白板手绘，引出痛点。背景主体部分由即客终端和引角流光展开，深度剖析实物落地阶段，调出实拍手机壳与发光影线结尾，穿插硬化，空镜升华主题，达成完美的视情闭环。",
+      "text": "Transformer 最初由 Encoder 编码器和 Decoder 解码器共同构成。然而在漫长的大模型竞争中，以 GPT、Llama 为代表的纯解码器 Decoder-Only 架构最终击败了其他分支。凭借因果遮罩与自回归预测下一个词的极简假设，展现出了惊人的可扩展性法则。",
+      "rawText": "成 熟 的 技 术 团 队 不 应 拘 泥 于 单 一 风 格 最 高 明 的 策 略 是 建 立 混 合 管 线 开 篇 使 用 白 板 手 绘 引 出 痛 点 背 景 主 体 部 分 由 极 客 终 端 和 银 角 流 光 展 开 深 度 剖 析 实 物 落 地 阶 段 调 出 实 拍 手 机 壳 与 发 光 影 线 结 尾 穿 插 硬 化 空 镜 升 华 主 题 达 成 完 美 的 视 情 闭 环",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "成熟的技术团队不应拘泥于单一风格",
-          "startFrame": 0,
-          "endFrame": 99,
-          "globalStartFrame": 3744,
-          "globalEndFrame": 3843,
-          "startMs": 0,
-          "endMs": 3300
+          "text": "Transformer 最初由 Encoder 编码器和 Decoder 解码器共同构成",
+          "startFrame": 5,
+          "endFrame": 233,
+          "globalStartFrame": 3749,
+          "globalEndFrame": 3977,
+          "startMs": 170,
+          "endMs": 7770
         },
         {
-          "text": "最高明的策略是建立混合管线：开篇使用白板手绘引出痛点背景",
-          "startFrame": 99,
-          "endFrame": 272,
-          "globalStartFrame": 3843,
-          "globalEndFrame": 4016,
-          "startMs": 3300,
-          "endMs": 9066
+          "text": "然而在漫长的大模型竞争中",
+          "startFrame": 233,
+          "endFrame": 315,
+          "globalStartFrame": 3977,
+          "globalEndFrame": 4059,
+          "startMs": 7770,
+          "endMs": 10510
         },
         {
-          "text": "主体部分由极客终端和引脚流光展开深度剖析",
-          "startFrame": 272,
-          "endFrame": 396,
-          "globalStartFrame": 4016,
-          "globalEndFrame": 4140,
-          "startMs": 9066,
-          "endMs": 13200
+          "text": "以 GPT",
+          "startFrame": 315,
+          "endFrame": 342,
+          "globalStartFrame": 4059,
+          "globalEndFrame": 4086,
+          "startMs": 10510,
+          "endMs": 11390
         },
         {
-          "text": "实物落地阶段调出实拍手机壳与发光引线",
-          "startFrame": 396,
-          "endFrame": 507,
-          "globalStartFrame": 4140,
-          "globalEndFrame": 4251,
-          "startMs": 13200,
-          "endMs": 16900
+          "text": "Llama 为代表的纯解码器 Decoder-Only 架构最终击败了其他分支",
+          "startFrame": 342,
+          "endFrame": 566,
+          "globalStartFrame": 4086,
+          "globalEndFrame": 4310,
+          "startMs": 11410,
+          "endMs": 18870
         },
         {
-          "text": "结尾穿插映画空镜升华主题",
-          "startFrame": 507,
-          "endFrame": 581,
-          "globalStartFrame": 4251,
-          "globalEndFrame": 4325,
-          "startMs": 16900,
-          "endMs": 19366
+          "text": "凭借因果遮罩与自回归预测下一个词的极简假设",
+          "startFrame": 566,
+          "endFrame": 633,
+          "globalStartFrame": 4310,
+          "globalEndFrame": 4377,
+          "startMs": 18870,
+          "endMs": 21115
         },
         {
-          "text": "达成完美的视听闭环",
-          "startFrame": 581,
+          "text": "展现出了惊人的可扩展性法则",
+          "startFrame": 633,
           "endFrame": 637,
-          "globalStartFrame": 4325,
+          "globalStartFrame": 4377,
           "globalEndFrame": 4381,
-          "startMs": 19366,
-          "endMs": 21233
+          "startMs": 21115,
+          "endMs": 21235
         }
       ],
-      "title": "如何搭建属于你自己的混合自动化管线",
-      "badge": "PIPELINE SYNTHESIS · 选型建议",
+      "title": "Decoder-Only 架构为何能一统天下",
+      "badge": "DECODER DOMINANCE · 架构演进",
       "cards": [
         {
-          "title": "场景驱动动态组合",
-          "desc": "根据每一幕的内容特性动态匹配最恰当的视觉组件，杜绝审美疲劳",
-          "tag": "HYBRID",
-          "icon": "🧩"
+          "title": "因果下三角遮罩",
+          "desc": "严格禁止当前 Token 偷看未来时间步信息，强制模型学会单向推理生成",
+          "tag": "CAUSAL MASK",
+          "icon": "🛡️"
         },
         {
-          "title": "单一时间轴统一纳管",
-          "desc": "无论何种视觉组件，全部挂载在 SenseVoice 输出的同一份时间轴上",
-          "tag": "UNIFIED TIMELINE",
-          "icon": "📜"
+          "title": "Scaling Law 扩展法则",
+          "desc": "模型参数量与训练数据量指数级提升时，损失函数呈现惊人一致的幂律下降",
+          "tag": "SCALING LAW",
+          "icon": "📊"
         },
         {
-          "title": "模块化渐进式沉淀",
-          "desc": "先打磨好最核心的终端组件，逐步扩展手绘与映画模块，稳步演进",
-          "tag": "ITERATIVE",
-          "icon": "🧱"
+          "title": "涌现能力的诞生",
+          "desc": "当参数突破临界阈值，上下文学习、逻辑推理与思维链能力自然涌现",
+          "tag": "EMERGENCE",
+          "icon": "✨"
         }
       ]
     },
@@ -661,94 +625,85 @@
       "startFrame": 4381,
       "durationInFrames": 620,
       "audioPath": "audio/scene_08.wav",
-      "text": "从剪辑软件的时间轴轨道拖拽，到声明式代码与大模型声学渲染，视频生产方式正发生着百年未有的大变革。掌握全链路自动化工具链的工程师，正在以百倍于传统创作者的效率输出顶尖内容。未来已来，让我们用代码重新定义视听艺术！",
-      "rawText": "<|zh|><|NEUTRAL|><|Speech|><|withitn|>从剪辑软件的时间轴，轨道拖拽到声明式代码与大模型、声学渲染视频生产方式正发生着百年未有的大变革。掌握全链路自动化工具链的工程师，正在以百倍于传统创作者的效率输出顶尖内容。未来以来，让我们用代码重新定义试听艺术。",
+      "text": "从文本、代码、音频到扩散视频生成，基于 Transformer 和流匹配的算法架构已经成为驱动当今人工智能革命的统一通用底层。理解其每一个矩阵维度的转换与优雅的自注意力机制，是每一位走向未来的工程师不可或缺的基础素养。",
+      "rawText": "从 剪 辑 软 件 的 时 间 轴 轨 道 拖 拽 到 声 明 式 代 码 与 大 模 型 声 学 渲 染 视 频 生 产 方 式 正 发 生 着 百 年 未 有 的 大 变 革 掌 握 全 链 路 自 动 化 工 具 链 的 工 程 师 正 在 以 百 倍 于 传 统 创 作 者 的 效 率 输 出 顶 尖 内 容 未 来 以 来 让 我 们 用 代 码 重 新 定 义 视 听 艺 术",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "从剪辑软件的时间轴轨道拖拽",
-          "startFrame": 0,
-          "endFrame": 82,
-          "globalStartFrame": 4381,
-          "globalEndFrame": 4463,
-          "startMs": 0,
-          "endMs": 2733
+          "text": "从文本",
+          "startFrame": 5,
+          "endFrame": 22,
+          "globalStartFrame": 4386,
+          "globalEndFrame": 4403,
+          "startMs": 170,
+          "endMs": 730
         },
         {
-          "text": "到声明式代码与大模型声学渲染",
-          "startFrame": 82,
-          "endFrame": 171,
-          "globalStartFrame": 4463,
-          "globalEndFrame": 4552,
-          "startMs": 2733,
-          "endMs": 5700
+          "text": "代码",
+          "startFrame": 22,
+          "endFrame": 30,
+          "globalStartFrame": 4403,
+          "globalEndFrame": 4411,
+          "startMs": 730,
+          "endMs": 990
         },
         {
-          "text": "视频生产方式正发生着百年未有的大变革",
-          "startFrame": 171,
-          "endFrame": 285,
-          "globalStartFrame": 4552,
-          "globalEndFrame": 4666,
-          "startMs": 5700,
-          "endMs": 9500
+          "text": "音频到扩散视频生成",
+          "startFrame": 30,
+          "endFrame": 93,
+          "globalStartFrame": 4411,
+          "globalEndFrame": 4474,
+          "startMs": 990,
+          "endMs": 3090
         },
         {
-          "text": "掌握全链路自动化工具链的工程师",
-          "startFrame": 285,
-          "endFrame": 380,
-          "globalStartFrame": 4666,
-          "globalEndFrame": 4761,
-          "startMs": 9500,
-          "endMs": 12666
+          "text": "基于 Transformer 和流匹配的算法架构已经成为驱动当今人工智能革命的统一通用底层",
+          "startFrame": 93,
+          "endFrame": 375,
+          "globalStartFrame": 4474,
+          "globalEndFrame": 4756,
+          "startMs": 3110,
+          "endMs": 12510
         },
         {
-          "text": "正在以百倍于传统创作者的效率输出顶尖内容",
-          "startFrame": 380,
-          "endFrame": 507,
-          "globalStartFrame": 4761,
-          "globalEndFrame": 4888,
-          "startMs": 12666,
-          "endMs": 16900
+          "text": "理解其每一个矩阵维度的转换与优雅的自注意力机制",
+          "startFrame": 375,
+          "endFrame": 510,
+          "globalStartFrame": 4756,
+          "globalEndFrame": 4891,
+          "startMs": 12510,
+          "endMs": 17010
         },
         {
-          "text": "未来已来",
-          "startFrame": 507,
-          "endFrame": 532,
-          "globalStartFrame": 4888,
-          "globalEndFrame": 4913,
-          "startMs": 16900,
-          "endMs": 17733
-        },
-        {
-          "text": "让我们用代码重新定义视听艺术",
-          "startFrame": 532,
-          "endFrame": 620,
-          "globalStartFrame": 4913,
-          "globalEndFrame": 5001,
-          "startMs": 17733,
-          "endMs": 20666
+          "text": "是每一位走向未来的工程师不可或缺的基础素养",
+          "startFrame": 518,
+          "endFrame": 615,
+          "globalStartFrame": 4899,
+          "globalEndFrame": 4996,
+          "startMs": 17250,
+          "endMs": 20515
         }
       ],
-      "title": "代码即视频：技术创作者的未来",
-      "badge": "FUTURE OF CREATION · 结语",
+      "title": "Transformer 开启通用人工智能新纪元",
+      "badge": "AGI HORIZON · 时代总结",
       "cards": [
         {
-          "title": "百倍杠杆放大",
-          "desc": "把重复机械的剪辑劳动交给计算机，将人类智慧集中于洞察与架构",
-          "tag": "LEVERAGE",
+          "title": "多模态大一统",
+          "desc": "音频梅尔频谱、图像 Patch 均被转化为 Token 序列统一送入同一个大脑",
+          "tag": "UNIFIED TOKEN",
+          "icon": "🌐"
+        },
+        {
+          "title": "算力基础设施进化",
+          "desc": "从单卡矩阵运算到万卡张量并行集群，软硬件共同塑造智能计算底座",
+          "tag": "COMPUTE INFRA",
+          "icon": "🖥️"
+        },
+        {
+          "title": "星辰大海的探索",
+          "desc": "站在巨人的肩膀上深入原理，我们将亲眼见证通用智能改变世界的伟大历程",
+          "tag": "EXPEDITION",
           "icon": "🚀"
-        },
-        {
-          "title": "终身可重构复用",
-          "desc": "所有设计沉淀均为标准代码库，随时修改参数即可整套品牌焕新升级",
-          "tag": "RECONFIGURABLE",
-          "icon": "🔄"
-        },
-        {
-          "title": "极客工程师的护城河",
-          "desc": "懂硬件、懂算法、懂前端渲染的全栈极客，将成为数字内容时代的新领航者",
-          "tag": "NEW ERA",
-          "icon": "🌟"
         }
       ]
     }
