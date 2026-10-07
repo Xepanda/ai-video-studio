@@ -336,8 +336,25 @@ def main():
         env["GPT_SOVITS_PROMPT_TEXT"] = args.ref_text
         env["F5_REF_TEXT"] = args.ref_text
 
-    provider = env.get("TTS_PROVIDER", "chattts")
-    custom_voice = env.get("KOKORO_VOICE") or env.get("CHATTTS_SEED") or env.get("EDGE_TTS_VOICE") or env.get("CUSTOM_VOICE_ID", "默认/未配置")
+    provider = env.get("TTS_PROVIDER", "chattts").lower()
+    if provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
+        custom_voice = env.get("KOKORO_VOICE", "zm_031")
+    elif provider in ("chattts", "chat_tts"):
+        custom_voice = str(env.get("CHATTTS_SEED", 4444))
+    elif provider == "edge_tts":
+        custom_voice = env.get("EDGE_TTS_VOICE", "zh-CN-YunxiNeural")
+    elif provider in ("gpt_sovits", "gpt-sovits", "sovits"):
+        custom_voice = env.get("GPT_SOVITS_REF_AUDIO", "")
+    elif provider in ("f5_tts", "f5tts", "f5"):
+        custom_voice = env.get("F5_REF_AUDIO", "")
+    elif provider == "siliconflow":
+        custom_voice = f"{env.get('SILICONFLOW_MODEL', '')}_{env.get('CUSTOM_VOICE_ID', '')}"
+    elif provider == "fish_audio":
+        custom_voice = env.get("FISH_VOICE_ID", "")
+    elif provider == "minimax":
+        custom_voice = env.get("MINIMAX_VOICE_ID", "")
+    else:
+        custom_voice = env.get("CUSTOM_VOICE_ID", "default")
 
     print(f"\n=======================================================")
     print(f"🎙️ [Audio Generator] 正在生成分镜配音音频")
@@ -356,16 +373,19 @@ def main():
         cache_key = compute_scene_cache_key(text, provider, custom_voice, args.normalize_phonetics)
         cached_info = cache_data.get(scene_id)
         if not args.force and cached_info and cached_info.get("key") == cache_key:
-            cached_audio = cached_info.get("file")
-            if cached_audio and os.path.exists(cached_audio) and os.path.getsize(cached_audio) > 1024:
-                print(f"    ⚡ [Cache Hit] 分镜 {scene_id} 文本与音色配置未变更，秒级复用: {os.path.relpath(cached_audio, PROJECT_ROOT)}")
-                continue
+            rel_file = cached_info.get("file")
+            if rel_file:
+                cached_audio = os.path.join(PROJECT_ROOT, rel_file) if not os.path.isabs(rel_file) else rel_file
+                if os.path.exists(cached_audio) and os.path.getsize(cached_audio) > 1024:
+                    print(f"    ⚡ [Cache Hit] 分镜 {scene_id} 文本与音色配置未变更，秒级复用: {os.path.relpath(cached_audio, PROJECT_ROOT)}")
+                    continue
 
         out_file = os.path.join(output_dir, f"{scene_id}.mp3")
         actual_file = generate_scene_audio(text, out_file, env, normalize_phonetics=args.normalize_phonetics) or out_file
+        portable_file = os.path.relpath(actual_file, PROJECT_ROOT).replace("\\", "/")
         cache_data[scene_id] = {
             "key": cache_key,
-            "file": os.path.abspath(actual_file),
+            "file": portable_file,
             "text": text
         }
         print(f"    ✓ 已输出: {os.path.relpath(actual_file, PROJECT_ROOT)}")

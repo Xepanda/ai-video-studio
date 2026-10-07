@@ -57,5 +57,11 @@ class TestAudioCache(unittest.TestCase):
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
+    def test_portable_relative_path(self):
+        sample_path = os.path.join(PROJECT_ROOT, "public", "audio", "scene_01.mp3")
+        rel = os.path.relpath(sample_path, PROJECT_ROOT).replace("\\", "/")
+        self.assertFalse(os.path.isabs(rel), "缓存文件路径应为相对于仓库根目录的便携式相对路径")
+        self.assertTrue(rel.startswith("public/audio/"))
+
 if __name__ == "__main__":
     unittest.main()

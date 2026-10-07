@@ -230,7 +230,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isVertical ? '14px' : '24px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{
-                              fontFamily: 'JetBrains Mono, monospace, monospace',
+                              fontFamily: 'JetBrains Mono, monospace',
                               fontSize: isVertical ? '16px' : '18px',
                               fontWeight: 800,
                               color: theme.accentColor,

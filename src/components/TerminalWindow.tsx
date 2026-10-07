@@ -27,13 +27,15 @@ export const TerminalWindow: React.FC<TerminalWindowProps> = ({
   const rawCode = command || content || '';
   const isMultiline = rawCode.includes('\n');
 
-  // 打字进度
-  const charsCount = Math.floor(
-    interpolate(frame, [10, 10 + typingDurationFrames], [0, rawCode.length], {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    })
-  );
+  // 打字进度 (防御 typingDurationFrames <= 0 时 interpolate 崩溃)
+  const charsCount = typingDurationFrames <= 0
+    ? rawCode.length
+    : Math.floor(
+        interpolate(frame, [10, 10 + Math.max(1, typingDurationFrames)], [0, rawCode.length], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        })
+      );
 
   const typedCommand = rawCode.slice(0, charsCount);
   const showOutput = frame > 10 + typingDurationFrames + 5;
@@ -126,7 +128,7 @@ export const TerminalWindow: React.FC<TerminalWindowProps> = ({
                       color: isComment ? '#7dd3fc' : '#f1f5f9',
                     }}
                   >
-                    <span>{line}</span>
+                    <span>{line || '\u00A0'}</span>
                     {isLastLine && (!showOutput || cursorBlink) && (
                       <span
                         style={{

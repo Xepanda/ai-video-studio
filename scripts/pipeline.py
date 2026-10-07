@@ -41,7 +41,7 @@ def main():
     parser.add_argument("--isolated", action="store_true", default=True, help="启用项目资产隔离 (输出至 public/projects/{project})")
     parser.add_argument("--no_isolated", action="store_false", dest="isolated", help="禁用项目资产隔离 (直接使用根目录 public/audio)")
     parser.add_argument("--no_normalize_phonetics", action="store_true", default=False, help="禁用 TTS 技术名词发音规范化")
-    parser.add_argument("--force_audio", action="store_true", default=False, help="强制重新生成所有分镜音频，忽略 MD5 缓存")
+    parser.add_argument("--force", "--force_audio", dest="force_audio", action="store_true", default=False, help="强制重新生成所有分镜音频，忽略 MD5 缓存")
     parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 

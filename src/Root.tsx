@@ -303,7 +303,7 @@ export const MasterVideo: React.FC = () => {
   const fadeOutEnd = Math.max(fadeOutStart + 1, totalDuration);
   const transitionFrames = Math.max(1, Math.round(0.8 * fps));
 
-  // 智能音频闪避 (Audio Ducking): 提取全片声学语音活跃区间
+  // 智能音频闪避 (Audio Ducking): 提取全片声学语音活跃区间 (防范无配音静音分镜误闪避)
   const speechIntervals = React.useMemo(() => {
     return scenes.flatMap((scene) => {
       if (scene.words && scene.words.length > 0) {
@@ -312,12 +312,16 @@ export const MasterVideo: React.FC = () => {
           end: (w.globalEndFrame ?? (scene.startFrame + w.endFrame)) as number,
         }));
       }
-      return [{ start: scene.startFrame, end: scene.startFrame + scene.durationInFrames }];
+      if (scene.audioPath) {
+        return [{ start: scene.startFrame, end: scene.startFrame + scene.durationInFrames }];
+      }
+      return [];
     });
   }, [scenes]);
 
   const enableDucking = (timelineData as any).enableDucking !== false;
   const duckRatio = (timelineData as any).bgmDuckRatio ?? 0.45;
+  const duckFrames = Math.max(5, Math.round(fps * 0.5)); // 帧率自适应 ~500ms 阻尼过渡
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -350,10 +354,10 @@ export const MasterVideo: React.FC = () => {
               }
             }
 
-            // 平滑过度：0 帧(正讲话)压低至 duckRatio (约 45%)，15 帧(~0.5s 停顿/转场)平滑回升至 100%
+            // 平滑过渡：0 帧(正讲话)压低至 duckRatio (约 45%)，duckFrames 帧(~0.5s 停顿/转场)平滑回升至 100%
             const duckMultiplier = interpolate(
               minDistToSpeech,
-              [0, 15],
+              [0, duckFrames],
               [duckRatio, 1.0],
               { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
             );
