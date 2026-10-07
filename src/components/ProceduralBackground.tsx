@@ -10,11 +10,7 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
   const posX = (frame * 0.2) % gridSize;
   const posY = (frame * 0.3) % gridSize;
 
-  const glowOpacity = interpolate(
-    Math.sin(frame * 0.03),
-    [-1, 1],
-    [0.15, 0.28]
-  );
+  const gridOpacity = theme.gridOverlay?.opacity ?? 0.75;
 
   return (
     <AbsoluteFill style={{ overflow: 'hidden', pointerEvents: 'none' }}>
@@ -36,7 +32,7 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
             backgroundImage: `radial-gradient(${theme.gridOverlay.color} 1.5px, transparent 1.5px)`,
             backgroundSize: `${gridSize}px ${gridSize}px`,
             backgroundPosition: `${posX}px ${posY}px`,
-            opacity: 0.85,
+            opacity: gridOpacity,
           }}
         />
       )}
@@ -52,33 +48,40 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
             `,
             backgroundSize: `${gridSize}px ${gridSize}px`,
             backgroundPosition: `${posX}px ${posY}px`,
-            opacity: 0.85,
+            opacity: gridOpacity,
           }}
         />
       )}
 
-      {/* 3. 顶部轻微工科渐变环境晕光 (模拟摄影棚顶部柔光箱，非俗套亮紫) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-20%',
-          left: '20%',
-          width: '60%',
-          height: '50%',
-          borderRadius: '50%',
-          background: `radial-gradient(circle, ${theme.accentColor} 0%, transparent 70%)`,
-          opacity: glowOpacity * 0.35,
-          filter: 'blur(120px)',
-        }}
-      />
+      {/* 3. 摄影棚级环境聚光灯 (Aceternity / Linear Spotlight 漫射顶光，几何定位与轻量化光栅优化) */}
+      {theme.spotlight && (
+        <div
+          style={{
+            position: 'absolute',
+            top: theme.spotlight.position?.split(' ')[1] || '-15%',
+            left: '50%',
+            transform: 'translateX(-50%) translateZ(0)',
+            width: theme.spotlight.size?.split(' ')[0] || '80%',
+            height: theme.spotlight.size?.split(' ')[1] || '55%',
+            borderRadius: '50%',
+            background: `radial-gradient(ellipse at 50% 35%, ${theme.spotlight.color} 0%, transparent 75%)`,
+            opacity: theme.spotlight.opacity * interpolate(
+              Math.sin(frame * 0.025),
+              [-1, 1],
+              [0.88, 1.0]
+            ),
+            filter: 'blur(45px)',
+          }}
+        />
+      )}
 
-      {/* 4. 四角微弱摄影暗角 (Vignette)，提升电影质感与视觉聚焦 */}
+      {/* 4. 电影级暗角 (Vignette)，压暗边缘使中心内容更有悬浮通透感 */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.65) 100%)',
-          mixBlendMode: 'multiply',
+          background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.70) 100%)',
+          pointerEvents: 'none',
         }}
       />
     </AbsoluteFill>

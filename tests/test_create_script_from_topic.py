@@ -138,6 +138,22 @@ class TestCreateScriptFromTopic(unittest.TestCase):
         script_10 = generate_structured_script("Test", "test_10", scenes_count=10)
         self.assertEqual(len(script_10["scenes"]), 5)
 
+    def test_theme_options_and_cli_parsing(self):
+        flagship_themes = [
+            "linear-graphite",
+            "vercel-geist",
+            "motion-canvas-warm",
+            "cyber-blueprint",
+            "obsidian-minimal",
+            "blueprint-engineering",
+            "cinema-editorial"
+        ]
+        for t in flagship_themes:
+            script = generate_structured_script("Theme Test", "theme_test", theme=t)
+            self.assertEqual(script["theme"], t)
+            for s in script["scenes"]:
+                self.assertEqual(s["theme"], t)
+
 
 if __name__ == "__main__":
     unittest.main()

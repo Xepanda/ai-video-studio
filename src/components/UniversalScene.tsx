@@ -32,8 +32,8 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const { fps, width, height } = useVideoConfig();
   const isVertical = width < height;
 
-  // 获取活动主题 (优先分镜声明，次选全局时间轴，默认 obsidian-minimal)
-  const activeThemeName = scene.theme || (timelineData as any).theme || 'obsidian-minimal';
+  // 获取活动主题 (优先分镜声明，次选全局时间轴，由 getTheme 统一提供默认回退)
+  const activeThemeName = scene.theme || (timelineData as any).theme;
   const theme: ThemeConfig = getTheme(activeThemeName);
 
   const isSfxEnabled = (timelineData as any).enableSfx !== false && scene.enableSfx !== false;
@@ -201,9 +201,9 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
 
                   const baseScale = interpolate(cardSpring, [0, 1], [0.94, 1.0]);
                   const finalCardScale = isCardActive ? baseScale * 1.025 : baseScale;
-                  const activeBorder = isCardActive ? `1px solid ${theme.accentColor}` : theme.cardBorder;
+                  const activeBorder = isCardActive ? `1px solid ${safeColorWithAlpha(theme.accentColor, '90')}` : theme.cardBorder;
                   const activeShadow = isCardActive
-                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 28px ${safeColorWithAlpha(theme.accentColor, '33')}, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
+                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.90), 0 0 36px ${safeColorWithAlpha(theme.accentColor, '25')}, inset 0 1px 0 rgba(255, 255, 255, 0.22)`
                     : theme.cardShadow;
 
                   return (
