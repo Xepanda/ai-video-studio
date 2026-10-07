@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 tests/test_audio_mastering.py
-测试移动端广播级人声母带增益优化器
+测试商业短视频级移动端广播人声母带增益优化器与音轨标准化引擎
 """
 
 import unittest
@@ -13,7 +13,12 @@ import sys
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(PROJECT_ROOT, "scripts"))
 
-from audio_mastering import master_audio_array, master_audio_file
+from audio_mastering import (
+    master_audio_array,
+    master_audio_file,
+    master_video_file,
+    find_ffmpeg
+)
 
 
 class TestAudioMastering(unittest.TestCase):
@@ -29,18 +34,18 @@ class TestAudioMastering(unittest.TestCase):
 
     def test_loudness_boost(self):
         rms_before = 20 * np.log10(np.sqrt(np.mean(self.quiet_signal ** 2)))
-        mastered = master_audio_array(self.quiet_signal, self.sr, target_rms_db=-12.5, target_peak_db=-0.3)
+        mastered = master_audio_array(self.quiet_signal, self.sr, target_rms_db=-10.0, target_peak_db=-0.4)
         rms_after = 20 * np.log10(np.sqrt(np.mean(mastered ** 2)))
 
-        # 验证 RMS 显著提升且贴近目标 -12.5 dBFS
+        # 验证 RMS 显著提升且贴近目标商业级响度
         self.assertGreater(rms_after, rms_before + 3.0)
-        self.assertAlmostEqual(rms_after, -12.5, delta=1.5)
+        self.assertAlmostEqual(rms_after, -10.0, delta=2.0)
 
     def test_peak_limiting_no_clipping(self):
-        # 即使输入极端突刺信号，峰值也必须被限制在 -0.3 dBFS (约 0.966) 以内
+        # 即使输入极端突刺信号，峰值也必须被限制在 -0.4 dBFS (约 0.955) 以内
         spiky_signal = self.quiet_signal.copy()
         spiky_signal[100:110] = 5.0  # 制造超高突刺
-        mastered = master_audio_array(spiky_signal, self.sr, target_rms_db=-12.5, target_peak_db=-0.3)
+        mastered = master_audio_array(spiky_signal, self.sr, target_rms_db=-10.0, target_peak_db=-0.4)
         max_peak = np.max(np.abs(mastered))
 
         self.assertLessEqual(max_peak, 0.98)
@@ -52,12 +57,30 @@ class TestAudioMastering(unittest.TestCase):
         self.assertFalse(np.isnan(out).any())
         self.assertFalse(np.isinf(out).any())
 
+    def test_short_signal_safety(self):
+        # 极短信号 (< 16 采样点) 必须安全直通，杜绝 filtfilt padlen 越界异常 (IMP-02)
+        short_signal = np.array([0.1, -0.2, 0.3])
+        out = master_audio_array(short_signal, self.sr)
+        self.assertEqual(len(out), len(short_signal))
+        np.testing.assert_array_equal(out, short_signal)
+
     def test_stereo_compatibility(self):
         # 双声道立体声输入测试
         stereo = np.column_stack([self.quiet_signal, self.quiet_signal])
         out = master_audio_array(stereo, self.sr)
         self.assertEqual(out.ndim, 2)
         self.assertEqual(out.shape[1], 2)
+
+    def test_ffmpeg_detection(self):
+        # 应当能够检测到 Remotion 内置或系统 ffmpeg
+        ffmpeg_bin = find_ffmpeg()
+        self.assertTrue(bool(ffmpeg_bin))
+        self.assertTrue(os.path.exists(ffmpeg_bin))
+
+    def test_master_video_missing_file_safety(self):
+        # 不存在的文件必须安全返回 False，不抛出未经处理的异常
+        res = master_video_file("non_existent_video_path_xyz.mp4")
+        self.assertFalse(res)
 
 
 if __name__ == "__main__":

@@ -86,8 +86,23 @@
           "badge": "SPEED RECORD · 登顶纪录",
           "pill": "⚡ 2.0x 登顶速度",
           "items": [
-            { "name": "ChatGPT (历史记录)", "value": 45, "maxValue": 50, "unit": "天", "color": "#64748b", "subtext": "原生成式 AI 历史最快纪录" },
-            { "name": "Meta Muse 个人代理", "value": 22, "maxValue": 50, "unit": "天", "color": "#10b981", "highlight": true, "subtext": "仅用 22 天登顶 App Store #1" }
+            {
+              "name": "ChatGPT (历史记录)",
+              "value": 45,
+              "maxValue": 50,
+              "unit": "天",
+              "color": "#64748b",
+              "subtext": "原生成式 AI 历史最快纪录"
+            },
+            {
+              "name": "Meta Muse 个人代理",
+              "value": 22,
+              "maxValue": 50,
+              "unit": "天",
+              "color": "#10b981",
+              "highlight": true,
+              "subtext": "仅用 22 天登顶 App Store #1"
+            }
           ]
         },
         {
@@ -95,8 +110,23 @@
           "badge": "GROWTH EXPLOSION · 爆发增长",
           "pill": "🔥 500 万+ 下载",
           "items": [
-            { "name": "行业均值水平", "value": 180, "maxValue": 500, "unit": "万", "color": "#64748b", "subtext": "主流消费级 AI 首月基准" },
-            { "name": "Meta Muse 首月下载", "value": 500, "maxValue": 500, "unit": "万", "color": "#38bdf8", "highlight": true, "subtext": "上线 22 天狂揽 500 万下载" }
+            {
+              "name": "行业均值水平",
+              "value": 180,
+              "maxValue": 500,
+              "unit": "万",
+              "color": "#64748b",
+              "subtext": "主流消费级 AI 首月基准"
+            },
+            {
+              "name": "Meta Muse 首月下载",
+              "value": 500,
+              "maxValue": 500,
+              "unit": "万",
+              "color": "#38bdf8",
+              "highlight": true,
+              "subtext": "上线 22 天狂揽 500 万下载"
+            }
           ]
         },
         {
@@ -104,8 +134,23 @@
           "badge": "ACTIVE USERS · 周活跃度",
           "pill": "👥 320 万 WAU",
           "items": [
-            { "name": "行业常规基准", "value": 100, "maxValue": 350, "unit": "万", "color": "#64748b", "subtext": "常规工具应用基准线" },
-            { "name": "Meta Muse 周活跃", "value": 320, "maxValue": 350, "unit": "万", "color": "#a855f7", "highlight": true, "subtext": "高粘性高频自主代理人" }
+            {
+              "name": "行业常规基准",
+              "value": 100,
+              "maxValue": 350,
+              "unit": "万",
+              "color": "#64748b",
+              "subtext": "常规工具应用基准线"
+            },
+            {
+              "name": "Meta Muse 周活跃",
+              "value": 320,
+              "maxValue": 350,
+              "unit": "万",
+              "color": "#a855f7",
+              "highlight": true,
+              "subtext": "高粘性高频自主代理人"
+            }
           ]
         }
       ],
@@ -620,5 +665,8 @@
       ],
       "theme": "linear-graphite"
     }
-  ]
+  ],
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0
 }

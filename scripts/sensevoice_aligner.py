@@ -112,10 +112,12 @@ def align_audio_files(
 
     script_meta_map = {}
     global_theme = "obsidian-minimal"
+    script_root_data = {}
     if script_path and os.path.exists(script_path):
         try:
             with open(script_path, "r", encoding="utf-8") as f:
                 s_data = json.load(f)
+                script_root_data = s_data
                 global_theme = s_data.get("theme", "obsidian-minimal")
                 for sc in s_data.get("scenes", []):
                     if "id" in sc:
@@ -200,7 +202,7 @@ def align_audio_files(
             for field in [
                 "title", "badge", "subtitle", "cards", "bulletPoints",
                 "codeSnippet", "codeLang", "codeTitle", "type",
-                "topologyNodes", "topologyLinks", "metrics", "theme"
+                "topologyNodes", "topologyLinks", "metrics", "theme", "voiceVolume"
             ]:
                 if field in meta:
                     scene_data[field] = meta[field]
@@ -310,6 +312,9 @@ def align_audio_files(
         "totalDurationInFrames": current_start_frame,
         "scenes": scenes
     }
+    for opt_key in ["bgmVolume", "bgmDuckRatio", "voiceVolume", "enableBgm", "enableSfx", "bgmPath"]:
+        if opt_key in script_root_data:
+            timeline_data[opt_key] = script_root_data[opt_key]
 
     out_file = timeline_path or DEFAULT_TIMELINE
     os.makedirs(os.path.dirname(os.path.abspath(out_file)), exist_ok=True)
