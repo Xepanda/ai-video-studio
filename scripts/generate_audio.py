@@ -15,6 +15,7 @@ import sys
 import json
 import argparse
 import asyncio
+import hashlib
 import requests
 
 if hasattr(sys.stdout, 'reconfigure'):
@@ -24,6 +25,10 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 ENV_PATH = os.path.join(PROJECT_ROOT, ".env")
+
+def compute_scene_cache_key(text: str, provider: str, voice: str, normalize_phonetics: bool) -> str:
+    key_str = f"{text.strip()}||{provider.strip().lower()}||{str(voice).strip()}||{int(normalize_phonetics)}"
+    return hashlib.md5(key_str.encode("utf-8")).hexdigest()
 
 try:
     from scripts.tech_phonetic_dict import normalize_tech_pronunciation
@@ -250,6 +255,7 @@ def main():
     parser.add_argument("--ref_text", type=str, default=None, help="参考音频对应文本")
     parser.add_argument("--normalize_phonetics", action="store_true", default=True, help="启用技术专有名词与多音字发音规范化 (默认启用)")
     parser.add_argument("--no_normalize_phonetics", dest="normalize_phonetics", action="store_false", help="禁用技术专有名词发音规范化")
+    parser.add_argument("--force", action="store_true", default=False, help="强制重新生成所有分镜音频，忽略 MD5 缓存")
     args = parser.parse_args()
 
     script_path = os.path.join(PROJECT_ROOT, args.script) if not os.path.isabs(args.script) else args.script
@@ -262,13 +268,6 @@ def main():
 
     output_dir = os.path.join(PROJECT_ROOT, target_out_dir) if not os.path.isabs(target_out_dir) else target_out_dir
     os.makedirs(output_dir, exist_ok=True)
-    # 清理历史残留分镜音频，杜绝多视频批处理时前序视频音频残留导致的分镜串扰
-    for old_file in os.listdir(output_dir):
-        if old_file.lower().startswith("scene_") and old_file.lower().endswith((".wav", ".mp3")):
-            try:
-                os.remove(os.path.join(output_dir, old_file))
-            except Exception:
-                pass
 
     if not os.path.exists(script_path):
         print(f"❌ 找不到分镜脚本: {script_path}")
@@ -281,6 +280,26 @@ def main():
     if not scenes:
         print(f"❌ 脚本中没有找到 scenes 分镜定义！")
         sys.exit(1)
+
+    cache_file = os.path.join(output_dir, ".audio_cache.json")
+    cache_data = {}
+    if not args.force and os.path.exists(cache_file):
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                cache_data = json.load(f)
+        except Exception:
+            cache_data = {}
+
+    # 获取当前分镜脚本中的合法 ID，仅清理与当前分镜无关的孤立历史音频
+    valid_scene_ids = {scene.get("id", f"scene_{idx+1:02d}") for idx, scene in enumerate(scenes)}
+    for old_file in os.listdir(output_dir):
+        base_name, ext = os.path.splitext(old_file.lower())
+        if base_name.startswith("scene_") and ext in (".wav", ".mp3"):
+            if base_name not in valid_scene_ids:
+                try:
+                    os.remove(os.path.join(output_dir, old_file))
+                except Exception:
+                    pass
 
     env = load_env()
     # 自动继承脚本文件中声明的 engine 与 voice
@@ -317,14 +336,32 @@ def main():
         env["GPT_SOVITS_PROMPT_TEXT"] = args.ref_text
         env["F5_REF_TEXT"] = args.ref_text
 
-    provider = env.get("TTS_PROVIDER", "chattts")
-    custom_voice = env.get("KOKORO_VOICE") or env.get("CHATTTS_SEED") or env.get("EDGE_TTS_VOICE") or env.get("CUSTOM_VOICE_ID", "默认/未配置")
+    provider = env.get("TTS_PROVIDER", "chattts").lower()
+    if provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
+        custom_voice = env.get("KOKORO_VOICE", "zm_031")
+    elif provider in ("chattts", "chat_tts"):
+        custom_voice = str(env.get("CHATTTS_SEED", 4444))
+    elif provider == "edge_tts":
+        custom_voice = env.get("EDGE_TTS_VOICE", "zh-CN-YunxiNeural")
+    elif provider in ("gpt_sovits", "gpt-sovits", "sovits"):
+        custom_voice = env.get("GPT_SOVITS_REF_AUDIO", "")
+    elif provider in ("f5_tts", "f5tts", "f5"):
+        custom_voice = env.get("F5_REF_AUDIO", "")
+    elif provider == "siliconflow":
+        custom_voice = f"{env.get('SILICONFLOW_MODEL', '')}_{env.get('CUSTOM_VOICE_ID', '')}"
+    elif provider == "fish_audio":
+        custom_voice = env.get("FISH_VOICE_ID", "")
+    elif provider == "minimax":
+        custom_voice = env.get("MINIMAX_VOICE_ID", "")
+    else:
+        custom_voice = env.get("CUSTOM_VOICE_ID", "default")
 
     print(f"\n=======================================================")
     print(f"🎙️ [Audio Generator] 正在生成分镜配音音频")
     print(f"  TTS 服务商: {provider}")
     print(f"  专属音色 ID: {custom_voice}")
     print(f"  分镜总数: {len(scenes)}")
+    print(f"  缓存加速: {'已禁用 (--force)' if args.force else '已启用 (MD5 Hash)'}")
     print(f"=======================================================\n")
 
     for idx, scene in enumerate(scenes):
@@ -333,9 +370,32 @@ def main():
         if not text:
             continue
 
+        cache_key = compute_scene_cache_key(text, provider, custom_voice, args.normalize_phonetics)
+        cached_info = cache_data.get(scene_id)
+        if not args.force and cached_info and cached_info.get("key") == cache_key:
+            rel_file = cached_info.get("file")
+            if rel_file:
+                cached_audio = os.path.join(PROJECT_ROOT, rel_file) if not os.path.isabs(rel_file) else rel_file
+                if os.path.exists(cached_audio) and os.path.getsize(cached_audio) > 1024:
+                    print(f"    ⚡ [Cache Hit] 分镜 {scene_id} 文本与音色配置未变更，秒级复用: {os.path.relpath(cached_audio, PROJECT_ROOT)}")
+                    continue
+
         out_file = os.path.join(output_dir, f"{scene_id}.mp3")
         actual_file = generate_scene_audio(text, out_file, env, normalize_phonetics=args.normalize_phonetics) or out_file
+        portable_file = os.path.relpath(actual_file, PROJECT_ROOT).replace("\\", "/")
+        cache_data[scene_id] = {
+            "key": cache_key,
+            "file": portable_file,
+            "text": text
+        }
         print(f"    ✓ 已输出: {os.path.relpath(actual_file, PROJECT_ROOT)}")
+
+    # 持久化音频缓存元数据
+    try:
+        with open(cache_file, "w", encoding="utf-8") as f:
+            json.dump(cache_data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"    ⚠️ 写入音频缓存索引失败: {e}")
 
     print(f"\n✅ 所有分镜配音音频生成完毕！存储于 {os.path.relpath(output_dir, PROJECT_ROOT)}")
 

@@ -29,7 +29,8 @@ export interface SceneMeta {
 
 export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const isVertical = width < height;
 
   // 获取活动主题 (优先分镜声明，次选全局时间轴，默认 obsidian-minimal)
   const activeThemeName = scene.theme || (timelineData as any).theme || 'obsidian-minimal';
@@ -73,7 +74,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '60px 80px',
+        padding: isVertical ? '80px 48px' : '60px 80px',
         color: '#f8fafc',
         fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         transform: `scale(${cameraScale}) translateY(${cameraTranslateY}px)`,
@@ -91,11 +92,11 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
           backgroundColor: theme.badgeBg,
           border: theme.badgeBorder,
           color: theme.badgeColor,
-          fontSize: '14px',
+          fontSize: isVertical ? '13px' : '14px',
           fontWeight: 700,
           letterSpacing: '2px',
           textTransform: 'uppercase',
-          marginBottom: '16px',
+          marginBottom: isVertical ? '12px' : '16px',
           backdropFilter: 'blur(8px)',
         }}>
           <span style={{
@@ -112,14 +113,14 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
         <div style={{
           transform: `scale(${interpolate(titleSpring, [0, 1], [0.94, 1.0])})`,
           opacity: titleSpring,
-          fontSize: '52px',
+          fontSize: isVertical ? '38px' : '52px',
           fontWeight: 800,
           textAlign: 'center',
           background: theme.titleGradient,
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          marginBottom: '40px',
-          maxWidth: '1440px',
+          marginBottom: isVertical ? '28px' : '40px',
+          maxWidth: isVertical ? '920px' : '1440px',
           lineHeight: 1.25,
           letterSpacing: '-0.5px',
         }}>
@@ -181,9 +182,10 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
 
             <div style={{
               display: 'flex',
-              gap: '28px',
+              flexDirection: isVertical ? 'column' : 'row',
+              gap: isVertical ? '18px' : '28px',
               width: '100%',
-              maxWidth: '1440px',
+              maxWidth: isVertical ? '880px' : '1440px',
               transform: `translateY(${interpolate(contentSpring, [0, 1], [24, 0])}px)`,
               opacity: contentSpring
             }}>
@@ -212,7 +214,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                         backgroundColor: theme.cardBg,
                         border: activeBorder,
                         borderRadius: '20px',
-                        padding: '36px 30px',
+                        padding: isVertical ? '22px 26px' : '36px 30px',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
@@ -225,11 +227,11 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                     >
                       <div>
                         {/* 顶部数字序号与标签 Pill，告别儿童画风格 Emoji */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: isVertical ? '14px' : '24px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{
-                              fontFamily: 'JetBrains Mono, monospace, monospace',
-                              fontSize: '18px',
+                              fontFamily: 'JetBrains Mono, monospace',
+                              fontSize: isVertical ? '16px' : '18px',
                               fontWeight: 800,
                               color: theme.accentColor,
                               letterSpacing: '1px'
@@ -264,11 +266,11 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                           )}
                         </div>
 
-                        <div style={{ fontSize: '24px', fontWeight: 700, color: theme.cardTitleColor, marginBottom: '14px', letterSpacing: '-0.3px' }}>
+                        <div style={{ fontSize: isVertical ? '20px' : '24px', fontWeight: 700, color: theme.cardTitleColor, marginBottom: isVertical ? '10px' : '14px', letterSpacing: '-0.3px' }}>
                           {card.title}
                         </div>
 
-                        <div style={{ fontSize: '16px', color: theme.cardDescColor, lineHeight: 1.65 }}>
+                        <div style={{ fontSize: isVertical ? '14px' : '16px', color: theme.cardDescColor, lineHeight: 1.65 }}>
                           {card.desc}
                         </div>
                       </div>
@@ -279,7 +281,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
                         borderRadius: '1px',
                         background: isCardActive ? theme.accentColor : 'rgba(255, 255, 255, 0.15)',
                         opacity: isCardActive ? 1.0 : 0.4,
-                        marginTop: '28px',
+                        marginTop: isVertical ? '16px' : '28px',
                         width: `${interpolate(cardSpring, [0, 1], [0, 100])}%`
                       }} />
                     </div>
