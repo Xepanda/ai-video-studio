@@ -9,6 +9,9 @@ import { CalloutPointer } from './components/CalloutPointer';
 import { PinoutStream } from './components/PinoutStream';
 import { UniversalScene, SceneMeta } from './components/UniversalScene';
 import { getTheme, ThemeName } from './styles/theme';
+import { FireshipKineticView } from './components/demos/FireshipKineticView';
+import { AppleKeynoteView } from './components/demos/AppleKeynoteView';
+import { MotionCanvasView } from './components/demos/MotionCanvasView';
 
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
@@ -511,6 +514,32 @@ export const RemotionRoot: React.FC = () => {
         component={ThemeShowcase}
         defaultProps={{ themeName: 'cyber-blueprint' as ThemeName }}
         durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      {/* 3 大去 AI 化全新视频流派完整动态 Demo */}
+      <Composition
+        id="StyleDemoFireship"
+        component={FireshipKineticView}
+        durationInFrames={325}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="StyleDemoAppleKeynote"
+        component={AppleKeynoteView}
+        durationInFrames={298}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="StyleDemoMotionCanvas"
+        component={MotionCanvasView}
+        durationInFrames={288}
         fps={30}
         width={1920}
         height={1080}
