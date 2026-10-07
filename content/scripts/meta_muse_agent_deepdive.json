@@ -4,6 +4,9 @@
   "voice": "4444",
   "theme": "linear-graphite",
   "fps": 30,
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.20,
+  "voiceVolume": 1.0,
   "title": "Meta Muse 个人 AI Agent 深度拆解：颠覆还是监控风暴？",
   "scenes": [
     {

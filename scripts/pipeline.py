@@ -43,6 +43,7 @@ def main():
     parser.add_argument("--no_normalize_phonetics", action="store_true", default=False, help="禁用 TTS 技术名词发音规范化")
     parser.add_argument("--no_master_audio", action="store_true", default=False, help="禁用移动端人声广播母带增益优化")
     parser.add_argument("--force", "--force_audio", dest="force_audio", action="store_true", default=False, help="强制重新生成所有分镜音频，忽略 MD5 缓存")
+    parser.add_argument("--no_master_video", action="store_true", default=False, help="禁用成品视频容器级音频母带标准化")
     parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 
@@ -111,6 +112,15 @@ def main():
             "Remotion 多核光栅化渲染 MP4",
             ["cmd.exe", "/c", remotion_cmd]
         )
+
+        # 步骤 4: 成品视频商业级广播响度标准化 (-11 LUFS / -0.5 True Peak)
+        if not args.no_master_video and os.path.exists(out_mp4):
+            master_script = os.path.join(PROJECT_ROOT, "scripts", "audio_mastering.py")
+            run_step(
+                "成品视频音轨商业广播响度标准化 (EBU R128 -11 LUFS)",
+                [PYTHON_EXE, master_script, "--video", out_mp4]
+            )
+
         print(f"\n🎉 视频渲染完成！成片文件: {out_mp4}")
     else:
         print(f"\n🎉🎉 全链路数据契约就绪！接下来请执行：")

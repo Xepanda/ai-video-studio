@@ -294,7 +294,7 @@ export const MasterVideo: React.FC = () => {
   const { fps } = useVideoConfig();
   const totalDuration = timelineData.totalDurationInFrames || 2032;
   const bgmPath = (timelineData as any).bgmPath || 'audio/bgm_cyber_ambient.wav';
-  const bgmVolume = (timelineData as any).bgmVolume ?? 0.10;
+  const bgmVolume = (timelineData as any).bgmVolume ?? 0.035;
   const enableBgm = (timelineData as any).enableBgm !== false;
   const enableSfx = (timelineData as any).enableSfx !== false;
 
@@ -322,7 +322,7 @@ export const MasterVideo: React.FC = () => {
   }, [scenes]);
 
   const enableDucking = (timelineData as any).enableDucking !== false;
-  const duckRatio = (timelineData as any).bgmDuckRatio ?? 0.45;
+  const duckRatio = (timelineData as any).bgmDuckRatio ?? 0.20;
   const duckFrames = Math.max(5, Math.round(fps * 0.5)); // 帧率自适应 ~500ms 阻尼过渡
 
   return (
@@ -378,11 +378,11 @@ export const MasterVideo: React.FC = () => {
             from={scene.startFrame}
             durationInFrames={scene.durationInFrames}
           >
-            {/* 配音音频：支持全局与分镜 voiceVolume 放大系数，默认 1.25x 强化移动端小喇叭穿透力 */}
+            {/* 配音音频：支持全局与分镜 voiceVolume 系数，默认 1.0 (已由母带引擎锁定 -11 LUFS 广播级标准) */}
             {scene.audioPath && (
               <Audio
                 src={staticFile(scene.audioPath)}
-                volume={(scene as any).voiceVolume ?? (timelineData as any).voiceVolume ?? 1.25}
+                volume={(scene as any).voiceVolume ?? (timelineData as any).voiceVolume ?? 1.0}
               />
             )}
 
