@@ -57,28 +57,35 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
         />
       )}
 
-      {/* 3. 顶部轻微工科渐变环境晕光 (模拟摄影棚顶部柔光箱，非俗套亮紫) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-20%',
-          left: '20%',
-          width: '60%',
-          height: '50%',
-          borderRadius: '50%',
-          background: `radial-gradient(circle, ${theme.accentColor} 0%, transparent 70%)`,
-          opacity: glowOpacity * 0.35,
-          filter: 'blur(120px)',
-        }}
-      />
+      {/* 3. 摄影棚级环境聚光灯 (Aceternity / Linear Spotlight 漫射顶光) */}
+      {theme.spotlight && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '-25%',
+            left: '10%',
+            width: '80%',
+            height: '70%',
+            borderRadius: '50%',
+            background: `radial-gradient(ellipse at 50% 30%, ${theme.spotlight.color} 0%, transparent 75%)`,
+            opacity: theme.spotlight.opacity * interpolate(
+              Math.sin(frame * 0.025),
+              [-1, 1],
+              [0.88, 1.0]
+            ),
+            filter: 'blur(90px)',
+            transform: 'translateZ(0)',
+          }}
+        />
+      )}
 
-      {/* 4. 四角微弱摄影暗角 (Vignette)，提升电影质感与视觉聚焦 */}
+      {/* 4. 电影级暗角 (Vignette)，压暗边缘使中心内容更有悬浮通透感 */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.65) 100%)',
-          mixBlendMode: 'multiply',
+          background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.70) 100%)',
+          pointerEvents: 'none',
         }}
       />
     </AbsoluteFill>

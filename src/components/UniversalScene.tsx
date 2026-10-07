@@ -201,9 +201,9 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
 
                   const baseScale = interpolate(cardSpring, [0, 1], [0.94, 1.0]);
                   const finalCardScale = isCardActive ? baseScale * 1.025 : baseScale;
-                  const activeBorder = isCardActive ? `1px solid ${theme.accentColor}` : theme.cardBorder;
+                  const activeBorder = isCardActive ? `1px solid ${safeColorWithAlpha(theme.accentColor, '90')}` : theme.cardBorder;
                   const activeShadow = isCardActive
-                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.85), 0 0 28px ${safeColorWithAlpha(theme.accentColor, '33')}, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
+                    ? `0 24px 48px -12px rgba(0, 0, 0, 0.90), 0 0 36px ${safeColorWithAlpha(theme.accentColor, '25')}, inset 0 1px 0 rgba(255, 255, 255, 0.22)`
                     : theme.cardShadow;
 
                   return (

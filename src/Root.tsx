@@ -7,8 +7,8 @@ import { WhiteboardHanddrawn } from './components/WhiteboardHanddrawn';
 import { PhoneFrame } from './components/PhoneFrame';
 import { CalloutPointer } from './components/CalloutPointer';
 import { PinoutStream } from './components/PinoutStream';
-import { UniversalScene } from './components/UniversalScene';
-import { getTheme } from './styles/theme';
+import { UniversalScene, SceneMeta } from './components/UniversalScene';
+import { getTheme, ThemeName } from './styles/theme';
 
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
@@ -414,6 +414,48 @@ export const MasterVideo: React.FC = () => {
   );
 };
 
+// =========================================================================
+// 主题色彩风格样片对比组件 (用于给创作者和用户多维度比对调色方案)
+// =========================================================================
+export const ThemeShowcase: React.FC<{ themeName: ThemeName }> = ({ themeName }) => {
+  const sampleScene: SceneMeta = {
+    id: 'demo_theme',
+    durationInFrames: 120,
+    title: 'AI Video Studio: 声音先行与代码即视频范式',
+    badge: 'PARADIGM SHIFT · 架构范式',
+    theme: themeName,
+    cards: [
+      {
+        title: '声音绝对时钟',
+        desc: '以实际声学波形物理时长作为顶层单一真实时钟，画面全自动适配',
+        tag: 'AUDIO FIRST'
+      },
+      {
+        title: '纯函数状态机',
+        desc: 'Scene = f(frame)，所有动画均由数学公式和物理阻尼计算，零盲盒抽卡',
+        tag: 'DETERMINISTIC'
+      },
+      {
+        title: '顶级工业美学',
+        desc: '告别廉价荧光字与儿童画，吸纳 Silicon Valley 现代顶级深色设计系统',
+        tag: 'DE-AI CRAFT'
+      }
+    ]
+  };
+
+  const theme = getTheme(themeName);
+  const sampleWords = [
+    { text: '欢迎进入 AI Video Studio 工业级视频自动化系统', startFrame: 0, endFrame: 120 }
+  ];
+
+  return (
+    <AbsoluteFill>
+      <UniversalScene scene={sampleScene} />
+      <DynamicSubtitles words={sampleWords} sceneStartFrame={0} theme={theme} />
+    </AbsoluteFill>
+  );
+};
+
 export const RemotionRoot: React.FC = () => {
   const fps = timelineData.fps || 30;
   const durationInFrames = Math.max(1, timelineData.totalDurationInFrames || 2032);
@@ -435,6 +477,40 @@ export const RemotionRoot: React.FC = () => {
         fps={fps}
         width={1080}
         height={1920}
+      />
+
+      {/* 4 大顶级设计流派样片演示 Composition (方便即时比对风格) */}
+      <Composition
+        id="DemoLinearGraphite"
+        component={() => <ThemeShowcase themeName="linear-graphite" />}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="DemoVercelGeist"
+        component={() => <ThemeShowcase themeName="vercel-geist" />}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="DemoMotionCanvasWarm"
+        component={() => <ThemeShowcase themeName="motion-canvas-warm" />}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="DemoCyberBlueprint"
+        component={() => <ThemeShowcase themeName="cyber-blueprint" />}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
       />
     </>
   );
