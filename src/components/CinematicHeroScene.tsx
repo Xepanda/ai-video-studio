@@ -33,32 +33,33 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
   const safeDuration = Math.max(1, durationInFrames);
   const progress = Math.min(1, Math.max(0, frame / safeDuration));
 
-  // 1. 电影级 2.5D 连续运镜 (Continuous Camera Motion - 拒绝 PPT 停滞感)
-  let cameraScale = 1.0;
+  // 1. 电影级 2.5D 连续运镜 (Continuous Camera Motion - 保持 1.05+ Overscan 避免旋转和位移切边)
+  let cameraScale = 1.05;
   let cameraTranslateX = 0;
   let cameraTranslateY = 0;
   let cameraRotateZ = 0;
 
   switch (cameraMotion) {
     case 'pan-left':
-      cameraScale = interpolate(progress, [0, 1], [1.02, 1.08]);
-      cameraTranslateX = interpolate(progress, [0, 1], [20, -25]);
+      cameraScale = interpolate(progress, [0, 1], [1.05, 1.11]);
+      cameraTranslateX = interpolate(progress, [0, 1], [25, -25]);
       cameraTranslateY = interpolate(progress, [0, 1], [0, -10]);
       cameraRotateZ = interpolate(progress, [0, 1], [-0.3, 0.3]);
       break;
     case 'pan-right':
-      cameraScale = interpolate(progress, [0, 1], [1.02, 1.08]);
-      cameraTranslateX = interpolate(progress, [0, 1], [-25, 20]);
+      cameraScale = interpolate(progress, [0, 1], [1.05, 1.11]);
+      cameraTranslateX = interpolate(progress, [0, 1], [-25, 25]);
       cameraTranslateY = interpolate(progress, [0, 1], [-5, 10]);
       cameraRotateZ = interpolate(progress, [0, 1], [0.3, -0.3]);
       break;
     case 'pull-out':
-      cameraScale = interpolate(progress, [0, 1], [1.09, 1.01]);
-      cameraTranslateY = interpolate(progress, [0, 1], [-15, 0]);
+      cameraScale = interpolate(progress, [0, 1], [1.12, 1.05]);
+      cameraTranslateY = interpolate(progress, [0, 1], [-18, 0]);
+      cameraRotateZ = interpolate(progress, [0, 1], [0.3, -0.2]);
       break;
     case 'push-in':
     default:
-      cameraScale = interpolate(progress, [0, 1], [1.00, 1.08]);
+      cameraScale = interpolate(progress, [0, 1], [1.05, 1.12]);
       cameraTranslateY = interpolate(progress, [0, 1], [0, -18]);
       cameraRotateZ = interpolate(progress, [0, 1], [-0.2, 0.4]);
       break;
@@ -74,9 +75,13 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
   const hudSpring = spring({ frame: Math.max(0, frame - 2), fps, config: { damping: 18, stiffness: 120 } });
   const cardSpring = spring({ frame: Math.max(0, frame - 6), fps, config: { damping: 16, stiffness: 100 } });
 
-  // 4. 连续粒子与全息扫描线 (Continuous Living Motion)
-  const scanLineY = (progress * 100) % 100;
-  const particleOffset = (frame * 0.8) % 100;
+  // 4. 连续粒子与全息扫描线 (周期性 2.5s 匀速下扫，杜绝最后 1 帧跳跃)
+  const scanCycleFrames = Math.max(1, Math.round(fps * 2.5));
+  const scanLineY = ((frame % scanCycleFrames) / scanCycleFrames) * 100;
+
+  const resolvedSrc = heroImage.startsWith('http://') || heroImage.startsWith('https://')
+    ? heroImage
+    : staticFile(heroImage);
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#05070e', overflow: 'hidden' }}>
@@ -91,11 +96,10 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
           transform: `scale(${cameraScale}) translate3d(${cameraTranslateX}px, ${cameraTranslateY}px, 0) rotate(${cameraRotateZ}deg)`,
           transformOrigin: 'center center',
           filter: 'contrast(1.05) saturate(1.08)',
-          transition: 'filter 0.3s ease',
         }}
       >
         <Img
-          src={staticFile(heroImage)}
+          src={resolvedSrc}
           style={{
             width: '100%',
             height: '100%',
@@ -130,7 +134,7 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
         }}
       />
 
-      {/* 4. 动态漂浮光斑微粒 (Ambient Floating Dust / Light Motes) */}
+      {/* 4. 动态漂浮光斑微粒 (三角函数确定性连续摆动，无重置跳跃) */}
       <svg
         style={{
           position: 'absolute',
@@ -140,10 +144,10 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
           opacity: 0.6,
         }}
       >
-        <circle cx={`${20 + (particleOffset * 0.4) % 60}%`} cy={`${80 - (particleOffset * 0.8) % 70}%`} r="2.5" fill={theme.accentColor} opacity="0.6" />
-        <circle cx={`${75 - (particleOffset * 0.3) % 50}%`} cy={`${90 - (particleOffset * 0.9) % 80}%`} r="3.5" fill="#38bdf8" opacity="0.4" />
-        <circle cx={`${45 + (particleOffset * 0.5) % 40}%`} cy={`${70 - (particleOffset * 0.7) % 60}%`} r="2" fill="#c084fc" opacity="0.7" />
-        <circle cx={`${85 + (particleOffset * 0.2) % 15}%`} cy={`${50 - (particleOffset * 0.5) % 40}%`} r="1.8" fill="#ffffff" opacity="0.5" />
+        <circle cx={`${25 + Math.sin(frame * 0.02) * 12}%`} cy={`${75 + Math.cos(frame * 0.025) * 10}%`} r="2.5" fill={theme.accentColor} opacity="0.6" />
+        <circle cx={`${70 + Math.cos(frame * 0.018) * 15}%`} cy={`${80 + Math.sin(frame * 0.022) * 12}%`} r="3.5" fill="#38bdf8" opacity="0.4" />
+        <circle cx={`${45 + Math.sin(frame * 0.024) * 10}%`} cy={`${65 + Math.cos(frame * 0.03) * 8}%`} r="2" fill="#c084fc" opacity="0.7" />
+        <circle cx={`${80 + Math.cos(frame * 0.015) * 8}%`} cy={`${45 + Math.sin(frame * 0.02) * 10}%`} r="1.8" fill="#ffffff" opacity="0.5" />
       </svg>
 
       {/* 5. 镜头开幅白光闪烁 (Camera Flash Entry Bloom) */}
@@ -196,7 +200,8 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
                 borderRadius: '50%',
                 backgroundColor: theme.accentColor,
                 boxShadow: `0 0 10px ${theme.accentColor}`,
-                animation: 'pulse 1.5s infinite',
+                opacity: 0.6 + Math.sin(frame / 6) * 0.4,
+                transform: `scale(${1 + Math.sin(frame / 6) * 0.2})`,
               }}
             />
             <span style={{ fontSize: '13px', fontWeight: 600, color: '#f1f5f9', letterSpacing: '0.05em' }}>
@@ -214,7 +219,7 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
               color: '#94a3b8',
             }}
           >
-            FPS: 30 · CFR 1080P
+            FPS: {fps} · CFR {height}P
           </div>
         </div>
 

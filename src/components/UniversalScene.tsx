@@ -43,8 +43,14 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const activeThemeName = scene.theme || (timelineData as any).theme;
   const theme: ThemeConfig = getTheme(activeThemeName);
 
-  // 若分镜指定了 heroImage 或声明为 CinematicHero，优先光栅化电影级 2.5D 动态原画场景
-  if (scene.heroImage || scene.type === 'CinematicHero') {
+  const allScenes = (timelineData as any).scenes || [];
+  const derivedIndex = allScenes.findIndex((s: any) => s.id === scene.id) + 1;
+  const sceneIndex = scene.sceneIndex || (derivedIndex > 0 ? derivedIndex : 1);
+  const totalScenes = scene.totalScenes || (allScenes.length > 0 ? allScenes.length : 6);
+
+  // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage，优先光栅化电影级 2.5D 动态原画场景
+  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow'].includes(scene.type || '');
+  if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && scene.heroImage)) {
     return (
       <CinematicHeroScene
         heroImage={scene.heroImage || ''}
@@ -55,8 +61,8 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
         cameraMotion={scene.cameraMotion}
         theme={theme}
         durationInFrames={scene.durationInFrames}
-        sceneIndex={scene.sceneIndex || parseInt(scene.id.replace('scene_', '')) || 1}
-        totalScenes={scene.totalScenes || 6}
+        sceneIndex={sceneIndex}
+        totalScenes={totalScenes}
       />
     );
   }

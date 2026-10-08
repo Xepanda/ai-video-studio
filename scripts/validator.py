@@ -204,6 +204,14 @@ def validate(timeline_path: str = None):
             nodes = scene.get("topologyNodes", [])
             if not nodes:
                 errors.append(f"分镜 [{scene_id}] 声明类型为 {scene_type}，但未提供 topologyNodes 节点列表！")
+        elif scene_type == "CinematicHero" or scene.get("heroImage"):
+            hero_img = scene.get("heroImage")
+            if not hero_img:
+                errors.append(f"分镜 [{scene_id}] 声明为 CinematicHero，但未配置 heroImage 素材路径！")
+            elif not hero_img.startswith("http://") and not hero_img.startswith("https://"):
+                full_img_path = os.path.join(PUBLIC_DIR, hero_img)
+                if not os.path.exists(full_img_path):
+                    errors.append(f"分镜 [{scene_id}] heroImage 原画素材不存在: {hero_img}")
 
     # 检查总帧数一致性
     if total_frames != calculated_total_frames:
