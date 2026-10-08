@@ -202,7 +202,8 @@ def align_audio_files(
             for field in [
                 "title", "badge", "subtitle", "cards", "bulletPoints",
                 "codeSnippet", "codeLang", "codeTitle", "type",
-                "topologyNodes", "topologyLinks", "metrics", "theme", "voiceVolume"
+                "topologyNodes", "topologyLinks", "metrics", "theme", "voiceVolume",
+                "heroImage", "cameraMotion", "highlights", "pill", "sceneIndex", "totalScenes"
             ]:
                 if field in meta:
                     scene_data[field] = meta[field]

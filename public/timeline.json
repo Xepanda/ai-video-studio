@@ -6,7 +6,7 @@
   "scenes": [
     {
       "id": "scene_01",
-      "type": "MetricComparison",
+      "type": "CinematicHero",
       "startFrame": 0,
       "durationInFrames": 508,
       "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_01.wav",
@@ -154,11 +154,31 @@
           ]
         }
       ],
-      "theme": "linear-graphite"
+      "theme": "linear-graphite",
+      "heroImage": "footage/meta_muse/scene_01.jpg",
+      "cameraMotion": "push-in",
+      "pill": "⚡ 22天狂揽500万下载",
+      "highlights": [
+        {
+          "label": "App Store 榜单",
+          "value": "#1 免费总榜登顶",
+          "color": "#10b981"
+        },
+        {
+          "label": "破纪录速度",
+          "value": "2.0x 登顶超越 ChatGPT",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "全球热搜",
+          "value": "Musemaxxing 新梗引爆",
+          "color": "#c084fc"
+        }
+      ]
     },
     {
       "id": "scene_02",
-      "type": "Default",
+      "type": "CinematicHero",
       "startFrame": 508,
       "durationInFrames": 540,
       "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_02.wav",
@@ -258,11 +278,31 @@
           "tag": "REAL WORLD ACTION"
         }
       ],
-      "theme": "vercel-geist"
+      "theme": "vercel-geist",
+      "heroImage": "footage/meta_muse/scene_02.jpg",
+      "cameraMotion": "pan-right",
+      "pill": "🤖 主动代理人自主执行",
+      "highlights": [
+        {
+          "label": "执行模式",
+          "value": "无头浏览器后台冲浪",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "核心能力",
+          "value": "比价 / 采购 / 邮件接管",
+          "color": "#10b981"
+        },
+        {
+          "label": "对话模式",
+          "value": "被动聊天时代终结",
+          "color": "#f43f5e"
+        }
+      ]
     },
     {
       "id": "scene_03",
-      "type": "ArchitectureTopology",
+      "type": "CinematicHero",
       "startFrame": 1048,
       "durationInFrames": 591,
       "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_03.wav",
@@ -325,8 +365,8 @@
           "endMs": 19495
         }
       ],
-      "title": "硬核解构：Muse Secure VM 隔离沙箱与大脑",
-      "badge": "CORE ARCHITECTURE · 核心架构",
+      "title": "核心架构深潜：Secure VM 沙箱与 Avocado 推理中枢",
+      "badge": "SYSTEM ARCHITECTURE · 系统内幕",
       "topologyNodes": [
         {
           "id": "goal",
@@ -401,11 +441,31 @@
           "label": "加密归档"
         }
       ],
-      "theme": "cyber-blueprint"
+      "theme": "cyber-blueprint",
+      "heroImage": "footage/meta_muse/scene_03.jpg",
+      "cameraMotion": "pan-left",
+      "pill": "🛡️ SECURE VM 沙箱隔离",
+      "highlights": [
+        {
+          "label": "安全边界",
+          "value": "独立微型虚拟机隔离",
+          "color": "#10b981"
+        },
+        {
+          "label": "推理大脑",
+          "value": "Avocado 推理中枢",
+          "color": "#a855f7"
+        },
+        {
+          "label": "通信总线",
+          "value": "端到端加密外部通信",
+          "color": "#38bdf8"
+        }
+      ]
     },
     {
       "id": "scene_04",
-      "type": "Default",
+      "type": "CinematicHero",
       "startFrame": 1639,
       "durationInFrames": 611,
       "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_04.wav",
@@ -468,16 +528,36 @@
           "endMs": 20095
         }
       ],
-      "title": "极客狂欢：GitHub 开源硬件 SDK 与物理外设",
-      "badge": "OPEN SOURCE ECOSYSTEM · 极客生态",
+      "title": "极客生态狂欢：几十块钱的 ESP32 怎么手搓物理按键？",
+      "badge": "HACKER ECOSYSTEM · 极客生态",
       "codeSnippet": "#include <WiFi.h>\n#include <MuseGadgetSDK.h>\n\nMusePuck puck(\"desk-smart-button-01\");\n\nvoid setup() {\n  puck.connectWiFi(\"Lab-Network-5G\", \"auth_token\");\n  puck.bindTrigger(PIN_BUTTON, \"MUSE_EXECUTE_ROUTINE\");\n}\n\nvoid loop() {\n  if (puck.isPressed()) {\n    puck.dispatchAction(\"整理未读邮件，并预订明早八点机场专车\");\n  }\n}",
       "codeLang": "C++ / Arduino",
       "codeTitle": "esp32_muse_gadget.cpp — ESP32 Physical Trigger",
-      "theme": "motion-canvas-warm"
+      "theme": "motion-canvas-warm",
+      "heroImage": "footage/meta_muse/scene_04.jpg",
+      "cameraMotion": "push-in",
+      "pill": "⚡ ESP32 开源硬件生态",
+      "highlights": [
+        {
+          "label": "硬件成本",
+          "value": "< ¥30 手搓实体按键",
+          "color": "#10b981"
+        },
+        {
+          "label": "开源生态",
+          "value": "muse-gadget-sdk",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "交互形态",
+          "value": "桌面物理轻拍触发",
+          "color": "#f59e0b"
+        }
+      ]
     },
     {
       "id": "scene_05",
-      "type": "Default",
+      "type": "CinematicHero",
       "startFrame": 2250,
       "durationInFrames": 575,
       "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_05.wav",
@@ -549,8 +629,8 @@
           "endMs": 18985
         }
       ],
-      "title": "暗流涌动：系统指令被逆向与人际档案隐私风暴",
-      "badge": "PRIVACY CONTROVERSY · 争议风暴",
+      "title": "争议风暴前瞻：系统指令被逆向与人际画像档案",
+      "badge": "CONTROVERSY & PRIVACY · 隐忧与风暴",
       "cards": [
         {
           "title": "深度人际画像档案 (People Pages)",
@@ -568,11 +648,31 @@
           "tag": "PRIVACY DILEMMA"
         }
       ],
-      "theme": "cinema-editorial"
+      "theme": "cinema-editorial",
+      "heroImage": "footage/meta_muse/scene_05.jpg",
+      "cameraMotion": "pull-out",
+      "pill": "🚨 隐私争议与系统逆向",
+      "highlights": [
+        {
+          "label": "人际画像档案",
+          "value": "People Pages 暗中建档",
+          "color": "#f43f5e"
+        },
+        {
+          "label": "底层指令",
+          "value": "Prompt 已被逆向公开",
+          "color": "#fb923c"
+        },
+        {
+          "label": "企业内网",
+          "value": "拉响高危隐私合规红灯",
+          "color": "#e11d48"
+        }
+      ]
     },
     {
       "id": "scene_06",
-      "type": "Default",
+      "type": "CinematicHero",
       "startFrame": 2825,
       "durationInFrames": 482,
       "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_06.wav",
@@ -644,8 +744,8 @@
           "endMs": 15895
         }
       ],
-      "title": "终局反思：2026 个人代理人浪潮已至",
-      "badge": "THE FUTURE IS NOW · 终局启示",
+      "title": "终局启示：当 AI 开始替你生活，你的边界在哪里？",
+      "badge": "FINAL REFLECTION · 终局启示",
       "cards": [
         {
           "title": "生成式 AI 范式质变",
@@ -663,7 +763,27 @@
           "tag": "HUMAN AGENCY"
         }
       ],
-      "theme": "linear-graphite"
+      "theme": "linear-graphite",
+      "heroImage": "footage/meta_muse/scene_06.jpg",
+      "cameraMotion": "push-in",
+      "pill": "🌅 2026 个人 Agent 时代已至",
+      "highlights": [
+        {
+          "label": "范式转移",
+          "value": "从生成文字到替人类行动",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "核心命题",
+          "value": "便利与隐私的终极边界",
+          "color": "#a855f7"
+        },
+        {
+          "label": "未来浪潮",
+          "value": "2026 个人 Agent 黄金纪元",
+          "color": "#10b981"
+        }
+      ]
     }
   ],
   "bgmVolume": 0.035,
