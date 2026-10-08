@@ -5,6 +5,7 @@ import { TerminalWindow } from './TerminalWindow';
 import { ArchitectureTopology, TopologyNode, TopologyLink } from './ArchitectureTopology';
 import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
+import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
 
 export interface SceneMeta {
@@ -12,6 +13,12 @@ export interface SceneMeta {
   type?: string;
   title?: string;
   badge?: string;
+  pill?: string;
+  heroImage?: string;
+  cameraMotion?: 'push-in' | 'pan-left' | 'pan-right' | 'pull-out';
+  highlights?: Array<{ label: string; value: string; color?: string }>;
+  sceneIndex?: number;
+  totalScenes?: number;
   subtitle?: string;
   bulletPoints?: string[];
   codeSnippet?: string;
@@ -35,6 +42,30 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   // 获取活动主题 (优先分镜声明，次选全局时间轴，由 getTheme 统一提供默认回退)
   const activeThemeName = scene.theme || (timelineData as any).theme;
   const theme: ThemeConfig = getTheme(activeThemeName);
+
+  const allScenes = (timelineData as any).scenes || [];
+  const derivedIndex = allScenes.findIndex((s: any) => s.id === scene.id) + 1;
+  const sceneIndex = scene.sceneIndex || (derivedIndex > 0 ? derivedIndex : 1);
+  const totalScenes = scene.totalScenes || (allScenes.length > 0 ? allScenes.length : 6);
+
+  // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage，优先光栅化电影级 2.5D 动态原画场景
+  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow'].includes(scene.type || '');
+  if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && scene.heroImage)) {
+    return (
+      <CinematicHeroScene
+        heroImage={scene.heroImage || ''}
+        title={scene.title}
+        badge={scene.badge}
+        pill={scene.pill}
+        highlights={scene.highlights}
+        cameraMotion={scene.cameraMotion}
+        theme={theme}
+        durationInFrames={scene.durationInFrames}
+        sceneIndex={sceneIndex}
+        totalScenes={totalScenes}
+      />
+    );
+  }
 
   const isSfxEnabled = (timelineData as any).enableSfx !== false && scene.enableSfx !== false;
 
