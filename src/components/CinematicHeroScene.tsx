@@ -1,9 +1,10 @@
 import React from 'react';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, staticFile } from 'remotion';
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, Video, staticFile } from 'remotion';
 import { ThemeConfig, safeColorWithAlpha } from '../styles/theme';
 
 export interface CinematicHeroProps {
-  heroImage: string;
+  heroImage?: string;
+  heroVideo?: string;
   title?: string;
   badge?: string;
   pill?: string;
@@ -16,7 +17,8 @@ export interface CinematicHeroProps {
 }
 
 export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
-  heroImage,
+  heroImage = '',
+  heroVideo,
   title,
   badge,
   pill,
@@ -79,13 +81,20 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
   const scanCycleFrames = Math.max(1, Math.round(fps * 2.5));
   const scanLineY = ((frame % scanCycleFrames) / scanCycleFrames) * 100;
 
-  const resolvedSrc = heroImage.startsWith('http://') || heroImage.startsWith('https://')
-    ? heroImage
-    : staticFile(heroImage);
+  const isVideo = Boolean(heroVideo);
+  const resolvedVideoSrc = heroVideo
+    ? (heroVideo.startsWith('http://') || heroVideo.startsWith('https://') ? heroVideo : staticFile(heroVideo))
+    : '';
+  const resolvedSrc = heroImage
+    ? (heroImage.startsWith('http://') || heroImage.startsWith('https://') ? heroImage : staticFile(heroImage))
+    : '';
+
+  // 纯粹纪实摄影/苹果发布会风 (去除重度赛博假光，呈现自然光影与通透质感)
+  const isEditorial = theme.name === 'cinema-editorial' || theme.name === 'vercel-geist';
 
   return (
-    <AbsoluteFill style={{ backgroundColor: '#05070e', overflow: 'hidden' }}>
-      {/* 1. 2.5D 电影级动态原画背景 (Cinematic AI Generated Hero Asset) */}
+    <AbsoluteFill style={{ backgroundColor: isEditorial ? '#0a0b0e' : '#05070e', overflow: 'hidden' }}>
+      {/* 1. 2.5D 电影级动态原画 / 真实生成式视频背景 (Cinematic Hero Video or Photo) */}
       <div
         style={{
           position: 'absolute',
@@ -93,46 +102,67 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
           left: 0,
           width: '100%',
           height: '100%',
-          transform: `scale(${cameraScale}) translate3d(${cameraTranslateX}px, ${cameraTranslateY}px, 0) rotate(${cameraRotateZ}deg)`,
+          transform: isVideo
+            ? undefined
+            : `scale(${cameraScale}) translate3d(${cameraTranslateX}px, ${cameraTranslateY}px, 0) rotate(${cameraRotateZ}deg)`,
           transformOrigin: 'center center',
-          filter: 'contrast(1.05) saturate(1.08)',
+          filter: isEditorial ? 'contrast(1.02) saturate(1.03)' : 'contrast(1.05) saturate(1.08)',
         }}
       >
-        <Img
-          src={resolvedSrc}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
-        />
+        {isVideo ? (
+          <Video
+            src={resolvedVideoSrc}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+            loop
+          />
+        ) : (
+          <Img
+            src={resolvedSrc}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        )}
       </div>
 
       {/* 2. 电影感光影与景深暗角 (Anamorphic Vignette & Depth Gradients) */}
       <AbsoluteFill
         style={{
-          background: `
-            radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(5, 7, 14, 0.75) 100%),
-            linear-gradient(180deg, rgba(5, 7, 14, 0.7) 0%, transparent 25%, transparent 60%, rgba(5, 7, 14, 0.92) 100%)
-          `,
+          background: isEditorial
+            ? `
+              radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(10, 11, 14, 0.45) 100%),
+              linear-gradient(180deg, rgba(10, 11, 14, 0.35) 0%, transparent 20%, transparent 65%, rgba(10, 11, 14, 0.75) 100%)
+            `
+            : `
+              radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(5, 7, 14, 0.75) 100%),
+              linear-gradient(180deg, rgba(5, 7, 14, 0.7) 0%, transparent 25%, transparent 60%, rgba(5, 7, 14, 0.92) 100%)
+            `,
           pointerEvents: 'none',
         }}
       />
 
-      {/* 3. 极客激光全息扫描线 (Cyber Holographic Scanner Line) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: `${scanLineY}%`,
-          left: 0,
-          width: '100%',
-          height: '2px',
-          background: `linear-gradient(90deg, transparent, ${safeColorWithAlpha(theme.accentColor, '66')}, ${theme.accentColor}, ${safeColorWithAlpha(theme.accentColor, '66')}, transparent)`,
-          boxShadow: `0 0 16px ${safeColorWithAlpha(theme.accentColor, 'aa')}`,
-          opacity: 0.45,
-          pointerEvents: 'none',
-        }}
-      />
+      {/* 3. 极客激光全息扫描线 (仅在赛博/微服务风启用，纪实摄影风自动隐匿以绝 AI 塑料感) */}
+      {!isEditorial && (
+        <div
+          style={{
+            position: 'absolute',
+            top: `${scanLineY}%`,
+            left: 0,
+            width: '100%',
+            height: '2px',
+            background: `linear-gradient(90deg, transparent, ${safeColorWithAlpha(theme.accentColor, '66')}, ${theme.accentColor}, ${safeColorWithAlpha(theme.accentColor, '66')}, transparent)`,
+            boxShadow: `0 0 16px ${safeColorWithAlpha(theme.accentColor, 'aa')}`,
+            opacity: 0.45,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
 
       {/* 4. 动态漂浮光斑微粒 (三角函数确定性连续摆动，无重置跳跃) */}
       <svg

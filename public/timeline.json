@@ -1,6 +1,6 @@
 {
   "project": "meta_muse_agent_deepdive",
-  "theme": "linear-graphite",
+  "theme": "cinema-editorial",
   "fps": 30,
   "totalDurationInFrames": 3307,
   "scenes": [
@@ -154,8 +154,8 @@
           ]
         }
       ],
-      "theme": "linear-graphite",
-      "heroImage": "footage/meta_muse/scene_01.jpg",
+      "theme": "cinema-editorial",
+      "heroImage": "footage/meta_muse_apple/scene_01.jpg",
       "cameraMotion": "push-in",
       "pill": "⚡ 22天狂揽500万下载",
       "highlights": [
@@ -278,8 +278,8 @@
           "tag": "REAL WORLD ACTION"
         }
       ],
-      "theme": "vercel-geist",
-      "heroImage": "footage/meta_muse/scene_02.jpg",
+      "theme": "cinema-editorial",
+      "heroImage": "footage/meta_muse_apple/scene_02.jpg",
       "cameraMotion": "pan-right",
       "pill": "🤖 主动代理人自主执行",
       "highlights": [
@@ -441,8 +441,8 @@
           "label": "加密归档"
         }
       ],
-      "theme": "cyber-blueprint",
-      "heroImage": "footage/meta_muse/scene_03.jpg",
+      "theme": "cinema-editorial",
+      "heroImage": "footage/meta_muse_apple/scene_03.jpg",
       "cameraMotion": "pan-left",
       "pill": "🛡️ SECURE VM 沙箱隔离",
       "highlights": [
@@ -533,8 +533,8 @@
       "codeSnippet": "#include <WiFi.h>\n#include <MuseGadgetSDK.h>\n\nMusePuck puck(\"desk-smart-button-01\");\n\nvoid setup() {\n  puck.connectWiFi(\"Lab-Network-5G\", \"auth_token\");\n  puck.bindTrigger(PIN_BUTTON, \"MUSE_EXECUTE_ROUTINE\");\n}\n\nvoid loop() {\n  if (puck.isPressed()) {\n    puck.dispatchAction(\"整理未读邮件，并预订明早八点机场专车\");\n  }\n}",
       "codeLang": "C++ / Arduino",
       "codeTitle": "esp32_muse_gadget.cpp — ESP32 Physical Trigger",
-      "theme": "motion-canvas-warm",
-      "heroImage": "footage/meta_muse/scene_04.jpg",
+      "theme": "cinema-editorial",
+      "heroImage": "footage/meta_muse_apple/scene_04.jpg",
       "cameraMotion": "push-in",
       "pill": "⚡ ESP32 开源硬件生态",
       "highlights": [
@@ -649,7 +649,7 @@
         }
       ],
       "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse/scene_05.jpg",
+      "heroImage": "footage/meta_muse_apple/scene_05.jpg",
       "cameraMotion": "pull-out",
       "pill": "🚨 隐私争议与系统逆向",
       "highlights": [
@@ -763,8 +763,8 @@
           "tag": "HUMAN AGENCY"
         }
       ],
-      "theme": "linear-graphite",
-      "heroImage": "footage/meta_muse/scene_06.jpg",
+      "theme": "cinema-editorial",
+      "heroImage": "footage/meta_muse_apple/scene_06.jpg",
       "cameraMotion": "push-in",
       "pill": "🌅 2026 个人 Agent 时代已至",
       "highlights": [
