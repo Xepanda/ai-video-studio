@@ -48,12 +48,14 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const sceneIndex = scene.sceneIndex || (derivedIndex > 0 ? derivedIndex : 1);
   const totalScenes = scene.totalScenes || (allScenes.length > 0 ? allScenes.length : 6);
 
-  // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage，优先光栅化电影级 2.5D 动态原画场景
+  // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage/heroVideo/videoPath，优先光栅化电影级 2.5D 原画或动态视频流
+  const hasVisualMedia = Boolean(scene.heroImage || scene.heroVideo || scene.videoPath);
   const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow'].includes(scene.type || '');
-  if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && scene.heroImage)) {
+  if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && hasVisualMedia)) {
     return (
       <CinematicHeroScene
         heroImage={scene.heroImage || ''}
+        heroVideo={scene.heroVideo || scene.videoPath}
         title={scene.title}
         badge={scene.badge}
         pill={scene.pill}
