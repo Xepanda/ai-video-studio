@@ -1,20 +1,83 @@
 import React from 'react';
 import { SceneMeta } from '../UniversalScene';
 import { ThemeConfig } from '../../styles/theme';
-import { TweetEmbedCard, TweetEmbedCardProps } from './TweetEmbedCard';
+import { TweetEmbedCard, TweetEmbedCardProps, TweetMetrics } from './TweetEmbedCard';
 import { BinaryBentoCard, BinaryBentoCardProps, BentoSubCard } from './BinaryBentoCard';
 import { MinimalHeadlineScene, MinimalHeadlineSceneProps } from './MinimalHeadlineScene';
 
+/**
+ * 竖屏科技短视频分镜元数据接口，提供严格类型定义消除内部 any 类型转换
+ */
+export interface ShortsSceneMeta extends SceneMeta {
+  tag?: string;
+  dateText?: string;
+  date?: string;
+  metrics?: TweetMetrics | any;
+}
+
 export interface TechNewsShortsSceneProps {
-  scene: SceneMeta;
+  scene: ShortsSceneMeta;
   activeTheme?: ThemeConfig;
   style?: React.CSSProperties;
 }
 
 /**
+ * 渲染深色模式下的主题网格/点阵背景覆盖层，同时支持 dots 与 grid 类型
+ */
+function renderBackgroundOverlay(theme?: ThemeConfig): React.ReactNode {
+  if (!theme || !theme.gridOverlay || theme.gridOverlay.type === 'none') {
+    return null;
+  }
+
+  const overlay = theme.gridOverlay;
+  const size = overlay.size && overlay.size > 0 ? overlay.size : 36;
+  const color = overlay.color || 'rgba(255, 255, 255, 0.08)';
+  const opacity = overlay.opacity ?? 0.7;
+
+  if (overlay.type === 'dots') {
+    return (
+      <div
+        className="technews-overlay-dots"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `radial-gradient(${color} 1.5px, transparent 1.5px)`,
+          backgroundSize: `${size}px ${size}px`,
+          opacity,
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
+    );
+  }
+
+  if (overlay.type === 'grid') {
+    return (
+      <div
+        className="technews-overlay-grid"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(to right, ${color} 1px, transparent 1px),
+            linear-gradient(to bottom, ${color} 1px, transparent 1px)
+          `,
+          backgroundSize: `${size}px ${size}px`,
+          opacity,
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
+    );
+  }
+
+  return null;
+}
+
+/**
  * 竖屏科技短视频统一调度中心 (TechNewsShortsScene)
- * 接收 SceneMeta，多态分发至 TweetEmbedCard / BinaryBentoCard / MinimalHeadlineScene，
- * 并统一保障 1080×1920 竖屏画布比例与底部 220px 交互安全区。
+ * 接收 ShortsSceneMeta，多态分发至 TweetEmbedCard / BinaryBentoCard / MinimalHeadlineScene，
+ * 显式 scene.type 拥有绝对最高路由优先级，并统一保障 1080×1920 竖屏画布比例与底部 220px 交互安全区。
  */
 export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
   scene,
@@ -27,16 +90,8 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       (scene.binaryBento && scene.binaryBento.theme === 'light')
   );
 
-  // 2. 多态分发逻辑判断
-  const sceneType = scene.type || '';
-  const hasTweet = sceneType === 'TweetEmbed' || Boolean(scene.tweet);
-  const hasBento = sceneType === 'BinaryBento' || Boolean(scene.binaryBento);
-
-  // 3. 渲染子分镜组件
-  let contentElement: React.ReactNode = null;
-
-  if (hasTweet) {
-    // A. 社交媒体推文卡片多态分支 (TweetEmbedCard)
+  // 2. 映射推文卡片属性 (TweetEmbedCard)
+  const renderTweetCard = () => {
     const tweet = scene.tweet || {};
     const tweetProps: TweetEmbedCardProps = {
       authorName: tweet.authorName || 'Tech Insider',
@@ -47,15 +102,17 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       content: tweet.content || scene.text || scene.title || '',
       highlightWords: tweet.highlightWords || scene.highlightWords,
       subtitle: tweet.subtitle || scene.desc || scene.subtitle,
-      metrics: tweet.metrics || (scene.metrics as any),
+      metrics: tweet.metrics || scene.metrics,
       theme: activeTheme,
       maxWidth: tweet.maxWidth || 920,
       style: tweet.style,
       className: tweet.className,
     };
-    contentElement = <TweetEmbedCard {...tweetProps} />;
-  } else if (hasBento) {
-    // B. 二选一对比/双栏 Bento 卡片多分枝 (BinaryBentoCard)
+    return <TweetEmbedCard {...tweetProps} />;
+  };
+
+  // 3. 映射二选一对比卡片属性 (BinaryBentoCard)
+  const renderBentoCard = () => {
     const bento = scene.binaryBento || {};
     const leftRaw = bento.leftCard;
     const rightRaw = bento.rightCard;
@@ -97,26 +154,46 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       style: bento.style,
       className: bento.className,
     };
-    contentElement = <BinaryBentoCard {...bentoProps} />;
-  } else {
-    // C. 极简黑白高反差大字报 (MinimalHeadlineScene / 默认分镜兜底)
+    return <BinaryBentoCard {...bentoProps} />;
+  };
+
+  // 4. 映射极简大字报属性 (MinimalHeadlineScene)
+  const renderHeadlineCard = () => {
     const headlineProps: MinimalHeadlineSceneProps = {
       title: scene.title || scene.text || '',
       subtitle: scene.subtitle || scene.desc,
       category: scene.category || scene.pill || scene.badge,
-      tag: (scene as any).tag || scene.systemTag,
+      tag: scene.tag || scene.systemTag,
       highlightWords: scene.highlightWords,
       inverted: isInverted,
-      dateText: (scene as any).dateText || (scene as any).date,
+      dateText: scene.dateText || scene.date,
       accentColor: activeTheme?.accentColor || '#8b5cf6',
       style: {
         backgroundColor: 'transparent',
       },
     };
-    contentElement = <MinimalHeadlineScene {...headlineProps} />;
+    return <MinimalHeadlineScene {...headlineProps} />;
+  };
+
+  // 5. 显式 scene.type 拥有绝对最高路由优先级，随后回退至数据属性推断
+  const sceneType = scene.type || '';
+  let contentElement: React.ReactNode = null;
+
+  if (sceneType === 'TweetEmbed') {
+    contentElement = renderTweetCard();
+  } else if (sceneType === 'BinaryBento') {
+    contentElement = renderBentoCard();
+  } else if (sceneType === 'MinimalHeadline') {
+    contentElement = renderHeadlineCard();
+  } else if (scene.tweet) {
+    contentElement = renderTweetCard();
+  } else if (scene.binaryBento) {
+    contentElement = renderBentoCard();
+  } else {
+    contentElement = renderHeadlineCard();
   }
 
-  // 4. 背景样式与装饰层
+  // 6. 容器背景与样式设置
   const defaultDarkBg =
     'radial-gradient(ellipse 90% 70% at 50% 25%, #181825 0%, #0c0d14 60%, #050508 100%)';
   const containerBg = isInverted ? '#ffffff' : (activeTheme?.background || defaultDarkBg);
@@ -138,22 +215,10 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
         ...style,
       }}
     >
-      {/* 5. 深色模式下的可选工科网格/点阵覆盖装饰 */}
-      {!isInverted && activeTheme?.gridOverlay && activeTheme.gridOverlay.type === 'dots' && (
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `radial-gradient(${activeTheme.gridOverlay.color || 'rgba(255, 255, 255, 0.08)'} 1.5px, transparent 1.5px)`,
-            backgroundSize: `${activeTheme.gridOverlay.size || 36}px ${activeTheme.gridOverlay.size || 36}px`,
-            opacity: activeTheme.gridOverlay.opacity ?? 0.7,
-            pointerEvents: 'none',
-            zIndex: 1,
-          }}
-        />
-      )}
+      {/* 7. 深色模式下的可选工科网格/点阵覆盖装饰 (支持 dots 与 grid) */}
+      {!isInverted && renderBackgroundOverlay(activeTheme)}
 
-      {/* 6. 深色模式下的可选环境顶光 (Spotlight) */}
+      {/* 8. 深色模式下的可选环境顶光 (Spotlight) */}
       {!isInverted && activeTheme?.spotlight && (
         <div
           style={{
@@ -171,7 +236,7 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
         />
       )}
 
-      {/* 7. 竖屏黄金视觉中心与底部安全区避让容器 (y: 45%~50%，避开抖音右侧互动栏与底部标题) */}
+      {/* 9. 竖屏黄金视觉中心与底部安全区避让容器 (y: 45%~50%，避开抖音右侧互动栏与底部标题) */}
       <div
         className="technews-shorts-content"
         style={{

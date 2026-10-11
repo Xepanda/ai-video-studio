@@ -104,3 +104,19 @@ Testing TechNewsShortsScene polymorphic routing & safe-area controls...
 
 ## 5. 总结与后续交付
 至此，Task 3 所要求的所有接口规范、大字报反转排版、多态调度路由分发、安全区避让及测试验证全部 100% 达成。为 Task 4（在 `Root.tsx` 中注册 `TechNewsShorts` 专属 1080×1920 Composition 并在 `UniversalScene.tsx` 中接入路由）奠定了坚实完备的组件基础。
+
+## 6. Review 修复记录 (Review Fixes Applied)
+
+针对 Task 3 Review 审查意见，已全部完成落地修复并补充单测覆盖：
+1. **显式 `scene.type` 路由最高优先级保障**：
+   - 重构了 `TechNewsShortsScene.tsx` 的分发逻辑，明确让 `sceneType === 'TweetEmbed'`、`sceneType === 'BinaryBento'`、`sceneType === 'MinimalHeadline'` 优先匹配；仅在未显式声明 `scene.type` 时才回退至 `scene.tweet` 或 `scene.binaryBento` 隐式属性推断。
+   - 在测试套件中新增 2.5 节用例：验证即使带有 `scene.tweet` 对象，但显式声明 `type: 'MinimalHeadline'` 时严格优先渲染大字报。
+2. **类型安全清理 (ShortsSceneMeta)**：
+   - 导出专用分镜元数据接口 `export interface ShortsSceneMeta extends SceneMeta`，明确定义 `tag?: string`、`dateText?: string`、`date?: string`、`metrics?: TweetMetrics`。
+   - 彻底移除了组件内所有 `(scene as any)` 转换，实现 100% 干净类型推导。
+3. **动态响应 `accentColor`**：
+   - 在 `MinimalHeadlineScene.tsx` 中实现 `parseColorToRgba` 与动态加深对比度算法，根据传入的 `accentColor`（如 `#38bdf8`）动态生成高亮胶囊背景、边框与发光投影，不再局限于硬编码紫色。
+   - 在单测中新增 1.3 节用例：验证天蓝色 `#38bdf8` 下的动态 RGBA 样式生成。
+4. **主题背景层全面支持 dots 与 grid**：
+   - 提取 `renderBackgroundOverlay(activeTheme)`，不仅支持点阵（dots），而且完整支持线形网格（grid），在深色模式下呈现精致的科技感背景底衬。
+

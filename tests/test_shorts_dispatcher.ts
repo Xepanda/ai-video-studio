@@ -8,8 +8,8 @@ import {
 import type {
   MinimalHeadlineSceneProps,
   TechNewsShortsSceneProps,
+  ShortsSceneMeta,
 } from '../src/components/shorts';
-import type { SceneMeta } from '../src/components/UniversalScene';
 import { THEMES } from '../src/styles/theme';
 
 /**
@@ -67,7 +67,26 @@ function testMinimalHeadlineScene() {
     throw new Error('Inverted MinimalHeadlineScene missing high-contrast keyword capsules');
   }
 
-  // 1.3 关键词降序排序匹配验证（防止短词前缀吞噬长词）
+  // 1.3 自定义 accentColor 动态计算验证
+  const customAccentProps: MinimalHeadlineSceneProps = {
+    title: '全新架构跃迁',
+    highlightWords: ['架构跃迁'],
+    accentColor: '#38bdf8', // 天蓝色
+    inverted: false,
+  };
+  const customAccentHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(MinimalHeadlineScene, customAccentProps)
+  );
+
+  // 应该动态生成 rgba(56, 189, 248, ...)
+  if (!customAccentHtml.includes('rgba(56, 189, 248, 0.22)')) {
+    throw new Error('renderHeadlineText failed to calculate dynamic rgba from custom accentColor');
+  }
+  if (!customAccentHtml.includes('#38bdf8')) {
+    throw new Error('renderHeadlineText failed to apply custom accentColor to capsule text');
+  }
+
+  // 1.4 关键词降序排序匹配验证（防止短词前缀吞噬长词）
   const overlapText = 'OpenAI 规则重置方案与规则调整细节';
   const overlapNodes = renderHeadlineText(overlapText, ['规则', '规则重置'], false);
   const overlapHtml = ReactDOMServer.renderToStaticMarkup(
@@ -91,7 +110,7 @@ function testTechNewsShortsSceneDispatcher() {
   const activeTheme = THEMES['linear-graphite'];
 
   // 2.1 路由分支 1：TweetEmbed 多态分发
-  const tweetScene: SceneMeta = {
+  const tweetScene: ShortsSceneMeta = {
     id: 'scene_tweet_01',
     type: 'TweetEmbed',
     durationInFrames: 120,
@@ -131,7 +150,7 @@ function testTechNewsShortsSceneDispatcher() {
   }
 
   // 2.2 路由分支 2：BinaryBento 多态分发
-  const bentoScene: SceneMeta = {
+  const bentoScene: ShortsSceneMeta = {
     id: 'scene_bento_01',
     type: 'BinaryBento',
     durationInFrames: 150,
@@ -174,7 +193,7 @@ function testTechNewsShortsSceneDispatcher() {
   }
 
   // 2.3 路由分支 3：MinimalHeadline 多态分发 (常规深色模式)
-  const headlineScene: SceneMeta = {
+  const headlineScene: ShortsSceneMeta = {
     id: 'scene_headline_01',
     type: 'MinimalHeadline',
     durationInFrames: 90,
@@ -199,7 +218,7 @@ function testTechNewsShortsSceneDispatcher() {
   }
 
   // 2.4 路由分支 4：MinimalHeadline 反转色彩模式 (inverted: true, 全屏白色冲击)
-  const invertedHeadlineScene: SceneMeta = {
+  const invertedHeadlineScene: ShortsSceneMeta = {
     id: 'scene_headline_inverted',
     type: 'MinimalHeadline',
     durationInFrames: 60,
@@ -225,8 +244,76 @@ function testTechNewsShortsSceneDispatcher() {
     throw new Error('Inverted TechNewsShortsScene missing category');
   }
 
-  // 2.5 容错与兜底：传入空属性或未知类型的 scene，确保平稳降级绝不抛出异常
-  const emptyScene: SceneMeta = {
+  // 2.5 核心审查点验证：显式 scene.type 拥有绝对最高优先级
+  // 即使附带了 scene.tweet 对象，但显式声明 type: 'MinimalHeadline' 时，必须严格渲染大字报
+  const explicitPriorityScene: ShortsSceneMeta = {
+    id: 'scene_explicit_priority',
+    type: 'MinimalHeadline',
+    durationInFrames: 90,
+    title: '显式类型最高优先级',
+    tweet: {
+      authorName: 'Ghost Tweet',
+      authorHandle: '@ghost',
+      content: 'This should not be rendered because type is MinimalHeadline',
+    },
+  };
+
+  const priorityHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(TechNewsShortsScene, {
+      scene: explicitPriorityScene,
+      activeTheme,
+    })
+  );
+
+  if (!priorityHtml.includes('显式类型最高优先级')) {
+    throw new Error('Explicit scene.type MinimalHeadline was not rendered');
+  }
+  if (priorityHtml.includes('Ghost Tweet')) {
+    throw new Error('Explicit scene.type did not take precedence over implicit scene.tweet detection');
+  }
+
+  // 2.6 隐式属性推断回退验证 (未显式指定 scene.type，但含有 scene.tweet 或 scene.binaryBento)
+  const implicitTweetScene: ShortsSceneMeta = {
+    id: 'scene_implicit_tweet',
+    durationInFrames: 90,
+    tweet: {
+      authorName: 'Implicit Author',
+      authorHandle: '@implicit',
+      content: 'Implicitly dispatched tweet content',
+    },
+  };
+  const implicitTweetHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(TechNewsShortsScene, {
+      scene: implicitTweetScene,
+      activeTheme,
+    })
+  );
+  if (!implicitTweetHtml.includes('Implicit Author')) {
+    throw new Error('Implicit tweet detection fallback failed');
+  }
+
+  // 2.7 主题网格覆盖层支持验证 (dots 与 grid)
+  const gridTheme = {
+    ...activeTheme,
+    gridOverlay: {
+      type: 'grid' as const,
+      color: 'rgba(56, 189, 248, 0.1)',
+      size: 40,
+      opacity: 0.8,
+    },
+  };
+  const gridSceneHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(TechNewsShortsScene, {
+      scene: headlineScene,
+      activeTheme: gridTheme,
+    })
+  );
+  if (!gridSceneHtml.includes('technews-overlay-grid')) {
+    throw new Error('TechNewsShortsScene failed to render linear grid overlay');
+  }
+
+  // 2.8 容错与兜底：传入空属性或未知类型的 scene，确保平稳降级绝不抛出异常
+  const emptyScene: ShortsSceneMeta = {
     id: 'scene_empty_fallback',
     durationInFrames: 30,
   };

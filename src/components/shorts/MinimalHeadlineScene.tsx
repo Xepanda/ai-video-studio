@@ -15,6 +15,62 @@ export interface MinimalHeadlineSceneProps {
 }
 
 /**
+ * 将 Hex 或 RGB 色值安全转换为指定透明度的 RGBA 字符串
+ */
+export function parseColorToRgba(color: string, alpha: number): string {
+  if (!color) return `rgba(139, 92, 246, ${alpha})`;
+  const trimmed = color.trim();
+  if (trimmed.startsWith('#')) {
+    let hex = trimmed.slice(1);
+    if (hex.length === 3) {
+      hex = hex.split('').map((c) => c + c).join('');
+    }
+    if (hex.length >= 6) {
+      const r = parseInt(hex.slice(0, 2), 16);
+      const g = parseInt(hex.slice(2, 4), 16);
+      const b = parseInt(hex.slice(4, 6), 16);
+      if (!isNaN(r) && !isNaN(g) && !isNaN(b)) {
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+    }
+  } else if (trimmed.startsWith('rgb')) {
+    const match = trimmed.match(/\d+(\.\d+)?/g);
+    if (match && match.length >= 3) {
+      return `rgba(${match[0]}, ${match[1]}, ${match[2]}, ${alpha})`;
+    }
+  }
+  return trimmed;
+}
+
+/**
+ * 根据强调色与是否反转白底计算高对比度文字颜色
+ */
+function getContrastingText(color: string, inverted: boolean): string {
+  if (!color) return inverted ? '#6d28d9' : '#c084fc';
+  if (color.toLowerCase() === '#8b5cf6') {
+    return inverted ? '#6d28d9' : '#c084fc';
+  }
+  if (!inverted) {
+    return color;
+  }
+  // 在白底反转模式下，对浅色进行适当加深以符合对比度要求
+  const trimmed = color.trim();
+  if (trimmed.startsWith('#')) {
+    let hex = trimmed.slice(1);
+    if (hex.length === 3) {
+      hex = hex.split('').map((c) => c + c).join('');
+    }
+    if (hex.length >= 6) {
+      const r = Math.round(parseInt(hex.slice(0, 2), 16) * 0.65);
+      const g = Math.round(parseInt(hex.slice(2, 4), 16) * 0.65);
+      const b = Math.round(parseInt(hex.slice(4, 6), 16) * 0.65);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  }
+  return color;
+}
+
+/**
  * 安全获取 Remotion 上下文（若在非 Remotion 环境下如测试/SSR 中运行则优雅回退）
  */
 function useSafeRemotion(): { frame: number; fps: number; isRemotion: boolean } {
@@ -28,8 +84,8 @@ function useSafeRemotion(): { frame: number; fps: number; isRemotion: boolean } 
 }
 
 /**
- * 渲染大字报文本，并为 highlightWords 关键词自动包裹高对比度胶囊高亮
- * 关键词优先按字符长度降序排序匹配，防止短词前缀吞噬长词
+ * 渲染大字报文本，并为 highlightWords 关键词自动包裹动态胶囊高亮
+ * 优先按字符长度降序匹配，防止短词前缀吞噬长词；并动态响应 accentColor
  */
 export function renderHeadlineText(
   text: string,
@@ -55,19 +111,15 @@ export function renderHeadlineText(
   const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
   const parts = text.split(regex);
 
-  // 3. 配色策略：常规模式为深黑底 + 浅紫霓虹发光胶囊；反转模式为纯白底 + 深紫高反差胶囊
-  const capsuleBg = inverted
-    ? 'rgba(139, 92, 246, 0.25)'
-    : 'rgba(139, 92, 246, 0.22)';
-  const capsuleColor = inverted
-    ? '#6d28d9' // 白底下深紫清晰锐利
-    : '#c084fc'; // 黑底下浅亮紫色霓虹发光
+  // 3. 动态配色策略：基于 accentColor 计算背景、边框、投影与高反差字色
+  const capsuleBg = parseColorToRgba(accentColor, inverted ? 0.25 : 0.22);
+  const capsuleColor = getContrastingText(accentColor, inverted);
   const capsuleBorder = inverted
-    ? '1.5px solid rgba(139, 92, 246, 0.40)'
-    : '1px solid rgba(139, 92, 246, 0.45)';
+    ? `1.5px solid ${parseColorToRgba(accentColor, 0.40)}`
+    : `1px solid ${parseColorToRgba(accentColor, 0.45)}`;
   const capsuleShadow = inverted
-    ? '0 2px 8px rgba(109, 40, 217, 0.15)'
-    : '0 0 20px rgba(139, 92, 246, 0.35)';
+    ? `0 2px 8px ${parseColorToRgba(accentColor, 0.18)}`
+    : `0 0 20px ${parseColorToRgba(accentColor, 0.35)}`;
 
   return parts.map((part, index) => {
     const isMatch = validWords.some((hw) => hw.toLowerCase() === part.toLowerCase());
@@ -229,14 +281,14 @@ export const MinimalHeadlineScene: React.FC<MinimalHeadlineSceneProps> = ({
                 textTransform: 'uppercase',
                 background: inverted
                   ? 'rgba(0, 0, 0, 0.04)'
-                  : 'linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(99, 102, 241, 0.25))',
-                color: inverted ? '#09090b' : '#c4b5fd',
+                  : `linear-gradient(135deg, ${parseColorToRgba(accentColor, 0.25)}, rgba(99, 102, 241, 0.25))`,
+                color: inverted ? '#09090b' : (accentColor.toLowerCase() === '#8b5cf6' ? '#c4b5fd' : accentColor),
                 border: inverted
                   ? '2px solid #09090b'
-                  : '1.5px solid rgba(139, 92, 246, 0.45)',
+                  : `1.5px solid ${parseColorToRgba(accentColor, 0.45)}`,
                 boxShadow: inverted
                   ? 'none'
-                  : '0 0 20px rgba(139, 92, 246, 0.25)',
+                  : `0 0 20px ${parseColorToRgba(accentColor, 0.25)}`,
               }}
             >
               {category}
