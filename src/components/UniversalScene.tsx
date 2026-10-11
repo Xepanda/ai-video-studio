@@ -15,6 +15,9 @@ export interface SceneMeta {
   badge?: string;
   pill?: string;
   heroImage?: string;
+  heroVideo?: string;
+  videoPath?: string;
+  systemTag?: string;
   cameraMotion?: 'push-in' | 'pan-left' | 'pan-right' | 'pull-out';
   highlights?: Array<{ label: string; value: string; color?: string }>;
   sceneIndex?: number;

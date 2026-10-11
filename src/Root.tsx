@@ -337,7 +337,7 @@ export const MasterVideo: React.FC = () => {
               [0, fadeInFrames, fadeOutStart, fadeOutEnd],
               [0, bgmVolume, bgmVolume, 0],
               { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-            );
+            ) as unknown as number;
 
             if (!enableDucking || speechIntervals.length === 0) {
               return baseVol;
@@ -362,7 +362,7 @@ export const MasterVideo: React.FC = () => {
               [0, duckFrames],
               [duckRatio, 1.0],
               { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
-            );
+            ) as unknown as number;
 
             return baseVol * duckMultiplier;
           }}
