@@ -1,0 +1,217 @@
+{
+  "project": "07_transformer_case_study_chattts",
+  "engine": "chattts",
+  "voice": "8888",
+  "fps": 30,
+  "title": "深度剖析：旗舰级 Transformer 架构原理与注意力机制",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "title": "从循环神经网络到 Attention 的伟大飞跃",
+      "badge": "HISTORICAL CONTEXT · 历史变革",
+      "text": "在自然语言处理的早期时代，循环神经网络 RNN 和长短期记忆网络 LSTM 长期统治着时序建模领域。然而，由于隐藏状态必须按时序严格串行传递，早期的架构存在严重的梯度消失与并行计算瓶颈。Transformer 的诞生彻底打破了这一桎梏。",
+      "cards": [
+        {
+          "title": "RNN 串行瓶颈",
+          "desc": "第 N 个时间步必须等待前 N-1 步计算完毕，完全无法发挥 GPU 并行优势",
+          "tag": "RNN BOTTLENECK",
+          "icon": "⛓️"
+        },
+        {
+          "title": "长程依赖遗忘",
+          "desc": "随着上下文距离拉长，早期的关键语义信息在多次矩阵连乘中被稀释殆尽",
+          "tag": "MEMORY DECAY",
+          "icon": "📉"
+        },
+        {
+          "title": "并行计算的曙光",
+          "desc": "利用矩阵全互联一次性计算全局上下文关系，训练吞吐提升两个数量级",
+          "tag": "PARALLEL ERA",
+          "icon": "⚡"
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "title": "Self-Attention 自注意力机制数学本质",
+      "badge": "MATH FOUNDATION · 数学本质",
+      "text": "自注意力机制的核心在于让序列中的每个词都能与其他所有词计算相关度。通过将输入向量分别投影为查询向量 Q、键向量 K 和值向量 V，模型通过 Q 和 K 的点积计算相似度矩阵，并在除以根号维数后经过 Softmax 归一化，最终对 V 进行加权求和。",
+      "cards": [
+        {
+          "title": "QKV 空间三投影",
+          "desc": "查询、匹配键与内容值三者分立，分别负责主动寻找、被动匹配与语义承载",
+          "tag": "QKV TRIPLET",
+          "icon": "📐"
+        },
+        {
+          "title": "根号 D 缩放因子",
+          "desc": "抵消高维向量点积导致的方差膨胀，防止 Softmax 进入梯度饱和区",
+          "tag": "SCALING FACTOR",
+          "icon": "⚖️"
+        },
+        {
+          "title": "加权语义重构",
+          "desc": "根据注意力权重重新融合上下文特征，使代词能够精准解析其先行词语义",
+          "tag": "CONTEXT RECON",
+          "icon": "🧩"
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "title": "Multi-Head Attention 多头注意力机制",
+      "badge": "MULTI-HEAD ARCH · 多头表征",
+      "text": "单一注意力头往往只能捕捉某种特定的语义关系。多头注意力机制通过将隐层维度拆分为多个低维子空间，让不同的注意力头独立学习不同的语法和逻辑规律：有的头专注于代词指代，有的头专注于主谓宾搭配，最后将各头输出拼接后投影整合。",
+      "cards": [
+        {
+          "title": "多子空间独立表征",
+          "desc": "在不同投影空间中并行发掘时序序列内部丰富的句法、语义与层级结构",
+          "tag": "MULTI-HEAD",
+          "icon": "🧠"
+        },
+        {
+          "title": "拼接线性降维",
+          "desc": "Concatenate 操作融合所有头的局部视野，线性投影层无损还原隐层维度",
+          "tag": "LINEAR MERGE",
+          "icon": "🔀"
+        },
+        {
+          "title": "增强模型鲁棒性",
+          "desc": "多头互为冗余与互补，有效抑制单头计算可能出现的局部偏执与噪声",
+          "tag": "ROBUSTNESS",
+          "icon": "🛡️"
+        }
+      ]
+    },
+    {
+      "id": "scene_04",
+      "title": "位置编码：从正余弦到 RoPE 旋转位置编码",
+      "badge": "POSITION ENCODING · 位置之谜",
+      "text": "由于自注意力机制在本质上是全互联对称的，如果不引入额外信息，模型根本无法区分词语的前后顺序。从原始论文的绝对正余弦位置编码，演进到如今现代大模型普遍标配的 RoPE 旋转位置编码，通过复数向量旋转将相对位置自然融入内积。",
+      "cards": [
+        {
+          "title": "绝对正余弦编码",
+          "desc": "利用不同频率的正弦余弦周期波形，为每个绝对索引赋予独特的几何指纹",
+          "tag": "SIN-COS",
+          "icon": "🌊"
+        },
+        {
+          "title": "RoPE 旋转位置编码",
+          "desc": "通过正交旋转矩阵将相对距离映射为两向量旋转角之差，完美支持外推",
+          "tag": "ROPE ROTARY",
+          "icon": "🔄"
+        },
+        {
+          "title": "超长上下文扩展",
+          "desc": "结合插值与外推算法，使模型能够轻松处理三万二千甚至百万级的上下文长度",
+          "tag": "LONG CONTEXT",
+          "icon": "📚"
+        }
+      ]
+    },
+    {
+      "id": "scene_05",
+      "title": "前馈神经网络与 SwiGLU 激活函数演化",
+      "badge": "FFN & ACTIVATION · 知识存储",
+      "text": "在每个注意力块之后，都紧跟着一个两层的前馈神经网络 FFN。学术界普遍认为，注意力机制负责信息的动态路由，而 FFN 则充当了参数化事实知识库的记忆体。现代大模型已经将经典的 ReLU 替换为平滑可导且表现更优异的 SwiGLU 门控激活函数。",
+      "cards": [
+        {
+          "title": "参数化记忆体",
+          "desc": "占据整个网络三分之二的权重参数，专门负责沉淀海量客观世界知识",
+          "tag": "MEMORY BANK",
+          "icon": "💾"
+        },
+        {
+          "title": "SwiGLU 门控机制",
+          "desc": "通过逐元素点乘的门控通道控制信息流动，显著改善深层网络的梯度流",
+          "tag": "SWIGLU",
+          "icon": "🚪"
+        },
+        {
+          "title": "非线性维度扩展",
+          "desc": "中间隐藏层通常升采样至四倍或八倍维度，赋予网络极强的特征表达容量",
+          "tag": "EXPANSION",
+          "icon": "📈"
+        }
+      ]
+    },
+    {
+      "id": "scene_06",
+      "title": "残差连接与 Pre-LN 归一化稳定性",
+      "badge": "NORMALIZATION · 深层训练基石",
+      "text": "构建上百层的超深层神经网络时，梯度能否平稳回传是生死攸关的大事。早期原始 Transformer 采用 Post-LN 架构，在网络极深时容易发生梯度爆炸；现代大模型全线迁移至 Pre-LN 甚至 RMSNorm 架构，将归一化放在子模块运算之前，极大提升了训练稳定性。",
+      "cards": [
+        {
+          "title": "残差直通高速公路",
+          "desc": "跳跃连接为反向传播提供无阻碍梯度直通道，彻底破除梯度消散魔咒",
+          "tag": "RESIDUAL",
+          "icon": "🛣️"
+        },
+        {
+          "title": "Pre-LN 稳定收敛",
+          "desc": "子层输入均保持恒定分布方差，免去漫长脆弱的学习率预热阶段",
+          "tag": "PRE-LN",
+          "icon": "⚖️"
+        },
+        {
+          "title": "RMSNorm 极速算子",
+          "desc": "舍弃均值计算仅保留均方根缩放，性能提升百分之十且完全不损精度",
+          "tag": "RMSNORM",
+          "icon": "⚡"
+        }
+      ]
+    },
+    {
+      "id": "scene_07",
+      "title": "Decoder-Only 架构为何能一统天下",
+      "badge": "DECODER DOMINANCE · 架构演进",
+      "text": "Transformer 最初由 Encoder 编码器和 Decoder 解码器共同构成。然而在漫长的大模型竞争中，以 GPT、Llama 为代表的纯解码器 Decoder-Only 架构最终击败了其他分支。凭借因果遮罩与自回归预测下一个词的极简假设，展现出了惊人的可扩展性法则。",
+      "cards": [
+        {
+          "title": "因果下三角遮罩",
+          "desc": "严格禁止当前 Token 偷看未来时间步信息，强制模型学会单向推理生成",
+          "tag": "CAUSAL MASK",
+          "icon": "🛡️"
+        },
+        {
+          "title": "Scaling Law 扩展法则",
+          "desc": "模型参数量与训练数据量指数级提升时，损失函数呈现惊人一致的幂律下降",
+          "tag": "SCALING LAW",
+          "icon": "📊"
+        },
+        {
+          "title": "涌现能力的诞生",
+          "desc": "当参数突破临界阈值，上下文学习、逻辑推理与思维链能力自然涌现",
+          "tag": "EMERGENCE",
+          "icon": "✨"
+        }
+      ]
+    },
+    {
+      "id": "scene_08",
+      "title": "Transformer 开启通用人工智能新纪元",
+      "badge": "AGI HORIZON · 时代总结",
+      "text": "从文本、代码、音频到扩散视频生成，基于 Transformer 和流匹配的算法架构已经成为驱动当今人工智能革命的统一通用底层。理解其每一个矩阵维度的转换与优雅的自注意力机制，是每一位走向未来的工程师不可或缺的基础素养。",
+      "cards": [
+        {
+          "title": "多模态大一统",
+          "desc": "音频梅尔频谱、图像 Patch 均被转化为 Token 序列统一送入同一个大脑",
+          "tag": "UNIFIED TOKEN",
+          "icon": "🌐"
+        },
+        {
+          "title": "算力基础设施进化",
+          "desc": "从单卡矩阵运算到万卡张量并行集群，软硬件共同塑造智能计算底座",
+          "tag": "COMPUTE INFRA",
+          "icon": "🖥️"
+        },
+        {
+          "title": "星辰大海的探索",
+          "desc": "站在巨人的肩膀上深入原理，我们将亲眼见证通用智能改变世界的伟大历程",
+          "tag": "EXPEDITION",
+          "icon": "🚀"
+        }
+      ]
+    }
+  ]
+}

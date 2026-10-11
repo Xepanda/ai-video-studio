@@ -7,6 +7,14 @@ import { WhiteboardHanddrawn } from './components/WhiteboardHanddrawn';
 import { PhoneFrame } from './components/PhoneFrame';
 import { CalloutPointer } from './components/CalloutPointer';
 import { PinoutStream } from './components/PinoutStream';
+import { UniversalScene, SceneMeta } from './components/UniversalScene';
+import { getTheme, ThemeName } from './styles/theme';
+import { FireshipKineticView } from './components/demos/FireshipKineticView';
+import { AppleKeynoteView } from './components/demos/AppleKeynoteView';
+import { MotionCanvasView } from './components/demos/MotionCanvasView';
+
+declare const process: any;
+declare const require: any;
 
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
@@ -282,35 +290,267 @@ const Scene05GoogleFlowShorts: React.FC<{ durationInFrames: number }> = ({ durat
 };
 
 // =========================================================================
+// =========================================================================
 // 主 MasterVideo 编排根组件
 // =========================================================================
-export const MasterVideo: React.FC = () => {
-  const { scenes } = timelineData;
+export interface MainCompositionProps {
+  timeline?: string;
+  timelineData?: any;
+}
+
+/**
+ * 动态加载或解析时间轴数据契约：
+ * 1. 优先使用 props.timelineData (如果显式传递了完整对象)
+ * 2. 次选 props.timeline (如果提供了非默认文件路径，尝试通过 Node fs 或动态模块加载)
+ * 3. 优雅回退至默认静态导入的 public/timeline.json
+ */
+function resolveTimelineData(props?: MainCompositionProps): any {
+  if (props?.timelineData) {
+    return props.timelineData;
+  }
+  if (props?.timeline && props.timeline !== 'public/timeline.json' && props.timeline !== '../public/timeline.json') {
+    // 1. Node.js / 测试 / SSR 环境下尝试文件系统读取
+    try {
+      if (typeof window === 'undefined' || (typeof process !== 'undefined' && process.versions?.node)) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const fs = typeof require !== 'undefined' ? require('fs') : null;
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const path = typeof require !== 'undefined' ? require('path') : null;
+        if (fs && path) {
+          const candidatePaths = [
+            props.timeline,
+            path.resolve(process.cwd(), props.timeline),
+            path.resolve(process.cwd(), 'public', props.timeline.replace(/^[/\\]?public[/\\]/, '')),
+          ];
+          for (const cand of candidatePaths) {
+            if (fs.existsSync(cand)) {
+              return JSON.parse(fs.readFileSync(cand, 'utf-8'));
+            }
+          }
+        }
+      }
+    } catch {
+      // 优雅忽略并尝试下一步
+    }
+
+    // 2. Webpack / Bundler 运行时尝试相对路径动态引用
+    try {
+      if (typeof require !== 'undefined') {
+        const cleanPath = props.timeline.replace(/^[/\\]?public[/\\]/, '');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        return require(`../public/${cleanPath}`);
+      }
+    } catch {
+      // 优雅回退至静态默认数据
+    }
+  }
+  return timelineData;
+}
+
+const SafeSequence: React.FC<React.ComponentProps<typeof Sequence>> = (props) => {
+  const isRemotion = (() => {
+    try {
+      useVideoConfig();
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  if (!isRemotion) {
+    return <div style={{ position: 'absolute', inset: 0 }}>{props.children}</div>;
+  }
+  return <Sequence {...props} />;
+};
+
+export const MasterVideo: React.FC<MainCompositionProps> = (props = {}) => {
+  const currentTimelineData = resolveTimelineData(props);
+  const { scenes = [] } = currentTimelineData;
+  const { fps } = (() => {
+    try {
+      return useVideoConfig();
+    } catch {
+      return { fps: currentTimelineData.fps || 30 };
+    }
+  })();
+  const totalDuration = currentTimelineData.totalDurationInFrames || (currentTimelineData as any).totalDurationFrames || 2032;
+  const bgmPath = (currentTimelineData as any).bgmPath || 'audio/bgm_cyber_ambient.wav';
+  const bgmVolume = (currentTimelineData as any).bgmVolume ?? 0.035;
+  const enableBgm = (currentTimelineData as any).enableBgm !== false;
+  const enableSfx = (currentTimelineData as any).enableSfx !== false;
+
+  // 严格单调递增区间计算，杜绝短视频测试时总帧数过少引发的 interpolate 崩溃
+  const fadeInFrames = Math.max(1, Math.min(45, Math.floor(totalDuration * 0.25)));
+  const fadeOutFrames = Math.max(1, Math.min(60, Math.floor(totalDuration * 0.25)));
+  const fadeOutStart = Math.max(fadeInFrames + 1, totalDuration - fadeOutFrames);
+  const fadeOutEnd = Math.max(fadeOutStart + 1, totalDuration);
+  const transitionFrames = Math.max(1, Math.round(0.8 * fps));
+
+  // 智能音频闪避 (Audio Ducking): 提取全片声学语音活跃区间 (防范无配音静音分镜误闪避)
+  const speechIntervals = React.useMemo(() => {
+    return scenes.flatMap((scene: any) => {
+      if (scene.words && scene.words.length > 0) {
+        return scene.words.map((w: any) => ({
+          start: (w.globalStartFrame ?? (scene.startFrame + w.startFrame)) as number,
+          end: (w.globalEndFrame ?? (scene.startFrame + w.endFrame)) as number,
+        }));
+      }
+      if (scene.audioPath) {
+        return [{ start: scene.startFrame, end: scene.startFrame + scene.durationInFrames }];
+      }
+      return [];
+    });
+  }, [scenes]);
+
+  const isRemotionContext = (() => {
+    try {
+      useVideoConfig();
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  const enableDucking = (currentTimelineData as any).enableDucking !== false;
+  const duckRatio = (currentTimelineData as any).bgmDuckRatio ?? 0.20;
+  const duckFrames = Math.max(5, Math.round(fps * 0.5)); // 帧率自适应 ~500ms 阻尼过渡
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      {scenes.map((scene, idx) => (
-        <Sequence
-          key={scene.id}
-          from={scene.startFrame}
-          durationInFrames={scene.durationInFrames}
-        >
-          {/* 配音音频 */}
-          {scene.audioPath && <Audio src={staticFile(scene.audioPath)} />}
+      {/* 全局极客科技氛围背景音乐 (轻柔垫乐 + 自动循环 + 首尾淡入淡出 + 语音智能闪避) */}
+      {enableBgm && isRemotionContext && (
+        <Audio
+          src={staticFile(bgmPath)}
+          volume={(f) => {
+            const baseVol = interpolate(
+              f,
+              [0, fadeInFrames, fadeOutStart, fadeOutEnd],
+              [0, bgmVolume, bgmVolume, 0],
+              { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+            ) as unknown as number;
 
-          {/* 5 大核心形态场景逐一呈现 */}
-          {idx === 0 && <Scene01VoiceClone durationInFrames={scene.durationInFrames} />}
-          {idx === 1 && <Scene02Whiteboard durationInFrames={scene.durationInFrames} />}
-          {idx === 2 && <Scene03HandsOn durationInFrames={scene.durationInFrames} />}
-          {idx === 3 && <Scene04HybridLive durationInFrames={scene.durationInFrames} />}
-          {idx === 4 && <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />}
+            if (!enableDucking || speechIntervals.length === 0) {
+              return baseVol;
+            }
 
-          {/* 逐字动态弹跳大字幕 */}
-          {scene.words && scene.words.length > 0 && (
-            <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} />
-          )}
-        </Sequence>
-      ))}
+            // 计算当前帧距离最近语音活跃区间的帧距
+            let minDistToSpeech = Infinity;
+            for (const interval of speechIntervals) {
+              if (f >= interval.start && f <= interval.end) {
+                minDistToSpeech = 0;
+                break;
+              }
+              const dist = f < interval.start ? interval.start - f : f - interval.end;
+              if (dist < minDistToSpeech) {
+                minDistToSpeech = dist;
+              }
+            }
+
+            // 平滑过渡：0 帧(正讲话)压低至 duckRatio (约 20%)，duckFrames 帧(~0.5s 停顿/转场)平滑回升至 100%
+            const duckMultiplier = interpolate(
+              minDistToSpeech,
+              [0, duckFrames],
+              [duckRatio, 1.0],
+              { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
+            ) as unknown as number;
+
+            return baseVol * duckMultiplier;
+          }}
+          loop
+        />
+      )}
+
+      {scenes.map((scene: any, idx: number) => {
+        const sceneTheme = getTheme((scene as any).theme || (currentTimelineData as any).theme);
+        return (
+          <SafeSequence
+            key={scene.id}
+            from={scene.startFrame}
+            durationInFrames={scene.durationInFrames}
+          >
+            {/* 配音音频：支持全局与分镜 voiceVolume 系数，默认 1.0 (已由母带引擎锁定 -11 LUFS 广播级标准) */}
+            {isRemotionContext && scene.audioPath && (
+              <Audio
+                src={staticFile(scene.audioPath)}
+                volume={(scene as any).voiceVolume ?? (currentTimelineData as any).voiceVolume ?? 1.0}
+              />
+            )}
+
+            {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
+            {isRemotionContext && enableSfx && idx > 0 && (
+              <SafeSequence from={0} durationInFrames={transitionFrames} layout="none">
+                <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
+              </SafeSequence>
+            )}
+
+            {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
+            {(scene as any).title ? (
+              <UniversalScene scene={scene as any} />
+            ) : idx === 0 ? (
+              <Scene01VoiceClone durationInFrames={scene.durationInFrames} />
+            ) : idx === 1 ? (
+              <Scene02Whiteboard durationInFrames={scene.durationInFrames} />
+            ) : idx === 2 ? (
+              <Scene03HandsOn durationInFrames={scene.durationInFrames} />
+            ) : idx === 3 ? (
+              <Scene04HybridLive durationInFrames={scene.durationInFrames} />
+            ) : idx === 4 ? (
+              <Scene05GoogleFlowShorts durationInFrames={scene.durationInFrames} />
+            ) : (
+              <UniversalScene scene={scene as any} />
+            )}
+
+            {/* 逐字动态弹跳大字幕 */}
+            {scene.words && scene.words.length > 0 && (
+              <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} theme={sceneTheme} />
+            )}
+          </SafeSequence>
+        );
+      })}
+    </AbsoluteFill>
+  );
+};
+
+export const MainComposition: React.FC<MainCompositionProps> = MasterVideo;
+
+// =========================================================================
+// 主题色彩风格样片对比组件 (用于给创作者和用户多维度比对调色方案)
+// =========================================================================
+export const ThemeShowcase: React.FC<{ themeName: ThemeName }> = ({ themeName }) => {
+  const sampleScene: SceneMeta = {
+    id: 'demo_theme',
+    durationInFrames: 120,
+    title: 'AI Video Studio: 声音先行与代码即视频范式',
+    badge: 'PARADIGM SHIFT · 架构范式',
+    theme: themeName,
+    cards: [
+      {
+        title: '声音绝对时钟',
+        desc: '以实际声学波形物理时长作为顶层单一真实时钟，画面全自动适配',
+        tag: 'AUDIO FIRST'
+      },
+      {
+        title: '纯函数状态机',
+        desc: 'Scene = f(frame)，所有动画均由数学公式和物理阻尼计算，零盲盒抽卡',
+        tag: 'DETERMINISTIC'
+      },
+      {
+        title: '顶级工业美学',
+        desc: '告别廉价荧光字与儿童画，吸纳 Silicon Valley 现代顶级深色设计系统',
+        tag: 'DE-AI CRAFT'
+      }
+    ]
+  };
+
+  const theme = getTheme(themeName);
+  const sampleWords = [
+    { text: '欢迎进入 AI Video Studio 工业级视频自动化系统', startFrame: 0, endFrame: 120 }
+  ];
+
+  return (
+    <AbsoluteFill>
+      <UniversalScene scene={sampleScene} />
+      <DynamicSubtitles words={sampleWords} sceneStartFrame={0} theme={theme} />
     </AbsoluteFill>
   );
 };
@@ -336,6 +576,81 @@ export const RemotionRoot: React.FC = () => {
         fps={fps}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="TechNewsShorts"
+        component={MainComposition}
+        durationInFrames={(timelineData as any).totalDurationFrames || timelineData.totalDurationInFrames || 1140}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          timeline: 'public/timeline.json',
+        }}
+      />
+
+      {/* 4 大顶级设计流派样片演示 Composition (方便即时比对风格) */}
+      <Composition
+        id="DemoLinearGraphite"
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'linear-graphite' as ThemeName }}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="DemoVercelGeist"
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'vercel-geist' as ThemeName }}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="DemoMotionCanvasWarm"
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'motion-canvas-warm' as ThemeName }}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="DemoCyberBlueprint"
+        component={ThemeShowcase}
+        defaultProps={{ themeName: 'cyber-blueprint' as ThemeName }}
+        durationInFrames={120}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      {/* 3 大去 AI 化全新视频流派完整动态 Demo */}
+      <Composition
+        id="StyleDemoFireship"
+        component={FireshipKineticView}
+        durationInFrames={325}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="StyleDemoAppleKeynote"
+        component={AppleKeynoteView}
+        durationInFrames={298}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="StyleDemoMotionCanvas"
+        component={MotionCanvasView}
+        durationInFrames={288}
+        fps={30}
+        width={1920}
+        height={1080}
       />
     </>
   );

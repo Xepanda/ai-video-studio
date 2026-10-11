@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion';
+import { ThemeConfig, getTheme } from '../styles/theme';
 
 export interface WordInfo {
   text: string;
@@ -10,86 +11,138 @@ export interface WordInfo {
 export interface DynamicSubtitlesProps {
   words: WordInfo[];
   sceneStartFrame?: number;
+  theme?: ThemeConfig;
   activeColor?: string;
 }
 
 /**
- * 现代高节奏逐句弹跳大字幕 (仅显示当前正在发音的一句)
+ * 现代影视级 Lower-Third 字幕 Dock (去 AI 味 · Apple Keynote / 影视飓风质感)
  */
 export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
   words,
   sceneStartFrame = 0,
-  activeColor = '#facc15', // 明黄高光
+  theme: themeProp,
+  activeColor,
 }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const frame = (() => {
+    try {
+      return useCurrentFrame();
+    } catch {
+      return 0;
+    }
+  })();
+  const { fps, width = 1920, height = 1080 } = (() => {
+    try {
+      return useVideoConfig();
+    } catch {
+      return { fps: 30, width: 1920, height: 1080 };
+    }
+  })();
+  const isVertical = width < height;
+  const currentTheme = themeProp || getTheme();
 
   if (!words || words.length === 0) return null;
 
-  // Remotion Sequence 内部的 frame 是相对于该 Sequence 的 (0 ~ durationInFrames)
-  // 如果 words 里的 startFrame 是全局绝对帧，则加上 sceneStartFrame 进行对齐
+  // 判断 words 数组使用全局绝对帧还是分镜相对帧
+  const isGlobalFormat = Boolean(
+    sceneStartFrame > 0 &&
+    words.length > 0 &&
+    words[0].startFrame >= sceneStartFrame
+  );
+
   const currentGlobalFrame = frame + sceneStartFrame;
+  const currentF = isGlobalFormat ? currentGlobalFrame : frame;
 
-  // 找到当前正在发音的一句话
-  const activeWord = words.find((w) => {
-    // 兼容全局帧或相对帧
-    if (w.startFrame >= sceneStartFrame) {
-      return currentGlobalFrame >= w.startFrame && currentGlobalFrame <= w.endFrame;
+  // 1. 查找当前发音词
+  let activeWord = words.find((w) => currentF >= w.startFrame && currentF < w.endFrame);
+
+  // 2. 真实防闪烁缝隙桥接：仅当处于两句之间的短暂物理停顿 (<= 12 帧，约 400ms) 时保持上一句，杜绝空隙频繁卸载
+  if (!activeWord && words.length > 0) {
+    for (let i = 0; i < words.length - 1; i++) {
+      const currentEnd = words[i].endFrame;
+      const nextStart = words[i + 1].startFrame;
+      if (currentF >= currentEnd && currentF < nextStart && (nextStart - currentEnd) <= 12) {
+        activeWord = words[i];
+        break;
+      }
     }
-    return frame >= w.startFrame && frame <= w.endFrame;
-  });
+  }
 
+  // 3. 发音前静音与分镜尾声超出时自然返回 null，杜绝提前鬼影或死锁在屏幕上
   if (!activeWord) return null;
 
-  // 相对发音起始帧计算入场弹跳
-  const wordStartRelative = activeWord.startFrame >= sceneStartFrame
+  // 相对发音起始帧计算入场平滑过渡 (微阻尼，杜绝夸张抖动)
+  const wordStartRelative = isGlobalFormat
     ? activeWord.startFrame - sceneStartFrame
     : activeWord.startFrame;
 
-  const jump = spring({
+  const entrySpring = spring({
     frame: frame - wordStartRelative,
     fps,
-    config: { damping: 14, stiffness: 200 },
+    config: { damping: 18, stiffness: 220 },
   });
 
-  const scale = interpolate(jump, [0, 1], [0.92, 1.05]);
-  const translateY = interpolate(jump, [0, 1], [15, 0]);
+  const scale = interpolate(entrySpring, [0, 1], [0.96, 1.0]);
+  const translateY = interpolate(entrySpring, [0, 1], [10, 0]);
+  const opacity = interpolate(entrySpring, [0, 1], [0.2, 1.0]);
+
+  const highlight = activeColor || currentTheme.subtitleHighlightColor;
 
   return (
     <div
       style={{
         position: 'absolute',
-        bottom: '80px',
+        bottom: isVertical ? '220px' : '64px',
         left: 0,
         right: 0,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '0 80px',
+        padding: '0 40px',
         zIndex: 100,
         pointerEvents: 'none',
       }}
     >
       <div
         style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.85)',
-          backdropFilter: 'blur(16px)',
-          border: '1px solid rgba(255, 255, 255, 0.18)',
-          borderRadius: '24px',
-          padding: '16px 36px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.7), 0 0 30px rgba(250, 204, 21, 0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          maxWidth: '92%',
+          backgroundColor: currentTheme.subtitleBarBg,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: currentTheme.subtitleBorder,
+          borderRadius: '16px',
+          padding: '14px 28px',
+          boxShadow: '0 16px 36px -8px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
           transform: `scale(${scale}) translateY(${translateY}px)`,
+          opacity,
         }}
       >
+        {/* 左侧极简状态指示光点 */}
+        <div
+          style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '4px',
+            backgroundColor: highlight,
+            boxShadow: `0 0 10px ${highlight}`,
+            flexShrink: 0,
+          }}
+        />
+
+        {/* 字幕正文：高对比度纯净排版，支持竖屏文本平衡与自然换行 */}
         <span
           style={{
-            fontSize: '44px',
-            fontWeight: 900,
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            color: activeColor,
-            textShadow: '0 0 25px rgba(250, 204, 21, 0.6), 0 4px 12px rgba(0,0,0,0.9)',
-            letterSpacing: '1px',
-            display: 'inline-block',
+            fontSize: '32px',
+            fontWeight: 700,
+            fontFamily: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            color: currentTheme.subtitleTextColor,
+            letterSpacing: '0.8px',
+            lineHeight: 1.35,
+            textAlign: 'center',
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
           }}
         >
           {activeWord.text}

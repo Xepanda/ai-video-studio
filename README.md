@@ -8,6 +8,7 @@
 ## 🌟 核心特色与架构
 
 * **声音先行 (Audio-First)**：以音频的物理毫秒长度决定画面生命周期，彻底杜绝音画错位与抽卡不可控性。
+* **专属真声音色克隆 (GPT-SoVITS)**：支持使用真实个人录音训练出的专属声音模型 (`epanda_voice`)，实现带个人音色与语调节奏的数字分身配音，并支持本地离线与双轨高可用自动降级。
 * **时钟契约 (`timeline.json`)**：Python 极速提取词级时间戳与情绪标签，声明式注入 React 状态机。
 * **Google Flow (Veo) 协同**：内置标准提示词工程模板与 `<BrollVideoPlayer />` 组件，无缝混合电影级 AI 视频。
 * **五重审查门禁 (`AUDIT_CHECKLIST.md`)**：分镜审查 ➔ 声音对齐 ➔ 视觉动效 ➔ 自动化契约校验 (`validator.py`) ➔ 成品验收。
@@ -33,7 +34,12 @@ ai-video-studio/
 │   ├── pixel2motion/              # 矢量动态 SVG
 │   └── gsap/                      # 复杂路径补间
 │
+├── models/                        # 🧠 AI 模型与核心声音资产库
+│   ├── gpt_sovits/                # 专属微调导出的声音权重 (.pth / .ckpt)
+│   └── reference_audio/           # 提示音频 (5s) 与训练切片数据集
+│
 ├── scripts/                       # 🛠️ 自动化 Python 工具中枢
+│   ├── generate_audio.py          # 多服务商配音生成中枢 (GPT-SoVITS / Edge-TTS)
 │   ├── sensevoice_aligner.py      # SenseVoice 毫秒打点与情绪提取
 │   ├── validator.py               # 数据契约自动化审查脚本 (Quality Gate)
 │   └── pipeline.py                # 一键端到端总控流水线
@@ -80,3 +86,28 @@ ai-video-studio/
 python scripts/validator.py
 ```
 快速检测所有音频、视频文件是否存在，帧数是否无损闭环。
+
+---
+
+## 🎙️ 双轨声音引擎：高保真商业音色与专属真声克隆
+
+本项目内置**双轨可切换的配音引擎架构**，兼顾日常敏捷制作的极速体验与专属个人 IP 的沉淀：
+
+### 1. 默认引擎：微软 Edge-TTS（推荐日常快速出片）
+* **音色**：`zh-CN-YunxiNeural`（云希，沉稳大气的科普自媒体专业男声）。
+* **优势**：免启动任何本地大模型服务、毫秒级即时合成、零内存占用，适合日常快速迭代与分镜调试。
+* **配置方式**：在 `.env` 中设置 `TTS_PROVIDER=edge_tts`（默认即此模式）。
+
+### 2. 专属声音：GPT-SoVITS 个人真声微调模型（保留并随时激活）
+* **音色**：基于创作者 3m42s 真实录音微调的专属声纹 (`epanda_voice`)。
+* **资产**：
+  * `models/gpt_sovits/epanda_voice_e8_s120.pth` (SoVITS 音色模型)
+  * `models/gpt_sovits/epanda_voice-e15.ckpt` (GPT 节奏模型)
+  * `models/reference_audio/my_voice_ref_5s.wav` (5s 提示基准音频)
+* **激活方法**：
+  1. 双击运行 `scripts/start_local_sovits.bat`（启动本地 9880 端口 CPU 推理引擎）；
+  2. 在 `.env` 中修改为 `TTS_PROVIDER=gpt_sovits`；
+  3. 重新运行 `python scripts/pipeline.py ...` 即刻全自动切换为个人专属音色！
+* **详细训练与本地推理 SOP**：
+  参见知识库 Wiki：[专属音色克隆与全自动微调训练指南 (GPT-SoVITS + Colab 混合云实战)](../wiki/docs/02-projects/ai-video-automation/06-personal-voice-cloning-gpt-sovits.mdx)。
+

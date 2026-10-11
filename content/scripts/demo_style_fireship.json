@@ -1,0 +1,16 @@
+{
+  "project": "demo_style_fireship",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "linear-graphite",
+  "fps": 30,
+  "title": "Fireship 极客快节奏流",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "FireshipKinetic",
+      "title": "干掉传统剪辑软件",
+      "text": "剪视频最崩溃的是什么？改了一个字，整个时间轴全废！现在把剪辑软件扔掉，直接用代码写视频，两行命令，回车就交付。"
+    }
+  ]
+}

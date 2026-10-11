@@ -14,9 +14,16 @@ venv/
 # Model checkpoints & large binary weights (keep folders via .gitkeep)
 models/gpt_sovits/*
 !models/gpt_sovits/.gitkeep
+models/kokoro/*
+!models/kokoro/.gitkeep
+models/f5tts/*
+!models/f5tts/.gitkeep
+models/chattts/*
+!models/chattts/.gitkeep
 models/reference_audio/*.wav
 models/reference_audio/*.mp3
 !models/reference_audio/.gitkeep
+test_*.wav
 
 # Rendered output media
 out/*
@@ -35,3 +42,18 @@ public/footage/*.mov
 Thumbs.db
 desktop.ini
 *.log
+*.png
+.env
+models/reference_audio/slices/
+public/projects/
+.audio_cache.json
+*.audio_cache.json
+
+# Local binaries and tooling
+bin/
+
+# HyperFrames project audio outputs
+projects_hf/*/assets/audio/*
+!projects_hf/*/assets/audio/.gitkeep
+
+

@@ -1,0 +1,403 @@
+{
+  "project": "meta_muse_agent_deepdive",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "cinema-editorial",
+  "fps": 30,
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "title": "Meta Muse 个人 AI Agent 深度拆解：颠覆还是监控风暴？",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "CinematicHero",
+      "heroImage": "footage/meta_muse_apple/scene_01.jpg",
+      "cameraMotion": "push-in",
+      "title": "22天狂揽500万下载：Meta Muse 引爆科技圈",
+      "badge": "VIRAL PHENOMENON · 现象级爆发",
+      "pill": "⚡ 22天狂揽500万下载",
+      "theme": "cinema-editorial",
+      "text": "如果你最近刷推特或者关注科技圈，一定被一个叫 Muse 的名字彻底刷屏了。仅仅上线二十二天，狂揽五百万下载，直接登顶苹果应用商店第一。甚至在海外社区诞生了一个新热搜，叫 Musemaxxing。",
+      "highlights": [
+        {
+          "label": "App Store 榜单",
+          "value": "#1 免费总榜登顶",
+          "color": "#10b981"
+        },
+        {
+          "label": "破纪录速度",
+          "value": "2.0x 登顶超越 ChatGPT",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "全球热搜",
+          "value": "Musemaxxing 新梗引爆",
+          "color": "#c084fc"
+        }
+      ],
+      "metrics": [
+        {
+          "title": "App Store 登顶耗时 (天数越少越快)",
+          "badge": "SPEED RECORD · 登顶纪录",
+          "pill": "⚡ 2.0x 登顶速度",
+          "items": [
+            {
+              "name": "ChatGPT (历史记录)",
+              "value": 45,
+              "maxValue": 50,
+              "unit": "天",
+              "color": "#64748b",
+              "subtext": "原生成式 AI 历史最快纪录"
+            },
+            {
+              "name": "Meta Muse 个人代理",
+              "value": 22,
+              "maxValue": 50,
+              "unit": "天",
+              "color": "#10b981",
+              "highlight": true,
+              "subtext": "仅用 22 天登顶 App Store #1"
+            }
+          ]
+        },
+        {
+          "title": "首月规模爆发 (下载量对比)",
+          "badge": "GROWTH EXPLOSION · 爆发增长",
+          "pill": "🔥 500 万+ 下载",
+          "items": [
+            {
+              "name": "行业均值水平",
+              "value": 180,
+              "maxValue": 500,
+              "unit": "万",
+              "color": "#64748b",
+              "subtext": "主流消费级 AI 首月基准"
+            },
+            {
+              "name": "Meta Muse 首月下载",
+              "value": 500,
+              "maxValue": 500,
+              "unit": "万",
+              "color": "#38bdf8",
+              "highlight": true,
+              "subtext": "上线 22 天狂揽 500 万下载"
+            }
+          ]
+        },
+        {
+          "title": "周活跃独立用户规模",
+          "badge": "ACTIVE USERS · 周活跃度",
+          "pill": "👥 320 万 WAU",
+          "items": [
+            {
+              "name": "行业常规基准",
+              "value": 100,
+              "maxValue": 350,
+              "unit": "万",
+              "color": "#64748b",
+              "subtext": "常规工具应用基准线"
+            },
+            {
+              "name": "Meta Muse 周活跃",
+              "value": 320,
+              "maxValue": 350,
+              "unit": "万",
+              "color": "#a855f7",
+              "highlight": true,
+              "subtext": "高粘性高频自主代理人"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "type": "CinematicHero",
+      "heroImage": "footage/meta_muse_apple/scene_02.jpg",
+      "cameraMotion": "pan-right",
+      "title": "终结聊天机器人：从被动问答到主动接管",
+      "badge": "PARADIGM SHIFT · 范式跃迁",
+      "pill": "🤖 主动代理人自主执行",
+      "theme": "cinema-editorial",
+      "text": "但它绝不是另一个陪你聊天的机器人。过去的大模型是你问一句它答一段，而 Muse 是一个拥有自主执行权限的后台代理人。给它一句话，它自己在后台去开浏览器、比价订票、采购物品、甚至回复复杂的商务邮件。",
+      "highlights": [
+        {
+          "label": "执行模式",
+          "value": "无头浏览器后台冲浪",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "核心能力",
+          "value": "比价 / 采购 / 邮件接管",
+          "color": "#10b981"
+        },
+        {
+          "label": "对话模式",
+          "value": "被动聊天时代终结",
+          "color": "#f43f5e"
+        }
+      ],
+      "cards": [
+        {
+          "title": "被动问答时代终结",
+          "desc": "传统 Chatbot 只能在对话框里干瞪眼，输出文字等待人类手动复制操作",
+          "tag": "PASSIVE CHAT"
+        },
+        {
+          "title": "主动代理人跃迁",
+          "desc": "自主拆解多步真实任务，无头浏览器后台自主冲浪执行，无需人类干预",
+          "tag": "AUTONOMOUS AGENT"
+        },
+        {
+          "title": "真实世界任务履约",
+          "desc": "直接接管订票、支付结账、日程编排与跨应用协同，完成闭环交付",
+          "tag": "REAL WORLD ACTION"
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "type": "CinematicHero",
+      "heroImage": "footage/meta_muse_apple/scene_03.jpg",
+      "cameraMotion": "pan-left",
+      "title": "核心架构深潜：Secure VM 沙箱与 Avocado 推理中枢",
+      "badge": "SYSTEM ARCHITECTURE · 系统内幕",
+      "pill": "🛡️ SECURE VM 沙箱隔离",
+      "theme": "cinema-editorial",
+      "text": "支撑它这种疯狂执行力的，是 Meta 专门研发的双层安全架构。所有的网络请求和代码执行，全被锁死在独立的 Secure VM 虚拟机沙箱里。上层由 Avocado 推理中枢拆解任务目标，下层通过端到端加密总线和外部世界通信，既保证了自主性，又把安全边界死死守住。",
+      "highlights": [
+        {
+          "label": "安全边界",
+          "value": "独立微型虚拟机隔离",
+          "color": "#10b981"
+        },
+        {
+          "label": "推理大脑",
+          "value": "Avocado 推理中枢",
+          "color": "#a855f7"
+        },
+        {
+          "label": "通信总线",
+          "value": "端到端加密外部通信",
+          "color": "#38bdf8"
+        }
+      ],
+      "topologyNodes": [
+        {
+          "id": "goal",
+          "label": "用户自然语言目标",
+          "subtext": "订票/采购/邮件/代办",
+          "x": 100,
+          "y": 200,
+          "color": "#6366f1",
+          "status": "active",
+          "badge": "INPUT"
+        },
+        {
+          "id": "spark",
+          "label": "Muse Spark 意图拆解",
+          "subtext": "状态机规划器",
+          "x": 380,
+          "y": 140,
+          "color": "#38bdf8",
+          "status": "active",
+          "badge": "BRAIN"
+        },
+        {
+          "id": "avocado",
+          "label": "Avocado 推理内核",
+          "subtext": "长文本上下文评估",
+          "x": 380,
+          "y": 280,
+          "color": "#a855f7",
+          "status": "active",
+          "badge": "REASON"
+        },
+        {
+          "id": "sandbox",
+          "label": "Muse Secure VM",
+          "subtext": "独立虚拟化安全沙箱",
+          "x": 700,
+          "y": 200,
+          "color": "#10b981",
+          "status": "active",
+          "badge": "SANDBOX"
+        },
+        {
+          "id": "browser",
+          "label": "Headless Web 执行",
+          "subtext": "动态比价与票务履约",
+          "x": 1000,
+          "y": 140,
+          "color": "#f59e0b",
+          "status": "ready",
+          "badge": "ACTION"
+        },
+        {
+          "id": "bus",
+          "label": "加密通信总线",
+          "subtext": "端到端敏感隔离凭据",
+          "x": 1000,
+          "y": 280,
+          "color": "#ec4899",
+          "status": "ready",
+          "badge": "SECURE"
+        }
+      ],
+      "topologyLinks": [
+        {
+          "from": "goal",
+          "to": "spark",
+          "label": "意图分析"
+        },
+        {
+          "from": "goal",
+          "to": "avocado",
+          "label": "多模态评估"
+        },
+        {
+          "from": "spark",
+          "to": "sandbox",
+          "label": "指令下发"
+        },
+        {
+          "from": "avocado",
+          "to": "sandbox",
+          "label": "策略校验"
+        },
+        {
+          "from": "sandbox",
+          "to": "browser",
+          "label": "隔离访问"
+        },
+        {
+          "from": "sandbox",
+          "to": "bus",
+          "label": "凭据加密"
+        }
+      ]
+    },
+    {
+      "id": "scene_04",
+      "type": "CinematicHero",
+      "heroImage": "footage/meta_muse_apple/scene_04.jpg",
+      "cameraMotion": "push-in",
+      "title": "极客生态狂欢：几十块钱的 ESP32 怎么手搓物理按键？",
+      "badge": "HACKER ECOSYSTEM · 极客生态",
+      "pill": "⚡ ESP32 开源硬件生态",
+      "theme": "cinema-editorial",
+      "text": "更刺激的是，GitHub 上已经出现了开源的第三方硬件生态。比如这个在推特上被疯转的 muse-gadget-sdk。用一块不到三十块钱的 ESP32 芯片，就能手搓一个专属的桌面实体小按键，拍一下就唤醒 Muse 执行一键整理邮箱或者自动化会议纪要。",
+      "highlights": [
+        {
+          "label": "硬件成本",
+          "value": "< ¥30 手搓实体按键",
+          "color": "#10b981"
+        },
+        {
+          "label": "开源生态",
+          "value": "muse-gadget-sdk",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "交互形态",
+          "value": "桌面物理轻拍触发",
+          "color": "#f59e0b"
+        }
+      ],
+      "codeTitle": "esp32_muse_puck.ino (Hardware Trigger)",
+      "codeLang": "cpp",
+      "codeSnippet": "#include <WiFi.h>\n#include <HTTPClient.h>\n\n#define TRIGGER_BUTTON_PIN 14\n#define STATUS_LED_PIN     27\n\nconst char* MUSE_AGENT_ENDPOINT = \"https://api.muse.meta.internal/v1/agent/dispatch\";\n\nvoid loop() {\n  if (digitalRead(TRIGGER_BUTTON_PIN) == LOW) {\n    digitalWrite(STATUS_LED_PIN, HIGH); // 点亮实体呼吸灯\n    HTTPClient http;\n    http.begin(MUSE_AGENT_ENDPOINT);\n    http.addHeader(\"Content-Type\", \"application/json\");\n    int code = http.POST(\"{\\\"action\\\": \\\"INBOX_TRIAGE_AND_SUMMARY\\\"}\");\n    Serial.printf(\"Muse Agent Dispatched! Response: %d\\n\", code);\n    http.end();\n    delay(1200);\n  }\n}"
+    },
+    {
+      "id": "scene_05",
+      "type": "CinematicHero",
+      "heroImage": "footage/meta_muse_apple/scene_05.jpg",
+      "cameraMotion": "pull-out",
+      "title": "争议风暴前瞻：系统指令被逆向与人际画像档案",
+      "badge": "CONTROVERSY & PRIVACY · 隐忧与风暴",
+      "pill": "🚨 隐私争议与系统逆向",
+      "theme": "cinema-editorial",
+      "text": "但在全网狂欢的背后，巨大的隐忧也已经爆发。有安全极客逆向了 Muse 的系统提示词，发现它在后台居然暗中为人际关系建档，也就是所谓的 People Pages。它不仅记录你的习惯，还会推断你朋友的性格和喜好，很多企业甚至已经对它拉响了内网安全红灯。",
+      "highlights": [
+        {
+          "label": "人际画像档案",
+          "value": "People Pages 暗中建档",
+          "color": "#f43f5e"
+        },
+        {
+          "label": "底层指令",
+          "value": "Prompt 已被逆向公开",
+          "color": "#fb923c"
+        },
+        {
+          "label": "企业内网",
+          "value": "拉响高危隐私合规红灯",
+          "color": "#e11d48"
+        }
+      ],
+      "cards": [
+        {
+          "title": "系统指令被彻底逆向",
+          "desc": "安全研究员通过越狱 Prompt 完整导出了 Muse 的隐藏系统原则与安全过滤白名单",
+          "tag": "PROMPT LEAK"
+        },
+        {
+          "title": "People Pages 争议风暴",
+          "desc": "在用户毫无知觉的情况下，在后台自动分析亲友、同事特征并建立人际关系关系网",
+          "tag": "SHADOW PROFILING"
+        },
+        {
+          "title": "企业级数据防火墙红灯",
+          "desc": "多家跨国金融与科技企业严禁员工在内网设备安装，防止商业机密被主动 Agent 泄露",
+          "tag": "ENTERPRISE BAN"
+        }
+      ]
+    },
+    {
+      "id": "scene_06",
+      "type": "CinematicHero",
+      "heroImage": "footage/meta_muse_apple/scene_06.jpg",
+      "cameraMotion": "push-in",
+      "title": "终局启示：当 AI 开始替你生活，你的边界在哪里？",
+      "badge": "FINAL REFLECTION · 终局启示",
+      "pill": "🌅 2026 个人 Agent 时代已至",
+      "theme": "cinema-editorial",
+      "text": "从被动问答到主动代理，Meta Muse 无疑推开了 2026 年个人 AI 的大门。但当一个软件开始替你做决定、替你生活的时候，便利与隐私的边界到底应该划在哪里？这或许是每一个科技人，都必须深思的终极命题。",
+      "highlights": [
+        {
+          "label": "范式转移",
+          "value": "从生成文字到替人类行动",
+          "color": "#38bdf8"
+        },
+        {
+          "label": "核心命题",
+          "value": "便利与隐私的终极边界",
+          "color": "#a855f7"
+        },
+        {
+          "label": "未来浪潮",
+          "value": "2026 个人 Agent 黄金纪元",
+          "color": "#10b981"
+        }
+      ],
+      "cards": [
+        {
+          "title": "人机交互范式永久重塑",
+          "desc": "大模型不再是查资料的维基百科，而是真正替人类处理繁杂现实事务的数字分身",
+          "tag": "PARADIGM SHIFT"
+        },
+        {
+          "title": "数据主权与数字人格防线",
+          "desc": "当个人的日常习惯与私人社交圈被完全托管，算法主导权与人类自由意志的博弈才刚刚开始",
+          "tag": "DATA SOVEREIGNTY"
+        },
+        {
+          "title": "2026 属于自主 Agent 的纪元",
+          "desc": "从 Meta Muse 到开源生态，自主执行代理人正在以不可逆的速度席卷整个科技世界",
+          "tag": "THE NEXT DECADE"
+        }
+      ]
+    }
+  ]
+}

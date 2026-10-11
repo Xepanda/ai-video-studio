@@ -71,12 +71,20 @@ flowchart TD
 ---
 
 ### 第 3 步：一键生成配音与时钟打点
-在终端运行全自动流水线脚本：
-```bash
-python scripts/pipeline.py --spec my_project.md
-```
+1. **默认模式（推荐，极速出片）**：
+   * 采用微软 Edge-TTS 高保真神经语音（云希），免开任何后台服务、零额外算力消耗。
+   * 直接在终端运行全自动流水线脚本：
+   ```bash
+   python scripts/pipeline.py --script inputs/script.json
+   ```
+2. **专属个人克隆声音模式（保留方案，随时开启）**：
+   * 双击运行 `scripts/start_local_sovits.bat` 启动本地 CPU 推理引擎；
+   * 在 `.env` 中设置 `TTS_PROVIDER=gpt_sovits`；
+   * 重新运行上述命令，全链路自动接入个人专属声音 (`epanda_voice`)。
+
 **流水线自动执行两件事**：
-1. **TTS 生成**：将各分镜文本合成为 `public/audio/scene_01.wav`, `scene_02.wav`...
+1. **TTS 生成**：调用 `scripts/generate_audio.py` 将各分镜文本合成为 `public/audio/scene_01.mp3`, `scene_02.mp3`...
+   * **双轨高可用自动降级**：若选用了 GPT-SoVITS 但本地服务未开启，会自动秒级回退至微软 Edge-TTS，确保视频流水线永不中断。
 2. **SenseVoice 毫秒打点**：利用本地 CPU 上的 SenseVoice-Small 模型，8 秒内解析出每个字词的毫秒起止点与情绪，自动输出 `public/timeline.json`。
 
 ---

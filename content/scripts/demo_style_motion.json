@@ -1,0 +1,16 @@
+{
+  "project": "demo_style_motion",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "motion-canvas-warm",
+  "fps": 30,
+  "title": "Motion Canvas 视觉隐喻推演流",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MotionCanvasPipeline",
+      "title": "代码如何具象化冲压为帧",
+      "text": "代码如何变成视频？每一次声波震动的波峰，都是一次数学状态的驱动，像装配流水线一样，精准冲压出每一帧画面。"
+    }
+  ]
+}

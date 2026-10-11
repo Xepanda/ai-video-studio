@@ -1,0 +1,36 @@
+{
+  "project": "workflow_introduction",
+  "fps": 30,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "title": "全链路视频自动化工作流",
+      "style": "explainer",
+      "text": "大家好！欢迎了解我们的全链路 AI 视频自动化生产工作流。从分镜文案到成片导出，彻底实现代码即视频。"
+    },
+    {
+      "id": "scene_02",
+      "title": "专属音色克隆与高可用 TTS",
+      "style": "hands_on",
+      "text": "首先在声音端，我们接入了基于真实录音微调的 GPT-SoVITS 专属音色，并搭配双轨自动降级机制，让每个视频都自带独特的个人辨识度。"
+    },
+    {
+      "id": "scene_03",
+      "title": "毫秒打标与时间轴契约",
+      "style": "whiteboard",
+      "text": "配音生成后，阿里 SenseVoice 毫秒级对齐模型在本地以 20 倍超实时极速打点，精准解析每个字词的起止帧与情绪，生成时间轴核心契约。"
+    },
+    {
+      "id": "scene_04",
+      "title": "Remotion 声明式组件装配",
+      "style": "explainer",
+      "text": "在视觉层，Remotion 结合 React 状态机，将动态字级发光字幕、玻璃拟态卡片视窗与 Google Flow 电影级镜头深度融合。"
+    },
+    {
+      "id": "scene_05",
+      "title": "多核光栅化极速导出",
+      "style": "hybrid_live",
+      "text": "最后，通过六进程并发光栅化渲染，几十秒即可输出广播级 1080p 视频。全流程零人工干预，欢迎体验！"
+    }
+  ]
+}

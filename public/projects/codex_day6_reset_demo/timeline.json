@@ -1,0 +1,330 @@
+{
+  "project": "codex_day6_reset_demo",
+  "theme": "linear-graphite",
+  "fps": 30,
+  "totalDurationInFrames": 754,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MinimalHeadline",
+      "startFrame": 0,
+      "durationInFrames": 54,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_01.wav",
+      "text": "没有新功能，只有重置！",
+      "rawText": "没 有 新 功 能 只 有 重 置",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "没有新功能",
+          "startFrame": 6,
+          "endFrame": 31,
+          "globalStartFrame": 6,
+          "globalEndFrame": 31,
+          "startMs": 190,
+          "endMs": 1030
+        },
+        {
+          "text": "只有重置",
+          "startFrame": 31,
+          "endFrame": 51,
+          "globalStartFrame": 31,
+          "globalEndFrame": 51,
+          "startMs": 1030,
+          "endMs": 1705
+        }
+      ],
+      "title": "没有新功能，只有重置！",
+      "inverted": false,
+      "category": "CODEX DAY 6",
+      "highlightWords": [
+        "没有新功能",
+        "重置"
+      ]
+    },
+    {
+      "id": "scene_02",
+      "type": "TweetEmbed",
+      "startFrame": 54,
+      "durationInFrames": 91,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_02.wav",
+      "text": "Tibo 发推表示，第六天只做 Reset。",
+      "rawText": "七 比 欧 发 崔 表 示 第 六 天 只 做 reset",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "Tibo 发推表示",
+          "startFrame": 4,
+          "endFrame": 48,
+          "globalStartFrame": 58,
+          "globalEndFrame": 102,
+          "startMs": 130,
+          "endMs": 1610
+        },
+        {
+          "text": "第六天只做 Reset",
+          "startFrame": 48,
+          "endFrame": 84,
+          "globalStartFrame": 102,
+          "globalEndFrame": 138,
+          "startMs": 1610,
+          "endMs": 2785
+        }
+      ],
+      "title": "Tibo 官方推文确认第 6 天重置",
+      "tweet": {
+        "authorName": "Tibo",
+        "authorHandle": "@tibo_maker",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "14h",
+        "content": "Day 6: Reset\n\nNo new features today, just resetting quotas for everyone.",
+        "highlightWords": [
+          "Reset",
+          "No new features"
+        ],
+        "metrics": {
+          "replies": "128",
+          "retweets": "450",
+          "likes": "3.4K",
+          "views": "150K"
+        },
+        "subtitle": "官方确认：第六天无新功能发布，仅执行全局重置"
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "BinaryBento",
+      "startFrame": 145,
+      "durationInFrames": 113,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_03.wav",
+      "text": "二选一规则：要么直接刷新额度，要么给重置卡。",
+      "rawText": "二 选 一 规 则 要 么 直 接 刷 新 额 度 要 么 给 重 置 卡",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "二选一规则：要么直接刷新额度",
+          "startFrame": 2,
+          "endFrame": 66,
+          "globalStartFrame": 147,
+          "globalEndFrame": 211,
+          "startMs": 70,
+          "endMs": 2210
+        },
+        {
+          "text": "要么给重置卡",
+          "startFrame": 67,
+          "endFrame": 101,
+          "globalStartFrame": 212,
+          "globalEndFrame": 246,
+          "startMs": 2230,
+          "endMs": 3355
+        }
+      ],
+      "title": "配额重置机制与规则",
+      "binaryBento": {
+        "title": "配额重置机制",
+        "subtitle": "二选一规则",
+        "dividerText": "或",
+        "leftCard": {
+          "title": "消耗每日配额",
+          "desc": "等待每日零点自动刷新",
+          "tag": "方案 A",
+          "blocksTotal": 5,
+          "blocksActive": 3
+        },
+        "rightCard": {
+          "title": "使用月度重置卡",
+          "desc": "即时恢复全部对话算力",
+          "pill": "重置卡",
+          "tag": "方案 B"
+        }
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "MinimalHeadline",
+      "startFrame": 258,
+      "durationInFrames": 104,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_04.wav",
+      "text": "具体怎么重置帖子没细说，等落地才知道！",
+      "rawText": "具 体 怎 么 重 置 帖 子 没 细 说 等 落 地 才 知 道",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "具体怎么重置帖子没细说",
+          "startFrame": 5,
+          "endFrame": 59,
+          "globalStartFrame": 263,
+          "globalEndFrame": 317,
+          "startMs": 170,
+          "endMs": 1970
+        },
+        {
+          "text": "等落地才知道",
+          "startFrame": 68,
+          "endFrame": 98,
+          "globalStartFrame": 326,
+          "globalEndFrame": 356,
+          "startMs": 2250,
+          "endMs": 3265
+        }
+      ],
+      "title": "具体怎么重置帖子没细说，等落地才知道！",
+      "inverted": true,
+      "category": "UNCONFIRMED",
+      "highlightWords": [
+        "没细说",
+        "等落地才知道"
+      ]
+    },
+    {
+      "id": "scene_05",
+      "type": "MinimalHeadline",
+      "startFrame": 362,
+      "durationInFrames": 79,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_05.wav",
+      "text": "上一次全员重置还是在第二天。",
+      "rawText": "上 一 次 全 员 重 置 还 是 在 第 二 天",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "上一次全员重置还是在第二天",
+          "startFrame": 8,
+          "endFrame": 73,
+          "globalStartFrame": 370,
+          "globalEndFrame": 435,
+          "startMs": 250,
+          "endMs": 2425
+        }
+      ],
+      "title": "上一次全员重置还是在第二天。",
+      "inverted": false,
+      "category": "TIMELINE",
+      "highlightWords": [
+        "第二天",
+        "全员重置"
+      ]
+    },
+    {
+      "id": "scene_06",
+      "type": "TweetEmbed",
+      "startFrame": 441,
+      "durationInFrames": 103,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_06.wav",
+      "text": "前一天 Tibo 就发推说：一眨眼都周六了。",
+      "rawText": "前 一 天 tiep 就 发 推 说 一 眨 眼 都 周 六 了",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "前一天 Tibo 就发推说：一眨眼都周六了",
+          "startFrame": 5,
+          "endFrame": 97,
+          "globalStartFrame": 446,
+          "globalEndFrame": 538,
+          "startMs": 170,
+          "endMs": 3235
+        }
+      ],
+      "title": "前一天 Tibo 预热发推",
+      "tweet": {
+        "authorName": "Tibo",
+        "authorHandle": "@tibo_maker",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "1d",
+        "content": "Can't believe it's already Saturday. Time flies when building in public.",
+        "highlightWords": [
+          "Saturday",
+          "Time flies"
+        ],
+        "metrics": {
+          "replies": "86",
+          "retweets": "190",
+          "likes": "1.8K",
+          "views": "82K"
+        },
+        "subtitle": "此前周五晚间的微妙预热"
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "MinimalHeadline",
+      "startFrame": 544,
+      "durationInFrames": 98,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_07.wav",
+      "text": "合着功能没影子，这是又要重置啊！",
+      "rawText": "合 着 这 个 功 能 没 影 子 这 是 又 要 重 置 啊",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "合着功能没影子",
+          "startFrame": 6,
+          "endFrame": 34,
+          "globalStartFrame": 550,
+          "globalEndFrame": 578,
+          "startMs": 210,
+          "endMs": 1150
+        },
+        {
+          "text": "这是又要重置啊",
+          "startFrame": 34,
+          "endFrame": 95,
+          "globalStartFrame": 578,
+          "globalEndFrame": 639,
+          "startMs": 1150,
+          "endMs": 3175
+        }
+      ],
+      "title": "合着功能没影子，这是又要重置啊！",
+      "inverted": false,
+      "category": "INSIGHT",
+      "highlightWords": [
+        "没影子",
+        "又要重置"
+      ]
+    },
+    {
+      "id": "scene_08",
+      "type": "MinimalHeadline",
+      "startFrame": 642,
+      "durationInFrames": 112,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_08.wav",
+      "text": "第七天到底会有什么新功能？明天接着看！",
+      "rawText": "第 七 天 到 底 会 有 什 么 新 功 能 明 天 接 着 看",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
+        {
+          "text": "第七天到底会有什么新功能",
+          "startFrame": 32,
+          "endFrame": 90,
+          "globalStartFrame": 674,
+          "globalEndFrame": 732,
+          "startMs": 1050,
+          "endMs": 2990
+        },
+        {
+          "text": "明天接着看",
+          "startFrame": 90,
+          "endFrame": 112,
+          "globalStartFrame": 732,
+          "globalEndFrame": 754,
+          "startMs": 3010,
+          "endMs": 3720
+        }
+      ],
+      "title": "第七天到底会有什么新功能？明天接着看！",
+      "inverted": true,
+      "category": "STAY TUNED",
+      "highlightWords": [
+        "第七天",
+        "明天接着看"
+      ]
+    }
+  ],
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": true,
+  "bgmPath": "audio/bgm_cyber_ambient.wav"
+}

@@ -1,0 +1,209 @@
+{
+  "project": "ai_video_studio_workflow_demo",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "linear-graphite",
+  "fps": 30,
+  "title": "AI Video Studio 工业级全链路视频自动化工作流",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "title": "AI Video Studio：声音先行与代码即视频范式",
+      "badge": "PARADIGM SHIFT · 架构范式",
+      "theme": "linear-graphite",
+      "text": "欢迎进入 AI Video Studio 工业级视频自动化系统。传统视频剪辑依赖人工在时间线上手动拖拽素材，效率低下且无法工程化迭代。我们提出了声音先行原则，将生成的物理音频波形作为不可动摇的时钟底座，让画面动画完全成为代码与状态机的纯函数映射。",
+      "cards": [
+        {
+          "title": "声音绝对时钟",
+          "desc": "以实际声学波形物理时长作为顶层单一真实时钟，画面全自动适配",
+          "tag": "AUDIO FIRST"
+        },
+        {
+          "title": "纯函数状态机",
+          "desc": "Scene = f(frame)，所有动画均由数学公式和物理阻尼计算，零盲盒抽卡",
+          "tag": "DETERMINISTIC"
+        },
+        {
+          "title": "工业级去 AI 味",
+          "desc": "告别土味荧光黄字与儿童画 emoji，采用黑曜极简与 Apple 悬浮字幕 Dock",
+          "tag": "DE-AI CRAFT"
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "type": "ArchitectureTopology",
+      "title": "端到端五阶自动化流水线全景拓扑",
+      "badge": "PIPELINE TOPOLOGY · 拓扑全景",
+      "theme": "linear-graphite",
+      "text": "整条流水线由五个紧密协同的工业级阶段构成。从一键式脚手架生成分镜契约开始，经过 ChatTTS 随和男声音色合成与发音矫正，再由达摩院 Paraformer 完成毫秒级物理打点，经过质量门禁审查后，由 Remotion 多核无头浏览器集群并行导出成片。",
+      "topologyNodes": [
+        {
+          "id": "scaffold",
+          "label": "CLI Scaffold",
+          "sublabel": "一键主题与分镜契约",
+          "icon": "📝",
+          "status": "GENERATED",
+          "statusColor": "#38bdf8",
+          "x": 10,
+          "y": 50
+        },
+        {
+          "id": "tts",
+          "label": "ChatTTS Engine",
+          "sublabel": "Seed 4444 + G2P 纠音",
+          "icon": "🎙️",
+          "status": "SYNTHESIZED",
+          "statusColor": "#818cf8",
+          "x": 30,
+          "y": 30
+        },
+        {
+          "id": "asr",
+          "label": "Paraformer ASR",
+          "sublabel": "物理声学字级毫秒打点",
+          "icon": "⏱️",
+          "status": "ALIGNED",
+          "statusColor": "#10b981",
+          "x": 55,
+          "y": 30
+        },
+        {
+          "id": "gate",
+          "label": "Quality Gate",
+          "sublabel": "单调性与数据契约门禁",
+          "icon": "🛡️",
+          "status": "VERIFIED",
+          "statusColor": "#f59e0b",
+          "x": 55,
+          "y": 70
+        },
+        {
+          "id": "render",
+          "label": "Remotion Cluster",
+          "sublabel": "多核并行光栅化导出",
+          "icon": "🖥️",
+          "status": "RENDERED",
+          "statusColor": "#a855f7",
+          "x": 85,
+          "y": 50
+        }
+      ],
+      "topologyLinks": [
+        {
+          "from": "scaffold",
+          "to": "tts",
+          "label": "Script JSON",
+          "active": true
+        },
+        {
+          "from": "tts",
+          "to": "asr",
+          "label": "Audio Stream",
+          "active": true
+        },
+        {
+          "from": "asr",
+          "to": "gate",
+          "label": "Timeline Data",
+          "active": true
+        },
+        {
+          "from": "gate",
+          "to": "render",
+          "label": "Passed Contract",
+          "active": true
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "type": "TerminalCodeDemo",
+      "title": "极简开发者终端：两行命令全自动交付",
+      "badge": "DEVELOPER EXPERIENCE · 终端体验",
+      "theme": "linear-graphite",
+      "text": "纸上得来终觉浅，绝知此事要躬行。创作者日常生产视频只需在终端敲入两行简洁命令。脚手架自动根据主题解析领域并输出契约，总控管道脚本则在后台并发拉起多进程推理，完成从文案到广播级成片的全生命周期闭环。",
+      "codeTitle": "terminal_workflow.sh",
+      "codeLang": "bash",
+      "codeSnippet": "python scripts/create_script_from_topic.py --topic \"Redis核心架构\" --project redis_demo\npython scripts/pipeline.py --script content/scripts/redis_demo.json --project redis_demo --isolated\nnpx remotion render src/index.ts MasterVideo out/redis_demo.mp4 --concurrency=6"
+    },
+    {
+      "id": "scene_04",
+      "type": "MetricComparison",
+      "title": "纯 CPU 环境极致能效与性能基准评测",
+      "badge": "BENCHMARK SCORECARD · 性能基准",
+      "theme": "linear-graphite",
+      "text": "口说无凭，数据说话。在无独立显卡的普通锐龙八核工作站上，系统依靠向量加速展现出了惊人的生产力能效比。达摩院 Paraformer 打点速度高达二十倍超实时，无头浏览器光栅化渲染速度较单核提升超五倍，彻底打破对重型英伟达显卡的昂贵依赖。",
+      "metrics": [
+        {
+          "title": "ASR 打点实时率 RTF (越低越快)",
+          "badge": "ALIGNMENT SPEED",
+          "pill": "20x 超实时",
+          "items": [
+            {
+              "name": "云端 API 往返网络开销",
+              "value": 1.85,
+              "maxValue": 2.0,
+              "unit": "RTF",
+              "color": "#ef4444"
+            },
+            {
+              "name": "FunASR 本地 AVX2 向量加速",
+              "value": 0.05,
+              "maxValue": 2.0,
+              "unit": "RTF",
+              "color": "#10b981",
+              "highlight": true
+            }
+          ]
+        },
+        {
+          "title": "成片光栅化渲染帧率 (FPS 吞吐)",
+          "badge": "RENDER THROUGHPUT",
+          "pill": "5.6x 并行提速",
+          "items": [
+            {
+              "name": "单进程串行光栅化",
+              "value": 12,
+              "maxValue": 80,
+              "unit": "fps",
+              "color": "#64748b"
+            },
+            {
+              "name": "Remotion 6核并行集群",
+              "value": 68,
+              "maxValue": 80,
+              "unit": "fps",
+              "color": "#38bdf8",
+              "highlight": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene_05",
+      "title": "工程化演进：向更稳健的自动化视界迈进",
+      "badge": "PRODUCTION VISION · 演进思考",
+      "theme": "linear-graphite",
+      "text": "回顾整个工作流的探索历程，从最初单纯的音频合成，演进到今天涵盖去 AI 化质感体系、物理声学微停顿对齐与多项目资产隔离的工程化矩阵。真正的自动化不是盲盒抽卡，而是对每一帧动画、每一个音标的精准敬畏。",
+      "cards": [
+        {
+          "title": "全链路数据可溯",
+          "desc": "从原始文案、分词时间戳到渲染配置全部纯文本化，无缝纳管 Git 版本控制",
+          "tag": "GIT OPS"
+        },
+        {
+          "title": "自愈式资产容错",
+          "desc": "音频缺失自动合成补齐、字数溢出自动分句截断，构建高弹性健壮流水线",
+          "tag": "RESILIENCE"
+        },
+        {
+          "title": "矩阵化多端交付",
+          "desc": "同源时钟契约横竖屏自适应光栅化，一键辐射宽屏长视频与手机短视频",
+          "tag": "OMNICHANNEL"
+        }
+      ]
+    }
+  ]
+}

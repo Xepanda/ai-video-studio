@@ -14,7 +14,8 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PYTHON_EXE = sys.executable
+LIVECLIP_PYTHON = r"C:\Users\ePanda\.workbuddy\binaries\python\envs\liveclip\Scripts\python.exe"
+PYTHON_EXE = LIVECLIP_PYTHON if os.path.exists(LIVECLIP_PYTHON) else sys.executable
 
 def run_step(step_name: str, cmd: list):
     print(f"\n=======================================================")
@@ -35,41 +36,91 @@ def main():
     parser.add_argument("--skip_align", action="store_true", help="跳过 ASR 毫秒打点")
     parser.add_argument("--skip_validate", action="store_true", help="跳过静态审查")
     parser.add_argument("--render", action="store_true", help="直接调用 Remotion 渲染出最终 MP4")
+    parser.add_argument("--engine", type=str, choices=["auto", "paraformer", "sensevoice"], default="auto", help="ASR 对齐引擎 (auto/paraformer/sensevoice)")
+    parser.add_argument("--device", type=str, default="cpu", help="ASR 推理设备 (cpu/cuda)")
+    parser.add_argument("--isolated", action="store_true", default=True, help="启用项目资产隔离 (输出至 public/projects/{project})")
+    parser.add_argument("--no_isolated", action="store_false", dest="isolated", help="禁用项目资产隔离 (直接使用根目录 public/audio)")
+    parser.add_argument("--no_normalize_phonetics", action="store_true", default=False, help="禁用 TTS 技术名词发音规范化")
+    parser.add_argument("--no_master_audio", action="store_true", default=False, help="禁用移动端人声广播母带增益优化")
+    parser.add_argument("--force", "--force_audio", dest="force_audio", action="store_true", default=False, help="强制重新生成所有分镜音频，忽略 MD5 缓存")
+    parser.add_argument("--no_master_video", action="store_true", default=False, help="禁用成品视频容器级音频母带标准化")
+    parser.add_argument("--concurrency", type=int, default=4, help="Remotion 并发渲染进程数")
     args = parser.parse_args()
 
     # 步骤 0: 专属音色 TTS 配音生成
     if not args.skip_tts:
         tts_script = os.path.join(PROJECT_ROOT, "scripts", "generate_audio.py")
+        tts_cmd = [PYTHON_EXE, tts_script, "--script", args.script]
+        if args.isolated and args.project:
+            tts_cmd.extend(["--project", args.project])
+        if args.no_normalize_phonetics:
+            tts_cmd.append("--no_normalize_phonetics")
+        if args.no_master_audio:
+            tts_cmd.append("--no_master_audio")
+        if args.force_audio:
+            tts_cmd.append("--force")
         run_step(
             "专属克隆音色分镜配音生成",
-            [PYTHON_EXE, tts_script, "--script", args.script]
+            tts_cmd
+        )
+
+    # 步骤 0.5: 确保全局科技氛围 BGM 与转场/弹入 SFX 音效就绪
+    bgm_file = os.path.join(PROJECT_ROOT, "public", "audio", "bgm_cyber_ambient.wav")
+    sfx_file = os.path.join(PROJECT_ROOT, "public", "audio", "sfx_transition.wav")
+    pop_file = os.path.join(PROJECT_ROOT, "public", "audio", "sfx_pop.wav")
+    if not os.path.exists(bgm_file) or not os.path.exists(sfx_file) or not os.path.exists(pop_file):
+        sfx_script = os.path.join(PROJECT_ROOT, "scripts", "generate_sfx_bgm.py")
+        run_step(
+            "无版权极客氛围音乐与转场音效套件合成",
+            [PYTHON_EXE, sfx_script]
         )
 
     # 步骤 1: ASR 毫秒打点与 timeline.json 契约生成
     if not args.skip_align:
         align_script = os.path.join(PROJECT_ROOT, "scripts", "sensevoice_aligner.py")
+        align_cmd = [
+            PYTHON_EXE, align_script,
+            "--fps", str(args.fps),
+            "--script", args.script,
+            "--engine", args.engine,
+            "--device", args.device
+        ]
+        if args.isolated and args.project:
+            align_cmd.extend(["--project", args.project])
         run_step(
-            "SenseVoice 毫秒打点与时间轴契约生成",
-            [PYTHON_EXE, align_script, "--project", args.project, "--fps", str(args.fps)]
+            "声学物理打点与时间轴契约生成",
+            align_cmd
         )
 
     # 步骤 2: 质量门禁自动审查
     if not args.skip_validate:
         validator_script = os.path.join(PROJECT_ROOT, "scripts", "validator.py")
+        val_cmd = [PYTHON_EXE, validator_script]
+        if args.isolated and args.project:
+            val_cmd.extend(["--project", args.project])
         run_step(
             "数据契约与静态资产审查 (Quality Gate)",
-            [PYTHON_EXE, validator_script]
+            val_cmd
         )
 
     # 步骤 3: 可选一键多核渲染
     if args.render:
         out_mp4 = os.path.join(PROJECT_ROOT, "out", f"{args.project}.mp4")
         os.makedirs(os.path.dirname(out_mp4), exist_ok=True)
-        remotion_cmd = f"npx remotion render src/index.ts MasterVideo out/{args.project}.mp4 --concurrency=6"
+        remotion_cmd = f"npx remotion render src/index.ts MasterVideo out/{args.project}.mp4 --concurrency={args.concurrency}"
         run_step(
             "Remotion 多核光栅化渲染 MP4",
             ["cmd.exe", "/c", remotion_cmd]
         )
+
+        # 步骤 4: 成品视频商业级广播响度标准化 (-11 LUFS / -0.5 True Peak)
+        if not args.no_master_video and os.path.exists(out_mp4):
+            master_script = os.path.join(PROJECT_ROOT, "scripts", "audio_mastering.py")
+            run_step(
+                "成品视频音轨商业广播响度标准化 (EBU R128 -11 LUFS)",
+                [PYTHON_EXE, master_script, "--video", out_mp4]
+            )
+
         print(f"\n🎉 视频渲染完成！成片文件: {out_mp4}")
     else:
         print(f"\n🎉🎉 全链路数据契约就绪！接下来请执行：")

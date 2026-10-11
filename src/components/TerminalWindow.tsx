@@ -3,7 +3,8 @@ import { useCurrentFrame, interpolate } from 'remotion';
 
 export interface TerminalWindowProps {
   title?: string;
-  command: string;
+  command?: string;
+  content?: string;
   output?: string[];
   typingDurationFrames?: number;
   width?: number | string;
@@ -16,24 +17,31 @@ export interface TerminalWindowProps {
 export const TerminalWindow: React.FC<TerminalWindowProps> = ({
   title = 'zsh - terminal',
   command,
+  content,
   output = [],
   typingDurationFrames = 45,
-  width = 960,
-  height = 540,
+  width = '100%',
+  height = 'auto',
 }) => {
   const frame = useCurrentFrame();
+  const rawCode = command || content || '';
+  const isMultiline = rawCode.includes('\n');
 
-  // 打字进度
-  const charsCount = Math.floor(
-    interpolate(frame, [10, 10 + typingDurationFrames], [0, command.length], {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-    })
-  );
+  // 打字进度 (防御 typingDurationFrames <= 0 时 interpolate 崩溃)
+  const charsCount = typingDurationFrames <= 0
+    ? rawCode.length
+    : Math.floor(
+        interpolate(frame, [10, 10 + Math.max(1, typingDurationFrames)], [0, rawCode.length], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        })
+      );
 
-  const typedCommand = command.slice(0, charsCount);
+  const typedCommand = rawCode.slice(0, charsCount);
   const showOutput = frame > 10 + typingDurationFrames + 5;
   const cursorBlink = Math.floor(frame / 12) % 2 === 0;
+
+  const lines = typedCommand.split('\n');
 
   return (
     <div
@@ -46,7 +54,7 @@ export const TerminalWindow: React.FC<TerminalWindowProps> = ({
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        fontFamily: "'Fira Code', 'JetBrains Mono', Consolas, monospace",
+        fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
       }}
     >
       {/* 终端顶部标题栏 */}
@@ -74,6 +82,7 @@ export const TerminalWindow: React.FC<TerminalWindowProps> = ({
             textAlign: 'center',
             color: '#8b949e',
             fontSize: '14px',
+            fontFamily: "'JetBrains Mono', monospace",
           }}
         >
           {title}
@@ -84,27 +93,73 @@ export const TerminalWindow: React.FC<TerminalWindowProps> = ({
       <div
         style={{
           flex: 1,
-          padding: '24px',
+          padding: '24px 28px',
           color: '#e6edf3',
-          fontSize: '22px',
-          lineHeight: 1.6,
+          fontSize: isMultiline ? '20px' : '22px',
+          lineHeight: 1.7,
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px',
+          gap: isMultiline ? '8px' : '12px',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>➜</span>
-          <span style={{ color: '#a78bfa' }}>projects</span>
-          <span style={{ color: '#f43f5e' }}>git:(main)</span>
-          <span>{typedCommand}</span>
-          {(!showOutput || cursorBlink) && (
-            <span style={{ backgroundColor: '#38bdf8', width: '12px', height: '24px', display: 'inline-block' }} />
-          )}
-        </div>
+        {isMultiline ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {lines.map((line, idx) => {
+              const isLastLine = idx === lines.length - 1;
+              const isComment = line.trim().startsWith('#') || line.trim().startsWith('//');
+              return (
+                <div key={idx} style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}>
+                  <span
+                    style={{
+                      color: '#4b5563',
+                      fontSize: '15px',
+                      userSelect: 'none',
+                      minWidth: '24px',
+                      textAlign: 'right',
+                    }}
+                  >
+                    {idx + 1}
+                  </span>
+                  <div
+                    style={{
+                      flex: 1,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-all',
+                      color: isComment ? '#7dd3fc' : '#f1f5f9',
+                    }}
+                  >
+                    <span>{line || '\u00A0'}</span>
+                    {isLastLine && (!showOutput || cursorBlink) && (
+                      <span
+                        style={{
+                          backgroundColor: '#38bdf8',
+                          width: '10px',
+                          height: '20px',
+                          display: 'inline-block',
+                          verticalAlign: 'text-bottom',
+                          marginLeft: '4px',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', whiteSpace: 'pre-wrap' }}>
+            <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>➜</span>
+            <span style={{ color: '#a78bfa' }}>projects</span>
+            <span style={{ color: '#f43f5e' }}>git:(main)</span>
+            <span>{typedCommand}</span>
+            {(!showOutput || cursorBlink) && (
+              <span style={{ backgroundColor: '#38bdf8', width: '12px', height: '24px', display: 'inline-block' }} />
+            )}
+          </div>
+        )}
 
-        {showOutput && (
-          <div style={{ color: '#34d399', marginTop: '8px', whiteSpace: 'pre-wrap' }}>
+        {showOutput && output.length > 0 && (
+          <div style={{ color: '#34d399', marginTop: '12px', whiteSpace: 'pre-wrap', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '12px' }}>
             {output.map((line, idx) => (
               <div key={idx}>{line}</div>
             ))}

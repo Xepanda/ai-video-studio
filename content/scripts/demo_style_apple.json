@@ -1,0 +1,16 @@
+{
+  "project": "demo_style_apple",
+  "engine": "chattts",
+  "voice": "4444",
+  "theme": "vercel-geist",
+  "fps": 30,
+  "title": "Apple 工业级精密解构流",
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "AppleKeynoteExploded",
+      "title": "声学时钟引擎精密解构",
+      "text": "声音先行。以真实的物理声波波形作为不可动摇的时钟底座，自底向上构建纯函数状态机，毫秒级解构每一帧画面。"
+    }
+  ]
+}
