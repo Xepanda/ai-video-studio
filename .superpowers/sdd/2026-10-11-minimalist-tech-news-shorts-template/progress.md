@@ -24,5 +24,9 @@ Base commit: d00d5a2 (master) / branch: feature/minimalist-tech-news-shorts
   - Minor (deferred): tighten ShortsSceneMeta.metrics type from union with any
 - Task 4: complete (commits c54bdec..799d91e, review clean)
   - Minor (deferred): tighten SceneMeta tweet/binaryBento types from any to dedicated interfaces
-- Task 5: complete (commit 1c437f9)
+- Task 5: complete (commits 799d91e..6d59aa9, review clean)
+  - Minor (deferred): wire --fps parameter in create_tech_news_shorts.py
+  - Minor (deferred): test_slugify_chinese_pinyin assertion looseness without pypinyin
+  - Minor (deferred): sync deep bento schema validation between generator and validator
+- Task 6: complete (end-to-end pipeline executed, MP4 rendered, EBU R128 mastered, stills verified)
 

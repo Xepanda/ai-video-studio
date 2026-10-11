@@ -249,7 +249,7 @@ def main():
     parser.add_argument("--script", type=str, default="inputs/script.json", help="分镜脚本文件路径")
     parser.add_argument("--project", type=str, default=None, help="项目名称 (启用多项目资产隔离目录 public/projects/{project}/audio)")
     parser.add_argument("--output_dir", type=str, default="public/audio", help="音频输出目录")
-    parser.add_argument("--provider", type=str, default=None, help="覆盖 TTS 服务商 (kokoro/f5_tts/gpt_sovits/edge_tts)")
+    parser.add_argument("--provider", "--engine", type=str, default=None, help="覆盖 TTS 服务商 (kokoro/f5_tts/gpt_sovits/edge_tts/chattts)")
     parser.add_argument("--voice", type=str, default=None, help="覆盖音色名称或代码")
     parser.add_argument("--ref_audio", type=str, default=None, help="参考音频文件路径")
     parser.add_argument("--ref_text", type=str, default=None, help="参考音频对应文本")

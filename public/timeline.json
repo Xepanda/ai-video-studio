@@ -1,792 +1,330 @@
 {
-  "project": "meta_muse_agent_deepdive",
-  "theme": "cinema-editorial",
+  "project": "codex_day6_reset_demo",
+  "theme": "linear-graphite",
   "fps": 30,
-  "totalDurationInFrames": 3307,
+  "totalDurationInFrames": 754,
   "scenes": [
     {
       "id": "scene_01",
-      "type": "CinematicHero",
+      "type": "MinimalHeadline",
       "startFrame": 0,
-      "durationInFrames": 508,
-      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_01.wav",
-      "text": "如果你最近刷推特或者关注科技圈，一定被一个叫 Muse 的名字彻底刷屏了。仅仅上线二十二天，狂揽五百万下载，直接登顶苹果应用商店第一。甚至在海外社区诞生了一个新热搜，叫 Musemaxxing。",
-      "rawText": "如 果 你 最 近 刷 推 特 或 者 关 注 科 技 圈 一 定 被 一 个 叫 muse 的 名 字 彻 底 刷 屏 了 仅 仅 上 线 二 十 二 天 狂 揽 五 百 万 下 载 直 接 登 顶 苹 果 应 用 商 店 第 一 甚 至 在 海 外 社 区 诞 生 了 一 个 新 热 搜 就 叫 muse max sexting",
+      "durationInFrames": 54,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_01.wav",
+      "text": "没有新功能，只有重置！",
+      "rawText": "没 有 新 功 能 只 有 重 置",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "如果你最近刷推特或者关注科技圈",
-          "startFrame": 11,
-          "endFrame": 95,
-          "globalStartFrame": 11,
-          "globalEndFrame": 95,
-          "startMs": 380,
-          "endMs": 3160
+          "text": "没有新功能",
+          "startFrame": 6,
+          "endFrame": 31,
+          "globalStartFrame": 6,
+          "globalEndFrame": 31,
+          "startMs": 190,
+          "endMs": 1030
         },
         {
-          "text": "一定被一个叫 Muse 的名字彻底刷屏了",
-          "startFrame": 95,
-          "endFrame": 166,
-          "globalStartFrame": 95,
-          "globalEndFrame": 166,
-          "startMs": 3180,
-          "endMs": 5540
-        },
-        {
-          "text": "仅仅上线二十二天",
-          "startFrame": 195,
-          "endFrame": 236,
-          "globalStartFrame": 195,
-          "globalEndFrame": 236,
-          "startMs": 6500,
-          "endMs": 7880
-        },
-        {
-          "text": "狂揽五百万下载",
-          "startFrame": 247,
-          "endFrame": 289,
-          "globalStartFrame": 247,
-          "globalEndFrame": 289,
-          "startMs": 8220,
-          "endMs": 9620
-        },
-        {
-          "text": "直接登顶苹果应用商店第一",
-          "startFrame": 289,
-          "endFrame": 355,
-          "globalStartFrame": 289,
-          "globalEndFrame": 355,
-          "startMs": 9620,
-          "endMs": 11820
-        },
-        {
-          "text": "甚至在海外社区诞生了一个新热搜",
-          "startFrame": 377,
-          "endFrame": 457,
-          "globalStartFrame": 377,
-          "globalEndFrame": 457,
-          "startMs": 12580,
-          "endMs": 15220
-        },
-        {
-          "text": "叫 Musemaxxing",
-          "startFrame": 461,
-          "endFrame": 503,
-          "globalStartFrame": 461,
-          "globalEndFrame": 503,
-          "startMs": 15380,
-          "endMs": 16775
+          "text": "只有重置",
+          "startFrame": 31,
+          "endFrame": 51,
+          "globalStartFrame": 31,
+          "globalEndFrame": 51,
+          "startMs": 1030,
+          "endMs": 1705
         }
       ],
-      "title": "22天狂揽500万下载：Meta Muse 引爆科技圈",
-      "badge": "VIRAL PHENOMENON · 现象级爆发",
-      "metrics": [
-        {
-          "title": "App Store 登顶耗时 (天数越少越快)",
-          "badge": "SPEED RECORD · 登顶纪录",
-          "pill": "⚡ 2.0x 登顶速度",
-          "items": [
-            {
-              "name": "ChatGPT (历史记录)",
-              "value": 45,
-              "maxValue": 50,
-              "unit": "天",
-              "color": "#64748b",
-              "subtext": "原生成式 AI 历史最快纪录"
-            },
-            {
-              "name": "Meta Muse 个人代理",
-              "value": 22,
-              "maxValue": 50,
-              "unit": "天",
-              "color": "#10b981",
-              "highlight": true,
-              "subtext": "仅用 22 天登顶 App Store #1"
-            }
-          ]
-        },
-        {
-          "title": "首月规模爆发 (下载量对比)",
-          "badge": "GROWTH EXPLOSION · 爆发增长",
-          "pill": "🔥 500 万+ 下载",
-          "items": [
-            {
-              "name": "行业均值水平",
-              "value": 180,
-              "maxValue": 500,
-              "unit": "万",
-              "color": "#64748b",
-              "subtext": "主流消费级 AI 首月基准"
-            },
-            {
-              "name": "Meta Muse 首月下载",
-              "value": 500,
-              "maxValue": 500,
-              "unit": "万",
-              "color": "#38bdf8",
-              "highlight": true,
-              "subtext": "上线 22 天狂揽 500 万下载"
-            }
-          ]
-        },
-        {
-          "title": "周活跃独立用户规模",
-          "badge": "ACTIVE USERS · 周活跃度",
-          "pill": "👥 320 万 WAU",
-          "items": [
-            {
-              "name": "行业常规基准",
-              "value": 100,
-              "maxValue": 350,
-              "unit": "万",
-              "color": "#64748b",
-              "subtext": "常规工具应用基准线"
-            },
-            {
-              "name": "Meta Muse 周活跃",
-              "value": 320,
-              "maxValue": 350,
-              "unit": "万",
-              "color": "#a855f7",
-              "highlight": true,
-              "subtext": "高粘性高频自主代理人"
-            }
-          ]
-        }
-      ],
-      "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse_apple/scene_01.jpg",
-      "cameraMotion": "push-in",
-      "pill": "⚡ 22天狂揽500万下载",
-      "highlights": [
-        {
-          "label": "App Store 榜单",
-          "value": "#1 免费总榜登顶",
-          "color": "#10b981"
-        },
-        {
-          "label": "破纪录速度",
-          "value": "2.0x 登顶超越 ChatGPT",
-          "color": "#38bdf8"
-        },
-        {
-          "label": "全球热搜",
-          "value": "Musemaxxing 新梗引爆",
-          "color": "#c084fc"
-        }
+      "title": "没有新功能，只有重置！",
+      "inverted": false,
+      "category": "CODEX DAY 6",
+      "highlightWords": [
+        "没有新功能",
+        "重置"
       ]
     },
     {
       "id": "scene_02",
-      "type": "CinematicHero",
-      "startFrame": 508,
-      "durationInFrames": 540,
-      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_02.wav",
-      "text": "但它绝不是另一个陪你聊天的机器人。过去的大模型是你问一句它答一段，而 Muse 是一个拥有自主执行权限的后台代理人。给它一句话，它自己在后台去开浏览器、比价订票、采购物品、甚至回复复杂的商务邮件。",
-      "rawText": "但 他 绝 不 是 另 一 个 陪 你 聊 天 的 机 器 人 我 觉 得 大 模 型 是 你 问 一 句 他 答 一 段 而 muse 是 一 个 拥 有 自 主 执 行 权 限 的 后 台 代 理 人 给 他 一 句 话 他 自 己 在 后 台 去 开 浏 览 器 比 价 订 票 采 购 物 品 甚 至 回 复 复 杂 的 商 务 邮 件",
+      "type": "TweetEmbed",
+      "startFrame": 54,
+      "durationInFrames": 91,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_02.wav",
+      "text": "Tibo 发推表示，第六天只做 Reset。",
+      "rawText": "七 比 欧 发 崔 表 示 第 六 天 只 做 reset",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "但它绝不是另一个陪你聊天的机器人",
-          "startFrame": 6,
-          "endFrame": 93,
-          "globalStartFrame": 514,
-          "globalEndFrame": 601,
-          "startMs": 190,
-          "endMs": 3090
+          "text": "Tibo 发推表示",
+          "startFrame": 4,
+          "endFrame": 48,
+          "globalStartFrame": 58,
+          "globalEndFrame": 102,
+          "startMs": 130,
+          "endMs": 1610
         },
         {
-          "text": "过去的大模型是你问一句它答一段",
-          "startFrame": 100,
-          "endFrame": 186,
-          "globalStartFrame": 608,
-          "globalEndFrame": 694,
-          "startMs": 3330,
-          "endMs": 6190
-        },
-        {
-          "text": "而 Muse 是一个拥有自主执行权限的后台代理人",
-          "startFrame": 192,
-          "endFrame": 318,
-          "globalStartFrame": 700,
-          "globalEndFrame": 826,
-          "startMs": 6390,
-          "endMs": 10610
-        },
-        {
-          "text": "给它一句话",
-          "startFrame": 327,
-          "endFrame": 349,
-          "globalStartFrame": 835,
-          "globalEndFrame": 857,
-          "startMs": 10890,
-          "endMs": 11630
-        },
-        {
-          "text": "它自己在后台去开浏览器",
-          "startFrame": 356,
-          "endFrame": 413,
-          "globalStartFrame": 864,
-          "globalEndFrame": 921,
-          "startMs": 11870,
-          "endMs": 13770
-        },
-        {
-          "text": "比价订票",
-          "startFrame": 422,
-          "endFrame": 449,
-          "globalStartFrame": 930,
-          "globalEndFrame": 957,
-          "startMs": 14050,
-          "endMs": 14970
-        },
-        {
-          "text": "采购物品",
-          "startFrame": 450,
-          "endFrame": 469,
-          "globalStartFrame": 958,
-          "globalEndFrame": 977,
-          "startMs": 14990,
-          "endMs": 15630
-        },
-        {
-          "text": "甚至回复复杂的商务邮件",
-          "startFrame": 480,
-          "endFrame": 537,
-          "globalStartFrame": 988,
-          "globalEndFrame": 1045,
-          "startMs": 15990,
-          "endMs": 17905
+          "text": "第六天只做 Reset",
+          "startFrame": 48,
+          "endFrame": 84,
+          "globalStartFrame": 102,
+          "globalEndFrame": 138,
+          "startMs": 1610,
+          "endMs": 2785
         }
       ],
-      "title": "终结聊天机器人：从被动问答到主动接管",
-      "badge": "PARADIGM SHIFT · 范式跃迁",
-      "cards": [
-        {
-          "title": "被动问答时代终结",
-          "desc": "传统 Chatbot 只能在对话框里干瞪眼，输出文字等待人类手动复制操作",
-          "tag": "PASSIVE CHAT"
+      "title": "Tibo 官方推文确认第 6 天重置",
+      "tweet": {
+        "authorName": "Tibo",
+        "authorHandle": "@tibo_maker",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "14h",
+        "content": "Day 6: Reset\n\nNo new features today, just resetting quotas for everyone.",
+        "highlightWords": [
+          "Reset",
+          "No new features"
+        ],
+        "metrics": {
+          "replies": "128",
+          "retweets": "450",
+          "likes": "3.4K",
+          "views": "150K"
         },
-        {
-          "title": "主动代理人跃迁",
-          "desc": "自主拆解多步真实任务，无头浏览器后台自主冲浪执行，无需人类干预",
-          "tag": "AUTONOMOUS AGENT"
-        },
-        {
-          "title": "真实世界任务履约",
-          "desc": "直接接管订票、支付结账、日程编排与跨应用协同，完成闭环交付",
-          "tag": "REAL WORLD ACTION"
-        }
-      ],
-      "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse_apple/scene_02.jpg",
-      "cameraMotion": "pan-right",
-      "pill": "🤖 主动代理人自主执行",
-      "highlights": [
-        {
-          "label": "执行模式",
-          "value": "无头浏览器后台冲浪",
-          "color": "#38bdf8"
-        },
-        {
-          "label": "核心能力",
-          "value": "比价 / 采购 / 邮件接管",
-          "color": "#10b981"
-        },
-        {
-          "label": "对话模式",
-          "value": "被动聊天时代终结",
-          "color": "#f43f5e"
-        }
-      ]
+        "subtitle": "官方确认：第六天无新功能发布，仅执行全局重置"
+      }
     },
     {
       "id": "scene_03",
-      "type": "CinematicHero",
-      "startFrame": 1048,
-      "durationInFrames": 591,
-      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_03.wav",
-      "text": "在底层架构上，它没有裸跑在大模型上，而是把每一个任务塞进独立的 Muse Secure VM 虚拟机沙箱。顶层是代号牛油果的 Muse Spark 推理引擎，底层则是隔离运行的浏览器环境与会话总线，防止恶意脚本注入。",
-      "rawText": "在 底 层 架 构 上 它 没 有 裸 跑 在 大 模 型 上 而 是 把 每 一 个 任 务 塞 进 独 立 的 milsecure v 呃 m 就 是 呃 虚 拟 机 商 箱 顶 层 是 代 号 牛 油 果 的 milal spark 推 理 引 擎 底 层 则 是 隔 离 运 行 的 浏 览 器 环 境 与 绘 画 总 线 防 止 恶 意 脚 本 注 入",
+      "type": "BinaryBento",
+      "startFrame": 145,
+      "durationInFrames": 113,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_03.wav",
+      "text": "二选一规则：要么直接刷新额度，要么给重置卡。",
+      "rawText": "二 选 一 规 则 要 么 直 接 刷 新 额 度 要 么 给 重 置 卡",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "在底层架构上",
-          "startFrame": 6,
-          "endFrame": 50,
-          "globalStartFrame": 1054,
-          "globalEndFrame": 1098,
-          "startMs": 190,
-          "endMs": 1670
+          "text": "二选一规则：要么直接刷新额度",
+          "startFrame": 2,
+          "endFrame": 66,
+          "globalStartFrame": 147,
+          "globalEndFrame": 211,
+          "startMs": 70,
+          "endMs": 2210
         },
         {
-          "text": "它没有裸跑在大模型上",
-          "startFrame": 50,
-          "endFrame": 105,
-          "globalStartFrame": 1098,
-          "globalEndFrame": 1153,
-          "startMs": 1670,
-          "endMs": 3510
-        },
-        {
-          "text": "而是把每一个任务塞进独立的 Muse Secure VM 虚拟机沙箱",
-          "startFrame": 108,
-          "endFrame": 292,
-          "globalStartFrame": 1156,
-          "globalEndFrame": 1340,
-          "startMs": 3590,
-          "endMs": 9750
-        },
-        {
-          "text": "顶层是代号牛油果的 Muse Spark 推理引擎",
-          "startFrame": 292,
-          "endFrame": 393,
-          "globalStartFrame": 1340,
-          "globalEndFrame": 1441,
-          "startMs": 9750,
-          "endMs": 13090
-        },
-        {
-          "text": "底层则是隔离运行的浏览器环境与会话总线",
-          "startFrame": 393,
-          "endFrame": 502,
-          "globalStartFrame": 1441,
-          "globalEndFrame": 1550,
-          "startMs": 13090,
-          "endMs": 16730
-        },
-        {
-          "text": "防止恶意脚本注入",
-          "startFrame": 502,
-          "endFrame": 585,
-          "globalStartFrame": 1550,
-          "globalEndFrame": 1633,
-          "startMs": 16730,
-          "endMs": 19495
+          "text": "要么给重置卡",
+          "startFrame": 67,
+          "endFrame": 101,
+          "globalStartFrame": 212,
+          "globalEndFrame": 246,
+          "startMs": 2230,
+          "endMs": 3355
         }
       ],
-      "title": "核心架构深潜：Secure VM 沙箱与 Avocado 推理中枢",
-      "badge": "SYSTEM ARCHITECTURE · 系统内幕",
-      "topologyNodes": [
-        {
-          "id": "goal",
-          "label": "User Goal",
-          "sublabel": "自然语言意图输入",
-          "icon": "💬",
-          "status": "INPUT",
-          "statusColor": "#38bdf8",
-          "x": 10,
-          "y": 50
+      "title": "配额重置机制与规则",
+      "binaryBento": {
+        "title": "配额重置机制",
+        "subtitle": "二选一规则",
+        "dividerText": "或",
+        "leftCard": {
+          "title": "消耗每日配额",
+          "desc": "等待每日零点自动刷新",
+          "tag": "方案 A",
+          "blocksTotal": 5,
+          "blocksActive": 3
         },
-        {
-          "id": "spark",
-          "label": "Muse Spark",
-          "sublabel": "Avocado 推理中枢",
-          "icon": "🧠",
-          "status": "ORCHESTRATE",
-          "statusColor": "#818cf8",
-          "x": 35,
-          "y": 30
-        },
-        {
-          "id": "vm",
-          "label": "Secure VM",
-          "sublabel": "隔离虚拟机安全沙箱",
-          "icon": "🛡️",
-          "status": "SANDBOXED",
-          "statusColor": "#10b981",
-          "x": 65,
-          "y": 50
-        },
-        {
-          "id": "headless",
-          "label": "Headless Web",
-          "sublabel": "无头浏览器跨站执行",
-          "icon": "🌐",
-          "status": "EXECUTING",
-          "statusColor": "#f59e0b",
-          "x": 90,
-          "y": 30
-        },
-        {
-          "id": "bus",
-          "label": "Encrypted Bus",
-          "sublabel": "端到端加密状态同步",
-          "icon": "💾",
-          "status": "COMMITTED",
-          "statusColor": "#a855f7",
-          "x": 65,
-          "y": 75
+        "rightCard": {
+          "title": "使用月度重置卡",
+          "desc": "即时恢复全部对话算力",
+          "pill": "重置卡",
+          "tag": "方案 B"
         }
-      ],
-      "topologyLinks": [
-        {
-          "from": "goal",
-          "to": "spark",
-          "label": "意图解析"
-        },
-        {
-          "from": "spark",
-          "to": "vm",
-          "label": "安全派发"
-        },
-        {
-          "from": "vm",
-          "to": "headless",
-          "label": "外部交互"
-        },
-        {
-          "from": "vm",
-          "to": "bus",
-          "label": "加密归档"
-        }
-      ],
-      "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse_apple/scene_03.jpg",
-      "cameraMotion": "pan-left",
-      "pill": "🛡️ SECURE VM 沙箱隔离",
-      "highlights": [
-        {
-          "label": "安全边界",
-          "value": "独立微型虚拟机隔离",
-          "color": "#10b981"
-        },
-        {
-          "label": "推理大脑",
-          "value": "Avocado 推理中枢",
-          "color": "#a855f7"
-        },
-        {
-          "label": "通信总线",
-          "value": "端到端加密外部通信",
-          "color": "#38bdf8"
-        }
-      ]
+      }
     },
     {
       "id": "scene_04",
-      "type": "CinematicHero",
-      "startFrame": 1639,
-      "durationInFrames": 611,
-      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_04.wav",
-      "text": "更有意思的是，Meta 刚刚在 GitHub 上开源了硬件开发包。用一块几十块钱的 ESP32 或者树莓派，极客们就能手搓一个专属的物理桌面按键。拍一下按钮，就能唤醒 Muse 直接接管你桌面的智能设备与自动化流程。",
-      "rawText": "更 有 意 思 的 是 meta 刚 刚 在 githup 上 开 源 了 硬 件 开 发 包 用 一 块 几 十 块 钱 的 e 比 如 说 IS 比 如 说 p 或 者 树 莓 派 极 客 们 就 能 手 搓 一 个 专 属 的 物 理 桌 面 按 键 拍 一 下 按 钮 就 能 唤 醒 muse 直 接 接 管 你 桌 面 的 智 能 设 备 与 自 动 化 流 程",
+      "type": "MinimalHeadline",
+      "startFrame": 258,
+      "durationInFrames": 104,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_04.wav",
+      "text": "具体怎么重置帖子没细说，等落地才知道！",
+      "rawText": "具 体 怎 么 重 置 帖 子 没 细 说 等 落 地 才 知 道",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "更有意思的是",
-          "startFrame": 4,
-          "endFrame": 29,
-          "globalStartFrame": 1643,
-          "globalEndFrame": 1668,
-          "startMs": 130,
-          "endMs": 970
+          "text": "具体怎么重置帖子没细说",
+          "startFrame": 5,
+          "endFrame": 59,
+          "globalStartFrame": 263,
+          "globalEndFrame": 317,
+          "startMs": 170,
+          "endMs": 1970
         },
         {
-          "text": "Meta 刚刚在 GitHub 上开源了硬件开发包",
-          "startFrame": 29,
-          "endFrame": 138,
-          "globalStartFrame": 1668,
-          "globalEndFrame": 1777,
-          "startMs": 970,
-          "endMs": 4610
-        },
-        {
-          "text": "用一块几十块钱的 ESP32 或者树莓派",
-          "startFrame": 152,
-          "endFrame": 285,
-          "globalStartFrame": 1791,
-          "globalEndFrame": 1924,
-          "startMs": 5070,
-          "endMs": 9490
-        },
-        {
-          "text": "极客们就能手搓一个专属的物理桌面按键",
-          "startFrame": 292,
-          "endFrame": 392,
-          "globalStartFrame": 1931,
-          "globalEndFrame": 2031,
-          "startMs": 9730,
-          "endMs": 13050
-        },
-        {
-          "text": "拍一下按钮",
-          "startFrame": 392,
-          "endFrame": 413,
-          "globalStartFrame": 2031,
-          "globalEndFrame": 2052,
-          "startMs": 13050,
-          "endMs": 13770
-        },
-        {
-          "text": "就能唤醒 Muse 直接接管你桌面的智能设备与自动化流程",
-          "startFrame": 428,
-          "endFrame": 603,
-          "globalStartFrame": 2067,
-          "globalEndFrame": 2242,
-          "startMs": 14270,
-          "endMs": 20095
+          "text": "等落地才知道",
+          "startFrame": 68,
+          "endFrame": 98,
+          "globalStartFrame": 326,
+          "globalEndFrame": 356,
+          "startMs": 2250,
+          "endMs": 3265
         }
       ],
-      "title": "极客生态狂欢：几十块钱的 ESP32 怎么手搓物理按键？",
-      "badge": "HACKER ECOSYSTEM · 极客生态",
-      "codeSnippet": "#include <WiFi.h>\n#include <MuseGadgetSDK.h>\n\nMusePuck puck(\"desk-smart-button-01\");\n\nvoid setup() {\n  puck.connectWiFi(\"Lab-Network-5G\", \"auth_token\");\n  puck.bindTrigger(PIN_BUTTON, \"MUSE_EXECUTE_ROUTINE\");\n}\n\nvoid loop() {\n  if (puck.isPressed()) {\n    puck.dispatchAction(\"整理未读邮件，并预订明早八点机场专车\");\n  }\n}",
-      "codeLang": "C++ / Arduino",
-      "codeTitle": "esp32_muse_gadget.cpp — ESP32 Physical Trigger",
-      "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse_apple/scene_04.jpg",
-      "cameraMotion": "push-in",
-      "pill": "⚡ ESP32 开源硬件生态",
-      "highlights": [
-        {
-          "label": "硬件成本",
-          "value": "< ¥30 手搓实体按键",
-          "color": "#10b981"
-        },
-        {
-          "label": "开源生态",
-          "value": "muse-gadget-sdk",
-          "color": "#38bdf8"
-        },
-        {
-          "label": "交互形态",
-          "value": "桌面物理轻拍触发",
-          "color": "#f59e0b"
-        }
+      "title": "具体怎么重置帖子没细说，等落地才知道！",
+      "inverted": true,
+      "category": "UNCONFIRMED",
+      "highlightWords": [
+        "没细说",
+        "等落地才知道"
       ]
     },
     {
       "id": "scene_05",
-      "type": "CinematicHero",
-      "startFrame": 2250,
-      "durationInFrames": 575,
-      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_05.wav",
-      "text": "但争议也随之爆发。外媒最新曝光，安全人员逆向了 Muse 的系统指令，发现它在后台为你认识的每一个亲戚、同事和伴侣，暗中建立详尽的人际关系画像档案。甚至多家企业内网已经拉响了未识别浏览器的安全警报。",
-      "rawText": "但 争 议 随 之 爆 发 外 媒 最 新 曝 光 安 全 人 员 逆 向 了 muse 的 这 个 系 统 指 令 发 现 他 在 后 台 为 你 认 识 的 每 一 个 亲 戚 同 事 和 伴 侣 暗 中 建 立 详 尽 的 人 际 关 系 画 像 档 案 甚 至 多 家 企 业 内 网 已 经 拉 响 了 未 识 别 浏 览 器 的 安 全 警 报",
+      "type": "MinimalHeadline",
+      "startFrame": 362,
+      "durationInFrames": 79,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_05.wav",
+      "text": "上一次全员重置还是在第二天。",
+      "rawText": "上 一 次 全 员 重 置 还 是 在 第 二 天",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "但争议也随之爆发",
-          "startFrame": 5,
-          "endFrame": 64,
-          "globalStartFrame": 2255,
-          "globalEndFrame": 2314,
-          "startMs": 170,
-          "endMs": 2130
-        },
-        {
-          "text": "外媒最新曝光",
-          "startFrame": 64,
-          "endFrame": 91,
-          "globalStartFrame": 2314,
-          "globalEndFrame": 2341,
-          "startMs": 2130,
-          "endMs": 3030
-        },
-        {
-          "text": "安全人员逆向了 Muse 的系统指令",
-          "startFrame": 91,
-          "endFrame": 166,
-          "globalStartFrame": 2341,
-          "globalEndFrame": 2416,
-          "startMs": 3030,
-          "endMs": 5530
-        },
-        {
-          "text": "发现它在后台为你认识的每一个亲戚",
-          "startFrame": 166,
-          "endFrame": 263,
-          "globalStartFrame": 2416,
-          "globalEndFrame": 2513,
-          "startMs": 5530,
-          "endMs": 8770
-        },
-        {
-          "text": "同事和伴侣",
-          "startFrame": 263,
-          "endFrame": 309,
-          "globalStartFrame": 2513,
-          "globalEndFrame": 2559,
-          "startMs": 8770,
-          "endMs": 10310
-        },
-        {
-          "text": "暗中建立详尽的人际关系画像档案",
-          "startFrame": 309,
-          "endFrame": 412,
-          "globalStartFrame": 2559,
-          "globalEndFrame": 2662,
-          "startMs": 10310,
-          "endMs": 13730
-        },
-        {
-          "text": "甚至多家企业内网已经拉响了未识别浏览器的安全警报",
-          "startFrame": 412,
-          "endFrame": 570,
-          "globalStartFrame": 2662,
-          "globalEndFrame": 2820,
-          "startMs": 13730,
-          "endMs": 18985
+          "text": "上一次全员重置还是在第二天",
+          "startFrame": 8,
+          "endFrame": 73,
+          "globalStartFrame": 370,
+          "globalEndFrame": 435,
+          "startMs": 250,
+          "endMs": 2425
         }
       ],
-      "title": "争议风暴前瞻：系统指令被逆向与人际画像档案",
-      "badge": "CONTROVERSY & PRIVACY · 隐忧与风暴",
-      "cards": [
-        {
-          "title": "深度人际画像档案 (People Pages)",
-          "desc": "自动深度嗅探通讯录与会话，为家人同事暗中生成喜好、偏好与社交权重画像",
-          "tag": "DOSSIER RISK"
-        },
-        {
-          "title": "企业内网流量警报",
-          "desc": "以未识别浏览器形态在企业内网悄无声息穿透，多家跨国安全团队紧急封锁阻断",
-          "tag": "NETWORK ALERT"
-        },
-        {
-          "title": "数字隐私终极大博弈",
-          "desc": "极致便利与全景式监视的零和博弈，这究竟是人类外挂还是数字全景敞视监狱？",
-          "tag": "PRIVACY DILEMMA"
-        }
-      ],
-      "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse_apple/scene_05.jpg",
-      "cameraMotion": "pull-out",
-      "pill": "🚨 隐私争议与系统逆向",
-      "highlights": [
-        {
-          "label": "人际画像档案",
-          "value": "People Pages 暗中建档",
-          "color": "#f43f5e"
-        },
-        {
-          "label": "底层指令",
-          "value": "Prompt 已被逆向公开",
-          "color": "#fb923c"
-        },
-        {
-          "label": "企业内网",
-          "value": "拉响高危隐私合规红灯",
-          "color": "#e11d48"
-        }
+      "title": "上一次全员重置还是在第二天。",
+      "inverted": false,
+      "category": "TIMELINE",
+      "highlightWords": [
+        "第二天",
+        "全员重置"
       ]
     },
     {
       "id": "scene_06",
-      "type": "CinematicHero",
-      "startFrame": 2825,
-      "durationInFrames": 482,
-      "audioPath": "projects/meta_muse_agent_deepdive/audio/scene_06.wav",
-      "text": "从被动生成文字，到主动接管现实。无论你喜不喜欢，2026 年都已经正式吹响了个人代理人时代的号角。这到底是解放双手的人类外挂，还是无死角的监控网络？答案或许就在每一个人的选择里。",
-      "rawText": "从 被 动 生 成 文 字 到 主 动 接 管 现 实 无 论 你 喜 不 喜 欢 年 都 已 经 正 式 吹 响 了 个 人 代 理 人 时 代 的 号 角 这 到 底 是 解 放 双 手 的 人 类 外 挂 还 是 无 死 角 的 监 控 网 络 答 案 或 许 就 在 每 一 个 人 的 选 择 里",
+      "type": "TweetEmbed",
+      "startFrame": 441,
+      "durationInFrames": 103,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_06.wav",
+      "text": "前一天 Tibo 就发推说：一眨眼都周六了。",
+      "rawText": "前 一 天 tiep 就 发 推 说 一 眨 眼 都 周 六 了",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "从被动生成文字",
-          "startFrame": 4,
-          "endFrame": 46,
-          "globalStartFrame": 2829,
-          "globalEndFrame": 2871,
-          "startMs": 150,
-          "endMs": 1530
-        },
-        {
-          "text": "到主动接管现实",
-          "startFrame": 46,
-          "endFrame": 82,
-          "globalStartFrame": 2871,
-          "globalEndFrame": 2907,
-          "startMs": 1530,
-          "endMs": 2730
-        },
-        {
-          "text": "无论你喜不喜欢",
-          "startFrame": 93,
-          "endFrame": 119,
-          "globalStartFrame": 2918,
-          "globalEndFrame": 2944,
-          "startMs": 3090,
-          "endMs": 3970
-        },
-        {
-          "text": "2026 年都已经正式吹响了个人代理人时代的号角",
-          "startFrame": 119,
-          "endFrame": 280,
-          "globalStartFrame": 2944,
-          "globalEndFrame": 3105,
-          "startMs": 3970,
-          "endMs": 9350
-        },
-        {
-          "text": "这到底是解放双手的人类外挂",
-          "startFrame": 280,
-          "endFrame": 347,
-          "globalStartFrame": 3105,
-          "globalEndFrame": 3172,
-          "startMs": 9350,
-          "endMs": 11570
-        },
-        {
-          "text": "还是无死角的监控网络",
-          "startFrame": 347,
-          "endFrame": 435,
-          "globalStartFrame": 3172,
-          "globalEndFrame": 3260,
-          "startMs": 11570,
-          "endMs": 14490
-        },
-        {
-          "text": "答案或许就在每一个人的选择里",
-          "startFrame": 435,
-          "endFrame": 477,
-          "globalStartFrame": 3260,
-          "globalEndFrame": 3302,
-          "startMs": 14490,
-          "endMs": 15895
+          "text": "前一天 Tibo 就发推说：一眨眼都周六了",
+          "startFrame": 5,
+          "endFrame": 97,
+          "globalStartFrame": 446,
+          "globalEndFrame": 538,
+          "startMs": 170,
+          "endMs": 3235
         }
       ],
-      "title": "终局启示：当 AI 开始替你生活，你的边界在哪里？",
-      "badge": "FINAL REFLECTION · 终局启示",
-      "cards": [
+      "title": "前一天 Tibo 预热发推",
+      "tweet": {
+        "authorName": "Tibo",
+        "authorHandle": "@tibo_maker",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "1d",
+        "content": "Can't believe it's already Saturday. Time flies when building in public.",
+        "highlightWords": [
+          "Saturday",
+          "Time flies"
+        ],
+        "metrics": {
+          "replies": "86",
+          "retweets": "190",
+          "likes": "1.8K",
+          "views": "82K"
+        },
+        "subtitle": "此前周五晚间的微妙预热"
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "MinimalHeadline",
+      "startFrame": 544,
+      "durationInFrames": 98,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_07.wav",
+      "text": "合着功能没影子，这是又要重置啊！",
+      "rawText": "合 着 这 个 功 能 没 影 子 这 是 又 要 重 置 啊",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
         {
-          "title": "生成式 AI 范式质变",
-          "desc": "从写诗画画的玩具对话框，全面进化为替人类接管现实任务的行动执行引擎",
-          "tag": "NEXT ERA"
+          "text": "合着功能没影子",
+          "startFrame": 6,
+          "endFrame": 34,
+          "globalStartFrame": 550,
+          "globalEndFrame": 578,
+          "startMs": 210,
+          "endMs": 1150
         },
         {
-          "title": "人机交互全面重塑",
-          "desc": "传统应用界面与网页退居幕后，个人 Agent 成为物理世界与网络世界的超级入口",
-          "tag": "AGENT AS OS"
-        },
-        {
-          "title": "保持敬畏与清醒",
-          "desc": "在享受极致自动化时代红利的同时，守护好属于人类自己最后的数据主权底线",
-          "tag": "HUMAN AGENCY"
+          "text": "这是又要重置啊",
+          "startFrame": 34,
+          "endFrame": 95,
+          "globalStartFrame": 578,
+          "globalEndFrame": 639,
+          "startMs": 1150,
+          "endMs": 3175
         }
       ],
-      "theme": "cinema-editorial",
-      "heroImage": "footage/meta_muse_apple/scene_06.jpg",
-      "cameraMotion": "push-in",
-      "pill": "🌅 2026 个人 Agent 时代已至",
-      "highlights": [
+      "title": "合着功能没影子，这是又要重置啊！",
+      "inverted": false,
+      "category": "INSIGHT",
+      "highlightWords": [
+        "没影子",
+        "又要重置"
+      ]
+    },
+    {
+      "id": "scene_08",
+      "type": "MinimalHeadline",
+      "startFrame": 642,
+      "durationInFrames": 112,
+      "audioPath": "projects/codex_day6_reset_demo/audio/scene_08.wav",
+      "text": "第七天到底会有什么新功能？明天接着看！",
+      "rawText": "第 七 天 到 底 会 有 什 么 新 功 能 明 天 接 着 看",
+      "emotion": "<|NEUTRAL|>",
+      "words": [
         {
-          "label": "范式转移",
-          "value": "从生成文字到替人类行动",
-          "color": "#38bdf8"
+          "text": "第七天到底会有什么新功能",
+          "startFrame": 32,
+          "endFrame": 90,
+          "globalStartFrame": 674,
+          "globalEndFrame": 732,
+          "startMs": 1050,
+          "endMs": 2990
         },
         {
-          "label": "核心命题",
-          "value": "便利与隐私的终极边界",
-          "color": "#a855f7"
-        },
-        {
-          "label": "未来浪潮",
-          "value": "2026 个人 Agent 黄金纪元",
-          "color": "#10b981"
+          "text": "明天接着看",
+          "startFrame": 90,
+          "endFrame": 112,
+          "globalStartFrame": 732,
+          "globalEndFrame": 754,
+          "startMs": 3010,
+          "endMs": 3720
         }
+      ],
+      "title": "第七天到底会有什么新功能？明天接着看！",
+      "inverted": true,
+      "category": "STAY TUNED",
+      "highlightWords": [
+        "第七天",
+        "明天接着看"
       ]
     }
   ],
   "bgmVolume": 0.035,
   "bgmDuckRatio": 0.2,
-  "voiceVolume": 1.0
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": true,
+  "bgmPath": "audio/bgm_cyber_ambient.wav"
 }
