@@ -53,7 +53,7 @@ public/projects/
 bin/
 
 # HyperFrames project audio outputs
-projects_hf/*/assets/audio/*.wav
+projects_hf/*/assets/audio/*
 !projects_hf/*/assets/audio/.gitkeep
 
 

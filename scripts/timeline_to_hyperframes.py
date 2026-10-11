@@ -29,20 +29,45 @@ def escape_text(text: str) -> str:
     return html_lib.escape(text or "")
 
 
+def render_text_with_highlights(raw_text: str, highlight_words: List[str], capsule_class: str) -> str:
+    """
+    Safely highlights occurrences of highlight_words in raw_text without attribute corruption
+    or HTML escaping mismatches.
+    """
+    if not raw_text:
+        return ""
+    if not highlight_words:
+        return escape_text(raw_text)
+
+    # Filter non-empty words that exist in raw_text, sorted descending by length
+    valid_hw = [hw for hw in highlight_words if hw and hw in raw_text]
+    if not valid_hw:
+        return escape_text(raw_text)
+    valid_hw.sort(key=len, reverse=True)
+
+    import re
+    pattern = "(" + "|".join(re.escape(w) for w in valid_hw) + ")"
+    tokens = re.split(pattern, raw_text)
+
+    rendered_parts = []
+    for token in tokens:
+        if not token:
+            continue
+        if token in valid_hw:
+            rendered_parts.append(f'<span class="{capsule_class}">{escape_text(token)}</span>')
+        else:
+            rendered_parts.append(escape_text(token))
+
+    return "".join(rendered_parts)
+
+
 def render_minimal_headline(scene: Dict[str, Any], scene_id: str) -> str:
     title = scene.get("title") or scene.get("text", "")
     category = scene.get("category", "TECH NEWS")
     inverted = scene.get("inverted", False)
     highlight_words = scene.get("highlightWords", [])
 
-    # Highlight keyword capsules
-    rendered_title = escape_text(title)
-    if highlight_words:
-        for hw in highlight_words:
-            if hw in rendered_title:
-                highlight_span = f'<span class="headline-capsule">{escape_text(hw)}</span>'
-                rendered_title = rendered_title.replace(escape_text(hw), highlight_span)
-
+    rendered_title = render_text_with_highlights(title, highlight_words, "headline-capsule")
     bg_class = "inverted-card" if inverted else "standard-card"
 
     return f"""
@@ -58,22 +83,20 @@ def render_tweet_embed(scene: Dict[str, Any], scene_id: str) -> str:
     author_name = tweet.get("authorName", "Tech Insider")
     author_handle = tweet.get("authorHandle", "@tech_insider")
     content = tweet.get("content") or scene.get("text", "")
-    metrics = tweet.get("metrics") or {"replies": "842", "reposts": "2.4k", "likes": "12.8k"}
+    metrics = tweet.get("metrics") or {}
+    replies_val = metrics.get("replies", "1.2k")
+    reposts_val = metrics.get("reposts", "3.4k")
+    likes_val = metrics.get("likes", "18.5k")
     highlight_words = scene.get("highlightWords", [])
 
-    rendered_content = escape_text(content)
-    if highlight_words:
-        for hw in highlight_words:
-            if hw in rendered_content:
-                highlight_span = f'<span class="tweet-capsule">{escape_text(hw)}</span>'
-                rendered_content = rendered_content.replace(escape_text(hw), highlight_span)
+    rendered_content = render_text_with_highlights(content, highlight_words, "tweet-capsule")
 
     return f"""
     <div class="content-card tweet-card">
       <div class="tweet-header">
         <div class="tweet-author-info">
           <div class="tweet-avatar">
-            <span>{author_name[0] if author_name else "X"}</span>
+            <span>{escape_text(author_name[0]) if author_name else "X"}</span>
           </div>
           <div class="tweet-names">
             <div class="tweet-name-row">
@@ -96,16 +119,16 @@ def render_tweet_embed(scene: Dict[str, Any], scene_id: str) -> str:
 
       <div class="tweet-footer">
         <div class="tweet-stat">
-          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#71717a" d="M14.046 2.242l-4.048 4.048H3v10h4.998l4.048 4.048V2.242zM19 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-          <span>{escape_text(str(metrics.get("replies", "1.2k")))}</span>
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#71717a" d="M12 2C6.48 2 2 6.48 2 12c0 1.82.49 3.53 1.35 5L2 22l5.22-1.31C8.61 21.43 10.26 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.57 0-3.04-.45-4.29-1.22l-.31-.19-3.1.78.8-3.03-.2-.33C4.38 15.11 4 13.61 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/></svg>
+          <span>{escape_text(str(replies_val))}</span>
         </div>
         <div class="tweet-stat">
           <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#71717a" d="M7 6h10v3l4-4-4-4v3H5v6h2V6zm10 12H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
-          <span>{escape_text(str(metrics.get("reposts", "3.4k")))}</span>
+          <span>{escape_text(str(reposts_val))}</span>
         </div>
         <div class="tweet-stat">
           <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#71717a" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-          <span>{escape_text(str(metrics.get("likes", "18.5k")))}</span>
+          <span>{escape_text(str(likes_val))}</span>
         </div>
       </div>
     </div>
@@ -215,10 +238,13 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
             f'tl.fromTo("#{scene_id} .content-card", {{ opacity: 0, y: 40, scale: 0.94 }}, {{ opacity: 1, y: 0, scale: 1.0, duration: 0.45, ease: "power2.out" }}, {format_sec(start_sec)});'
         )
         # Subtle exit transition right before end of clip
-        exit_time = max(start_sec, start_sec + duration_sec - 0.15)
-        gsap_timelines.append(
-            f'tl.to("#{scene_id} .content-card", {{ opacity: 0, scale: 0.98, duration: 0.15, ease: "power2.in" }}, {format_sec(exit_time)});'
-        )
+        entrance_duration = 0.45
+        exit_duration = 0.15
+        exit_time = start_sec + duration_sec - exit_duration
+        if exit_time >= start_sec + entrance_duration:
+            gsap_timelines.append(
+                f'tl.to("#{scene_id} .content-card, #{scene_id} .scene-subtitles", {{ opacity: 0, scale: 0.98, duration: {exit_duration}, ease: "power2.in" }}, {format_sec(exit_time)});'
+            )
 
         # Word-level karaoke highlights
         for w_idx, w in enumerate(words):

@@ -124,8 +124,80 @@ class TestTimelineToHyperframes(unittest.TestCase):
         self.assertIn("Tibo", html)
         self.assertIn("@tibo_maker", html)
 
-        # Subtitles safe margin
+        # Subtitles safe margin and exit transition
         self.assertIn("bottom: 220px", html)
+        self.assertIn('.scene-subtitles", { opacity: 0', html)
+
+    def test_binary_bento_and_inverted_rendering(self):
+        bento_timeline = {
+            "fps": 30,
+            "totalDurationInFrames": 90,
+            "scenes": [
+                {
+                    "id": "scene_bento",
+                    "type": "BinaryBento",
+                    "startFrame": 0,
+                    "durationInFrames": 45,
+                    "binaryBento": {
+                        "leftCard": {"title": "方案 A", "desc": "旧版架构", "tag": "V1"},
+                        "rightCard": {"title": "方案 B", "desc": "极简重构", "tag": "V2"},
+                        "blocksActive": 3,
+                        "blocksTotal": 6,
+                    },
+                },
+                {
+                    "id": "scene_inv",
+                    "type": "MinimalHeadline",
+                    "startFrame": 45,
+                    "durationInFrames": 45,
+                    "title": "震撼反相！",
+                    "inverted": True,
+                    "category": "BREAKING",
+                },
+            ],
+        }
+        html = render_hyperframes_html(bento_timeline, resolution="portrait")
+        self.assertIn("bento-card-wrapper", html)
+        self.assertIn("方案 A", html)
+        self.assertIn("方案 B", html)
+        self.assertIn("bento-vs-pill", html)
+        self.assertIn("progress-block active", html)
+        self.assertIn("inverted-card", html)
+        self.assertIn("BREAKING", html)
+
+    def test_special_characters_and_safe_highlights(self):
+        special_timeline = {
+            "fps": 30,
+            "totalDurationInFrames": 60,
+            "scenes": [
+                {
+                    "id": "scene_special",
+                    "type": "MinimalHeadline",
+                    "startFrame": 0,
+                    "durationInFrames": 60,
+                    "title": "OpenAI & Apple: <Next Gen> Vision!",
+                    "highlightWords": ["OpenAI & Apple", "<Next Gen>"],
+                },
+                {
+                    "id": "scene_tweet_special",
+                    "type": "TweetEmbed",
+                    "startFrame": 0,
+                    "durationInFrames": 60,
+                    "tweet": {
+                        "authorName": "<Dev & Hacker>",
+                        "authorHandle": "@dev_hacker",
+                        "content": "Testing \"quotes\" & <tags>",
+                        "metrics": {"replies": "100", "reposts": "200", "likes": "300"},
+                    },
+                },
+            ],
+        }
+        html = render_hyperframes_html(special_timeline, resolution="portrait")
+        # Ensure raw < and > are never injected into unescaped DOM text
+        self.assertNotIn("<span><Dev", html)
+        self.assertIn("&lt;Dev &amp; Hacker&gt;", html)
+        self.assertTrue("&lt;Next Gen&gt;" in html or "&amp;lt;Next Gen&amp;gt;" in html)
+        self.assertIn("headline-capsule", html)
 
     def test_convert_timeline_to_hyperframes_files(self):
         res = convert_timeline_to_hyperframes(
