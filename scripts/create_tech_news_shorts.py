@@ -103,7 +103,8 @@ def build_codex_day6_preset(
     project: str = "codex_day6_reset_demo",
     theme: str = "linear-graphite",
     voice: str = "4444",
-    engine: str = "chattts"
+    engine: str = "chattts",
+    fps: int = 30
 ) -> Dict[str, Any]:
     """
     构建精准 1:1 像素级复刻参考视频（38 秒）的 Codex Day 6 8 幕高保真剧本契约
@@ -119,7 +120,7 @@ def build_codex_day6_preset(
             "highlightWords": ["没有新功能", "重置"],
             "inverted": False,
             "estimatedDuration": 3.5,
-            "estimatedFrames": 105
+            "estimatedFrames": int(round(3.5 * fps))
         },
         # Scene 2: TweetEmbed
         {
@@ -144,7 +145,7 @@ def build_codex_day6_preset(
                 "subtitle": "官方确认：第六天无新功能发布，仅执行全局重置"
             },
             "estimatedDuration": 4.5,
-            "estimatedFrames": 135
+            "estimatedFrames": int(round(4.5 * fps))
         },
         # Scene 3: BinaryBento
         {
@@ -171,7 +172,7 @@ def build_codex_day6_preset(
                 }
             },
             "estimatedDuration": 6.0,
-            "estimatedFrames": 180
+            "estimatedFrames": int(round(6.0 * fps))
         },
         # Scene 4: MinimalHeadline (inverted: true - 纯白底黑字反转)
         {
@@ -183,7 +184,7 @@ def build_codex_day6_preset(
             "highlightWords": ["没细说", "等落地才知道"],
             "inverted": True,
             "estimatedDuration": 4.5,
-            "estimatedFrames": 135
+            "estimatedFrames": int(round(4.5 * fps))
         },
         # Scene 5: MinimalHeadline (inverted: false)
         {
@@ -195,7 +196,7 @@ def build_codex_day6_preset(
             "highlightWords": ["第二天", "全员重置"],
             "inverted": False,
             "estimatedDuration": 4.0,
-            "estimatedFrames": 120
+            "estimatedFrames": int(round(4.0 * fps))
         },
         # Scene 6: TweetEmbed
         {
@@ -220,7 +221,7 @@ def build_codex_day6_preset(
                 "subtitle": "此前周五晚间的微妙预热"
             },
             "estimatedDuration": 4.5,
-            "estimatedFrames": 135
+            "estimatedFrames": int(round(4.5 * fps))
         },
         # Scene 7: MinimalHeadline (inverted: false)
         {
@@ -232,7 +233,7 @@ def build_codex_day6_preset(
             "highlightWords": ["没影子", "又要重置"],
             "inverted": False,
             "estimatedDuration": 4.5,
-            "estimatedFrames": 135
+            "estimatedFrames": int(round(4.5 * fps))
         },
         # Scene 8: MinimalHeadline (inverted: true - 纯白底黑字反转)
         {
@@ -244,11 +245,11 @@ def build_codex_day6_preset(
             "highlightWords": ["第七天", "明天接着看"],
             "inverted": True,
             "estimatedDuration": 5.5,
-            "estimatedFrames": 165
+            "estimatedFrames": int(round(5.5 * fps))
         }
     ]
 
-    total_frames = sum(s.get("estimatedFrames", 135) for s in scenes)
+    total_frames = sum(s.get("estimatedFrames", int(round(4.5 * fps))) for s in scenes)
 
     return {
         "project": project,
@@ -256,7 +257,7 @@ def build_codex_day6_preset(
         "theme": theme,
         "voice": voice,
         "engine": engine,
-        "fps": 30,
+        "fps": fps,
         "bgm": "bgm_cyber_ambient.wav",
         "bgmPath": "audio/bgm_cyber_ambient.wav",
         "bgmVolume": 0.035,
@@ -275,14 +276,15 @@ def generate_tech_news_script(
     theme: str = "linear-graphite",
     voice: str = "4444",
     engine: str = "chattts",
-    preset: Optional[str] = None
+    preset: Optional[str] = None,
+    fps: int = 30
 ) -> Dict[str, Any]:
     """
     根据主题或预设自动构建短视频剧本
     """
     if preset == "codex_day6":
         p_name = project or "codex_day6_reset_demo"
-        return build_codex_day6_preset(project=p_name, theme=theme, voice=voice, engine=engine)
+        return build_codex_day6_preset(project=p_name, theme=theme, voice=voice, engine=engine, fps=fps)
 
     project_slug = project or slugify(topic)
 
@@ -302,7 +304,7 @@ def generate_tech_news_script(
             "highlightWords": hl_words,
             "inverted": False,
             "estimatedDuration": estimate_duration_seconds(f"重磅消息！{topic}！"),
-            "estimatedFrames": estimate_duration_frames(f"重磅消息！{topic}！")
+            "estimatedFrames": estimate_duration_frames(f"重磅消息！{topic}！", fps=fps)
         },
         # 2. 官方推特实锤
         {
@@ -327,7 +329,7 @@ def generate_tech_news_script(
                 "subtitle": "官方权威发布，全网关注"
             },
             "estimatedDuration": estimate_duration_seconds("官方刚刚在推特发布了最新公告，引发全网热议。"),
-            "estimatedFrames": estimate_duration_frames("官方刚刚在推特发布了最新公告，引发全网热议。")
+            "estimatedFrames": estimate_duration_frames("官方刚刚在推特发布了最新公告，引发全网热议。", fps=fps)
         },
         # 3. 核心机制对比 (二选一 Bento)
         {
@@ -354,7 +356,7 @@ def generate_tech_news_script(
                 }
             },
             "estimatedDuration": estimate_duration_seconds("究竟是颠覆性创新，还是换汤不换药？我们对比了两种方案。"),
-            "estimatedFrames": estimate_duration_frames("究竟是颠覆性创新，还是换汤不换药？我们对比了两种方案。")
+            "estimatedFrames": estimate_duration_frames("究竟是颠覆性创新，还是换汤不换药？我们对比了两种方案。", fps=fps)
         },
         # 4. 深度洞察 (反转白底大字报)
         {
@@ -366,7 +368,7 @@ def generate_tech_news_script(
             "highlightWords": ["小步迭代", "新趋势"],
             "inverted": True,
             "estimatedDuration": estimate_duration_seconds("看似只是小步迭代，背后其实藏着大模型落地的新趋势！"),
-            "estimatedFrames": estimate_duration_frames("看似只是小步迭代，背后其实藏着大模型落地的新趋势！")
+            "estimatedFrames": estimate_duration_frames("看似只是小步迭代，背后其实藏着大模型落地的新趋势！", fps=fps)
         },
         # 5. 结尾互动与预告
         {
@@ -378,11 +380,11 @@ def generate_tech_news_script(
             "highlightWords": ["评论区聊聊", "明天接着看"],
             "inverted": False,
             "estimatedDuration": estimate_duration_seconds("你觉得这次更新能解决痛点吗？评论区聊聊，明天接着看！"),
-            "estimatedFrames": estimate_duration_frames("你觉得这次更新能解决痛点吗？评论区聊聊，明天接着看！")
+            "estimatedFrames": estimate_duration_frames("你觉得这次更新能解决痛点吗？评论区聊聊，明天接着看！", fps=fps)
         }
     ]
 
-    total_frames = sum(s.get("estimatedFrames", 120) for s in scenes)
+    total_frames = sum(s.get("estimatedFrames", int(round(4.0 * fps))) for s in scenes)
 
     return {
         "project": project_slug,
@@ -390,7 +392,7 @@ def generate_tech_news_script(
         "theme": theme,
         "voice": voice,
         "engine": engine,
-        "fps": 30,
+        "fps": fps,
         "bgm": "bgm_cyber_ambient.wav",
         "bgmPath": "audio/bgm_cyber_ambient.wav",
         "bgmVolume": 0.035,
@@ -443,8 +445,13 @@ def validate_script_schema(script_data: Dict[str, Any]) -> Tuple[List[str], List
             if not isinstance(bento, dict):
                 errors.append(f"分镜 [{scene_id}] 类型为 BinaryBento，但 binaryBento 属性不是字典！")
             else:
-                if not bento.get("leftCard") or not bento.get("rightCard"):
-                    errors.append(f"分镜 [{scene_id}] binaryBento 必须同时包含 leftCard 与 rightCard！")
+                left_card = bento.get("leftCard")
+                right_card = bento.get("rightCard")
+                if not isinstance(left_card, dict) or not isinstance(right_card, dict):
+                    errors.append(f"分镜 [{scene_id}] binaryBento 必须同时包含 leftCard 与 rightCard 对象！")
+                else:
+                    if not left_card.get("title") or not right_card.get("title"):
+                        errors.append(f"分镜 [{scene_id}] binaryBento 卡片缺少 title 字段！")
         elif s_type == "MinimalHeadline":
             if not scene.get("title") and not scene.get("text"):
                 errors.append(f"分镜 [{scene_id}] MinimalHeadline 缺少 title 或 text！")
@@ -561,7 +568,8 @@ def main():
         theme=args.theme,
         voice=args.voice,
         engine=args.engine,
-        preset=args.preset
+        preset=args.preset,
+        fps=args.fps
     )
 
     # 校验 Schema
@@ -579,7 +587,7 @@ def main():
     total_scenes = len(script_data.get("scenes", []))
     total_est_frames = script_data.get("totalDurationInFrames", 0)
 
-    print(f"✅ 剧本成功生成！分镜段落: {total_scenes} 幕 | 预估总帧数: {total_est_frames} 帧 (~{total_est_frames/30:.1f}s)")
+    print(f"✅ 剧本成功生成！分镜段落: {total_scenes} 幕 | 预估总帧数: {total_est_frames} 帧 (~{total_est_frames/args.fps:.1f}s)")
     print(f"💾 存储文件: {BColors.OKGREEN}{saved_path}{BColors.ENDC}\n")
 
 

@@ -191,7 +191,31 @@ def validate(timeline_path: str = None):
 
         # 视效组件契约深度审查 (Visual Component Schema Gate)
         scene_type = scene.get("type", "Default")
-        if scene_type in ["MetricComparison", "MetricChart"]:
+        if scene_type == "TweetEmbed" or scene.get("tweet"):
+            tweet = scene.get("tweet")
+            if not isinstance(tweet, dict):
+                errors.append(f"分镜 [{scene_id}] 声明为 TweetEmbed，但 tweet 不是合法字典对象！")
+            else:
+                for k in ["authorName", "authorHandle", "content"]:
+                    if not tweet.get(k):
+                        errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 '{k}'！")
+        elif scene_type == "BinaryBento" or scene.get("binaryBento"):
+            bento = scene.get("binaryBento")
+            if not isinstance(bento, dict):
+                errors.append(f"分镜 [{scene_id}] 声明为 BinaryBento，但 binaryBento 不是合法字典对象！")
+            else:
+                left_card = bento.get("leftCard")
+                right_card = bento.get("rightCard")
+                if not isinstance(left_card, dict) or not isinstance(right_card, dict):
+                    errors.append(f"分镜 [{scene_id}] binaryBento 必须同时包含 leftCard 与 rightCard 对象！")
+                else:
+                    if not left_card.get("title") or not right_card.get("title"):
+                        errors.append(f"分镜 [{scene_id}] binaryBento 卡片缺少 title 字段！")
+        elif scene_type == "MinimalHeadline":
+            title = scene.get("title") or (scene.get("words") and len(scene.get("words")) > 0)
+            if not title:
+                errors.append(f"分镜 [{scene_id}] MinimalHeadline 缺少 title 或字幕！")
+        elif scene_type in ["MetricComparison", "MetricChart"]:
             metrics = scene.get("metrics", [])
             if not metrics:
                 errors.append(f"分镜 [{scene_id}] 声明类型为 {scene_type}，但未提供 metrics 数据数组！")

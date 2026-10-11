@@ -44,6 +44,14 @@ class TestSlugify(unittest.TestCase):
         self.assertNotIn(" ", res)
         self.assertNotIn("-", res)
 
+        # Pure Chinese text slugification
+        pure_res = slugify("纯中文测试标题")
+        try:
+            import pypinyin
+            self.assertEqual(pure_res, "chun_zhong_wen_ce_shi_biao_ti")
+        except ImportError:
+            self.assertTrue(len(pure_res) > 0)
+
     def test_slugify_mixed_and_special_chars(self):
         res = slugify("AI 突破：DeepSeek 惊艳全网!! --- 2026")
         self.assertTrue(len(res) > 0)
@@ -106,6 +114,10 @@ class TestCliArgumentParsing(unittest.TestCase):
         self.assertEqual(args.output, "content/scripts/my_custom.json")
         self.assertEqual(args.preset, "codex_day6")
 
+    def test_cli_args_fps(self):
+        args = parse_args(["--topic", "Test FPS", "--fps", "60"])
+        self.assertEqual(args.fps, 60)
+
 
 class TestCodexDay6Preset(unittest.TestCase):
     """测试 Codex Day 6 参考示范样片内置预设的精准结构契约"""
@@ -129,6 +141,13 @@ class TestCodexDay6Preset(unittest.TestCase):
         self.assertEqual(self.script["bgmDuckRatio"], 0.20)
         self.assertEqual(self.script["voiceVolume"], 1.0)
         self.assertEqual(len(self.script["scenes"]), 8)
+
+    def test_preset_fps_configuration(self):
+        script_60 = build_codex_day6_preset(fps=60)
+        self.assertEqual(script_60["fps"], 60)
+        script_30 = build_codex_day6_preset(fps=30)
+        for s30, s60 in zip(script_30["scenes"], script_60["scenes"]):
+            self.assertEqual(s60["estimatedFrames"], s30["estimatedFrames"] * 2)
 
     def test_eight_scenes_exact_flow(self):
         scenes = self.script["scenes"]
@@ -241,6 +260,27 @@ class TestGenericGenerationAndSchema(unittest.TestCase):
         }
         errors2, warnings2 = validate_script_schema(invalid_scene_script)
         self.assertTrue(len(errors2) > 0)
+
+    def test_validate_binary_bento_missing_title(self):
+        invalid_bento_script = {
+            "project": "test_bento_err",
+            "theme": "linear-graphite",
+            "voice": "4444",
+            "engine": "chattts",
+            "scenes": [
+                {
+                    "id": "scene_01",
+                    "type": "BinaryBento",
+                    "text": "测试二选一",
+                    "binaryBento": {
+                        "leftCard": {"description": "card 1"},
+                        "rightCard": {"title": "Card 2"}
+                    }
+                }
+            ]
+        }
+        errors, warnings = validate_script_schema(invalid_bento_script)
+        self.assertTrue(any("title" in err for err in errors), f"Expected title error, got: {errors}")
 
     def test_file_persistence(self):
         script = build_codex_day6_preset(project="temp_test_project")

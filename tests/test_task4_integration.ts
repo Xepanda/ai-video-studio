@@ -156,9 +156,53 @@ function testRootCompositionRegistration() {
   console.log('✓ Root.tsx Composition registration checks passed cleanly.');
 }
 
+function testDynamicTimelineProps() {
+  console.log('Testing dynamic timeline prop support in MasterVideo...');
+
+  // 1. 测试通过 props.timeline 加载自定义项目时间轴
+  const elementWithTimelinePath = React.createElement(MasterVideo, {
+    timeline: 'public/projects/codex_day6_reset_demo/timeline.json',
+  });
+  const htmlPath = ReactDOMServer.renderToStaticMarkup(elementWithTimelinePath);
+  if (!htmlPath || typeof htmlPath !== 'string') {
+    throw new Error('Failed to render MasterVideo with dynamic timeline prop');
+  }
+
+  // 2. 测试通过 props.timelineData 直接传入结构体数据
+  const mockTimelineData = {
+    project: 'dynamic_test_project',
+    theme: 'linear-graphite',
+    fps: 30,
+    totalDurationInFrames: 60,
+    enableBgm: false,
+    enableSfx: false,
+    scenes: [
+      {
+        id: 'mock_s1',
+        title: '动态时间轴测试分镜',
+        type: 'MinimalHeadline',
+        startFrame: 0,
+        durationInFrames: 60,
+        words: [{ text: '动态时间轴', startFrame: 0, endFrame: 60 }],
+      },
+    ],
+  };
+
+  const elementWithData = React.createElement(MasterVideo, {
+    timelineData: mockTimelineData,
+  });
+  const htmlData = ReactDOMServer.renderToStaticMarkup(elementWithData);
+  if (!htmlData.includes('动态时间轴测试分镜')) {
+    throw new Error('MasterVideo did not render content from props.timelineData');
+  }
+
+  console.log('✓ MasterVideo dynamic timeline props checks passed cleanly.');
+}
+
 function runAll() {
   testUniversalSceneRouting();
   testRootCompositionRegistration();
+  testDynamicTimelineProps();
   console.log('====================================================');
   console.log('✓ Task 4 Integration tests passed 100% cleanly!');
   console.log('====================================================');

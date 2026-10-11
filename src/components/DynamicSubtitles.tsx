@@ -24,8 +24,21 @@ export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
   theme: themeProp,
   activeColor,
 }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const frame = (() => {
+    try {
+      return useCurrentFrame();
+    } catch {
+      return 0;
+    }
+  })();
+  const { fps, width = 1920, height = 1080 } = (() => {
+    try {
+      return useVideoConfig();
+    } catch {
+      return { fps: 30, width: 1920, height: 1080 };
+    }
+  })();
+  const isVertical = width < height;
   const currentTheme = themeProp || getTheme();
 
   if (!words || words.length === 0) return null;
@@ -79,7 +92,7 @@ export const DynamicSubtitles: React.FC<DynamicSubtitlesProps> = ({
     <div
       style={{
         position: 'absolute',
-        bottom: '64px',
+        bottom: isVertical ? '220px' : '64px',
         left: 0,
         right: 0,
         display: 'flex',

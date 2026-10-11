@@ -1,6 +1,7 @@
 import React from 'react';
 import { Img, staticFile } from 'remotion';
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share } from 'lucide-react';
+import { ThemeConfig } from '../../styles/theme';
 
 export interface TweetMetrics {
   replies?: string | number;
@@ -19,7 +20,7 @@ export interface TweetEmbedCardProps {
   highlightWords?: string[];     // 正文中需要紫色胶囊包裹高亮的词汇
   subtitle?: string;             // 中文翻译或解读小字（可选）
   metrics?: TweetMetrics;        // 底部互动量：转推、点赞、浏览量
-  theme?: any;                   // 当前主题配色
+  theme?: ThemeConfig | Partial<ThemeConfig> | string;  // 当前主题配色
   maxWidth?: number;             // 最大宽度，默认 880px
   className?: string;
   style?: React.CSSProperties;
@@ -98,6 +99,7 @@ function renderContentWithHighlights(
 
   const validWords = highlightWords.filter((w) => Boolean(w && w.trim()));
   if (validWords.length === 0) return text;
+  validWords.sort((a, b) => b.length - a.length);
 
   const escaped = validWords.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
   const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
@@ -147,20 +149,22 @@ export const TweetEmbedCard: React.FC<TweetEmbedCardProps> = ({
   style,
 }) => {
   // 判断当前主题是浅色还是深色
-  const isLight =
-    theme &&
-    typeof theme === 'object' &&
-    typeof theme.cardBg === 'string' &&
-    (theme.cardBg.includes('#fff') || theme.cardBg.includes('rgb(255'));
+  const themeObj: Partial<ThemeConfig> | undefined =
+    theme && typeof theme === 'object' ? theme : undefined;
 
-  const cardBg = isLight ? '#ffffff' : (theme?.cardBg || '#000000');
+  const isLight =
+    themeObj &&
+    typeof themeObj.cardBg === 'string' &&
+    (themeObj.cardBg.includes('#fff') || themeObj.cardBg.includes('rgb(255'));
+
+  const cardBg = isLight ? '#ffffff' : (themeObj?.cardBg || '#000000');
   const cardBorder = isLight
-    ? (theme?.cardBorder || '1px solid #e5e7eb')
-    : (theme?.cardBorder || '1px solid rgba(255, 255, 255, 0.12)');
+    ? (themeObj?.cardBorder || '1px solid #e5e7eb')
+    : (themeObj?.cardBorder || '1px solid rgba(255, 255, 255, 0.12)');
   const primaryTextColor = isLight ? '#0f1419' : '#ffffff';
   const secondaryTextColor = isLight ? '#536471' : '#71767b';
-  const accentColor = theme?.accentColor || '#a855f7';
-  const highlightColor = isLight ? '#7c3aed' : (theme?.subtitleHighlightColor || '#c084fc');
+  const accentColor = themeObj?.accentColor || '#a855f7';
+  const highlightColor = isLight ? '#7c3aed' : (themeObj?.subtitleHighlightColor || '#c084fc');
   const highlightBg = isLight ? 'rgba(124, 58, 237, 0.12)' : 'rgba(139, 92, 246, 0.20)';
 
   const resolvedAvatar = avatarUrl

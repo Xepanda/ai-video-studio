@@ -7,7 +7,7 @@ import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
-import { TechNewsShortsScene } from './shorts';
+import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics } from './shorts';
 
 export interface SceneMeta {
   id: string;
@@ -35,10 +35,10 @@ export interface SceneMeta {
   enableSfx?: boolean;
   topologyNodes?: TopologyNode[];
   topologyLinks?: TopologyLink[];
-  metrics?: MetricCategory[];
+  metrics?: MetricCategory[] | TweetMetrics;
   theme?: ThemeName;
-  tweet?: any;
-  binaryBento?: any;
+  tweet?: Partial<TweetEmbedCardProps>;
+  binaryBento?: Partial<BinaryBentoCardProps>;
   inverted?: boolean;
   category?: string;
   highlightWords?: string[];
@@ -217,7 +217,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
             opacity: contentSpring
           }}>
             <MetricComparison
-              metrics={scene.metrics}
+              metrics={Array.isArray(scene.metrics) ? scene.metrics : undefined}
             />
           </div>
         ) : scene.codeSnippet ? (

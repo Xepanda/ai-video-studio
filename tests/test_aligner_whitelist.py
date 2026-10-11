@@ -25,6 +25,10 @@ class TestAlignerMetadataWhitelist(unittest.TestCase):
             content = f.read()
 
         required_fields = [
+            "tag",
+            "dateText",
+            "date",
+            "desc",
             "tweet",
             "binaryBento",
             "inverted",
@@ -47,6 +51,10 @@ class TestAlignerMetadataWhitelist(unittest.TestCase):
             "scene_01": {
                 "id": "scene_01",
                 "type": "TweetEmbed",
+                "tag": "TECH PULSE",
+                "dateText": "2026.10.11",
+                "date": "2026-10-11",
+                "desc": "极简短视频重置说明",
                 "tweet": {
                     "authorName": "Tibo",
                     "content": "Day 6: Reset"
@@ -78,6 +86,7 @@ class TestAlignerMetadataWhitelist(unittest.TestCase):
             "codeSnippet", "codeLang", "codeTitle", "type",
             "topologyNodes", "topologyLinks", "metrics", "theme", "voiceVolume",
             "heroImage", "heroVideo", "videoPath", "cameraMotion", "highlights", "pill", "sceneIndex", "totalScenes",
+            "tag", "dateText", "date", "desc",
             "tweet", "binaryBento", "inverted", "category", "blocksActive", "blocksTotal", "highlightWords"
         ]
         for field in whitelist:
@@ -85,6 +94,10 @@ class TestAlignerMetadataWhitelist(unittest.TestCase):
                 scene_data[field] = meta[field]
 
         self.assertEqual(scene_data["type"], "TweetEmbed")
+        self.assertEqual(scene_data["tag"], "TECH PULSE")
+        self.assertEqual(scene_data["dateText"], "2026.10.11")
+        self.assertEqual(scene_data["date"], "2026-10-11")
+        self.assertEqual(scene_data["desc"], "极简短视频重置说明")
         self.assertEqual(scene_data["tweet"]["authorName"], "Tibo")
         self.assertEqual(scene_data["binaryBento"]["leftCard"]["title"], "A")
         self.assertTrue(scene_data["inverted"])

@@ -204,6 +204,7 @@ def align_audio_files(
                 "codeSnippet", "codeLang", "codeTitle", "type",
                 "topologyNodes", "topologyLinks", "metrics", "theme", "voiceVolume",
                 "heroImage", "heroVideo", "videoPath", "cameraMotion", "highlights", "pill", "sceneIndex", "totalScenes",
+                "tag", "dateText", "date", "desc",
                 "tweet", "binaryBento", "inverted", "category", "blocksActive", "blocksTotal", "highlightWords"
             ]:
                 if field in meta:

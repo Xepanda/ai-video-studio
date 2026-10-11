@@ -1,6 +1,7 @@
 import React from 'react';
 import { SceneMeta } from '../UniversalScene';
 import { ThemeConfig } from '../../styles/theme';
+import { MetricCategory } from '../MetricComparison';
 import { TweetEmbedCard, TweetEmbedCardProps, TweetMetrics } from './TweetEmbedCard';
 import { BinaryBentoCard, BinaryBentoCardProps, BentoSubCard } from './BinaryBentoCard';
 import { MinimalHeadlineScene, MinimalHeadlineSceneProps } from './MinimalHeadlineScene';
@@ -12,7 +13,7 @@ export interface ShortsSceneMeta extends SceneMeta {
   tag?: string;
   dateText?: string;
   date?: string;
-  metrics?: TweetMetrics | any;
+  metrics?: TweetMetrics | MetricCategory[];
 }
 
 export interface TechNewsShortsSceneProps {
@@ -102,7 +103,7 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       content: tweet.content || scene.text || scene.title || '',
       highlightWords: tweet.highlightWords || scene.highlightWords,
       subtitle: tweet.subtitle || scene.desc || scene.subtitle,
-      metrics: tweet.metrics || scene.metrics,
+      metrics: tweet.metrics || (!Array.isArray(scene.metrics) ? scene.metrics : undefined),
       theme: activeTheme,
       maxWidth: tweet.maxWidth || 920,
       style: tweet.style,

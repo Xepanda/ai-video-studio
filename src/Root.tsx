@@ -13,6 +13,9 @@ import { FireshipKineticView } from './components/demos/FireshipKineticView';
 import { AppleKeynoteView } from './components/demos/AppleKeynoteView';
 import { MotionCanvasView } from './components/demos/MotionCanvasView';
 
+declare const process: any;
+declare const require: any;
+
 // =========================================================================
 // 分镜 1：自声音克隆底座与声纹时钟中枢 (Voice Clone & SenseVoice Aligner)
 // =========================================================================
@@ -287,20 +290,94 @@ const Scene05GoogleFlowShorts: React.FC<{ durationInFrames: number }> = ({ durat
 };
 
 // =========================================================================
+// =========================================================================
 // 主 MasterVideo 编排根组件
 // =========================================================================
 export interface MainCompositionProps {
   timeline?: string;
+  timelineData?: any;
 }
 
-export const MasterVideo: React.FC<MainCompositionProps> = () => {
-  const { scenes } = timelineData;
-  const { fps } = useVideoConfig();
-  const totalDuration = timelineData.totalDurationInFrames || 2032;
-  const bgmPath = (timelineData as any).bgmPath || 'audio/bgm_cyber_ambient.wav';
-  const bgmVolume = (timelineData as any).bgmVolume ?? 0.035;
-  const enableBgm = (timelineData as any).enableBgm !== false;
-  const enableSfx = (timelineData as any).enableSfx !== false;
+/**
+ * 动态加载或解析时间轴数据契约：
+ * 1. 优先使用 props.timelineData (如果显式传递了完整对象)
+ * 2. 次选 props.timeline (如果提供了非默认文件路径，尝试通过 Node fs 或动态模块加载)
+ * 3. 优雅回退至默认静态导入的 public/timeline.json
+ */
+function resolveTimelineData(props?: MainCompositionProps): any {
+  if (props?.timelineData) {
+    return props.timelineData;
+  }
+  if (props?.timeline && props.timeline !== 'public/timeline.json' && props.timeline !== '../public/timeline.json') {
+    // 1. Node.js / 测试 / SSR 环境下尝试文件系统读取
+    try {
+      if (typeof window === 'undefined' || (typeof process !== 'undefined' && process.versions?.node)) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const fs = typeof require !== 'undefined' ? require('fs') : null;
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const path = typeof require !== 'undefined' ? require('path') : null;
+        if (fs && path) {
+          const candidatePaths = [
+            props.timeline,
+            path.resolve(process.cwd(), props.timeline),
+            path.resolve(process.cwd(), 'public', props.timeline.replace(/^[/\\]?public[/\\]/, '')),
+          ];
+          for (const cand of candidatePaths) {
+            if (fs.existsSync(cand)) {
+              return JSON.parse(fs.readFileSync(cand, 'utf-8'));
+            }
+          }
+        }
+      }
+    } catch {
+      // 优雅忽略并尝试下一步
+    }
+
+    // 2. Webpack / Bundler 运行时尝试相对路径动态引用
+    try {
+      if (typeof require !== 'undefined') {
+        const cleanPath = props.timeline.replace(/^[/\\]?public[/\\]/, '');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        return require(`../public/${cleanPath}`);
+      }
+    } catch {
+      // 优雅回退至静态默认数据
+    }
+  }
+  return timelineData;
+}
+
+const SafeSequence: React.FC<React.ComponentProps<typeof Sequence>> = (props) => {
+  const isRemotion = (() => {
+    try {
+      useVideoConfig();
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  if (!isRemotion) {
+    return <div style={{ position: 'absolute', inset: 0 }}>{props.children}</div>;
+  }
+  return <Sequence {...props} />;
+};
+
+export const MasterVideo: React.FC<MainCompositionProps> = (props = {}) => {
+  const currentTimelineData = resolveTimelineData(props);
+  const { scenes = [] } = currentTimelineData;
+  const { fps } = (() => {
+    try {
+      return useVideoConfig();
+    } catch {
+      return { fps: currentTimelineData.fps || 30 };
+    }
+  })();
+  const totalDuration = currentTimelineData.totalDurationInFrames || (currentTimelineData as any).totalDurationFrames || 2032;
+  const bgmPath = (currentTimelineData as any).bgmPath || 'audio/bgm_cyber_ambient.wav';
+  const bgmVolume = (currentTimelineData as any).bgmVolume ?? 0.035;
+  const enableBgm = (currentTimelineData as any).enableBgm !== false;
+  const enableSfx = (currentTimelineData as any).enableSfx !== false;
 
   // 严格单调递增区间计算，杜绝短视频测试时总帧数过少引发的 interpolate 崩溃
   const fadeInFrames = Math.max(1, Math.min(45, Math.floor(totalDuration * 0.25)));
@@ -311,7 +388,7 @@ export const MasterVideo: React.FC<MainCompositionProps> = () => {
 
   // 智能音频闪避 (Audio Ducking): 提取全片声学语音活跃区间 (防范无配音静音分镜误闪避)
   const speechIntervals = React.useMemo(() => {
-    return scenes.flatMap((scene) => {
+    return scenes.flatMap((scene: any) => {
       if (scene.words && scene.words.length > 0) {
         return scene.words.map((w: any) => ({
           start: (w.globalStartFrame ?? (scene.startFrame + w.startFrame)) as number,
@@ -325,14 +402,23 @@ export const MasterVideo: React.FC<MainCompositionProps> = () => {
     });
   }, [scenes]);
 
-  const enableDucking = (timelineData as any).enableDucking !== false;
-  const duckRatio = (timelineData as any).bgmDuckRatio ?? 0.20;
+  const isRemotionContext = (() => {
+    try {
+      useVideoConfig();
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  const enableDucking = (currentTimelineData as any).enableDucking !== false;
+  const duckRatio = (currentTimelineData as any).bgmDuckRatio ?? 0.20;
   const duckFrames = Math.max(5, Math.round(fps * 0.5)); // 帧率自适应 ~500ms 阻尼过渡
 
   return (
     <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       {/* 全局极客科技氛围背景音乐 (轻柔垫乐 + 自动循环 + 首尾淡入淡出 + 语音智能闪避) */}
-      {enableBgm && (
+      {enableBgm && isRemotionContext && (
         <Audio
           src={staticFile(bgmPath)}
           volume={(f) => {
@@ -374,27 +460,27 @@ export const MasterVideo: React.FC<MainCompositionProps> = () => {
         />
       )}
 
-      {scenes.map((scene, idx) => {
-        const sceneTheme = getTheme((scene as any).theme || (timelineData as any).theme);
+      {scenes.map((scene: any, idx: number) => {
+        const sceneTheme = getTheme((scene as any).theme || (currentTimelineData as any).theme);
         return (
-          <Sequence
+          <SafeSequence
             key={scene.id}
             from={scene.startFrame}
             durationInFrames={scene.durationInFrames}
           >
             {/* 配音音频：支持全局与分镜 voiceVolume 系数，默认 1.0 (已由母带引擎锁定 -11 LUFS 广播级标准) */}
-            {scene.audioPath && (
+            {isRemotionContext && scene.audioPath && (
               <Audio
                 src={staticFile(scene.audioPath)}
-                volume={(scene as any).voiceVolume ?? (timelineData as any).voiceVolume ?? 1.0}
+                volume={(scene as any).voiceVolume ?? (currentTimelineData as any).voiceVolume ?? 1.0}
               />
             )}
 
             {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
-            {enableSfx && idx > 0 && (
-              <Sequence from={0} durationInFrames={transitionFrames} layout="none">
+            {isRemotionContext && enableSfx && idx > 0 && (
+              <SafeSequence from={0} durationInFrames={transitionFrames} layout="none">
                 <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
-              </Sequence>
+              </SafeSequence>
             )}
 
             {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
@@ -418,7 +504,7 @@ export const MasterVideo: React.FC<MainCompositionProps> = () => {
             {scene.words && scene.words.length > 0 && (
               <DynamicSubtitles words={scene.words} sceneStartFrame={scene.startFrame} theme={sceneTheme} />
             )}
-          </Sequence>
+          </SafeSequence>
         );
       })}
     </AbsoluteFill>
