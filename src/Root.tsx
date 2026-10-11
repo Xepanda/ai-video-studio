@@ -289,7 +289,11 @@ const Scene05GoogleFlowShorts: React.FC<{ durationInFrames: number }> = ({ durat
 // =========================================================================
 // 主 MasterVideo 编排根组件
 // =========================================================================
-export const MasterVideo: React.FC = () => {
+export interface MainCompositionProps {
+  timeline?: string;
+}
+
+export const MasterVideo: React.FC<MainCompositionProps> = () => {
   const { scenes } = timelineData;
   const { fps } = useVideoConfig();
   const totalDuration = timelineData.totalDurationInFrames || 2032;
@@ -421,6 +425,8 @@ export const MasterVideo: React.FC = () => {
   );
 };
 
+export const MainComposition: React.FC<MainCompositionProps> = MasterVideo;
+
 // =========================================================================
 // 主题色彩风格样片对比组件 (用于给创作者和用户多维度比对调色方案)
 // =========================================================================
@@ -484,6 +490,17 @@ export const RemotionRoot: React.FC = () => {
         fps={fps}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="TechNewsShorts"
+        component={MainComposition}
+        durationInFrames={(timelineData as any).totalDurationFrames || timelineData.totalDurationInFrames || 1140}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          timeline: 'public/timeline.json',
+        }}
       />
 
       {/* 4 大顶级设计流派样片演示 Composition (方便即时比对风格) */}

@@ -7,6 +7,7 @@ import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
+import { TechNewsShortsScene } from './shorts';
 
 export interface SceneMeta {
   id: string;
@@ -30,16 +31,33 @@ export interface SceneMeta {
   cards?: Array<{ title: string; desc: string; tag?: string; icon?: string }>;
   durationInFrames: number;
   text?: string;
+  desc?: string;
   enableSfx?: boolean;
   topologyNodes?: TopologyNode[];
   topologyLinks?: TopologyLink[];
   metrics?: MetricCategory[];
   theme?: ThemeName;
+  tweet?: any;
+  binaryBento?: any;
+  inverted?: boolean;
+  category?: string;
+  highlightWords?: string[];
+  blocksActive?: number;
+  blocksTotal?: number;
+}
+
+function useSafeRemotionConfig(): { frame: number; fps: number; width: number; height: number } {
+  try {
+    const frame = useCurrentFrame();
+    const config = useVideoConfig();
+    return { frame, fps: config.fps, width: config.width, height: config.height };
+  } catch {
+    return { frame: 0, fps: 30, width: 1920, height: 1080 };
+  }
 }
 
 export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
-  const frame = useCurrentFrame();
-  const { fps, width, height } = useVideoConfig();
+  const { frame, fps, width, height } = useSafeRemotionConfig();
   const isVertical = width < height;
 
   // 获取活动主题 (优先分镜声明，次选全局时间轴，由 getTheme 统一提供默认回退)
@@ -50,6 +68,19 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const derivedIndex = allScenes.findIndex((s: any) => s.id === scene.id) + 1;
   const sceneIndex = scene.sceneIndex || (derivedIndex > 0 ? derivedIndex : 1);
   const totalScenes = scene.totalScenes || (allScenes.length > 0 ? allScenes.length : 6);
+
+  // 极简科技资讯 / 竖屏短视频场景优先路由
+  if (
+    scene.type === 'TechNewsShorts' ||
+    scene.type === 'TechNews' ||
+    scene.type === 'TweetEmbed' ||
+    scene.type === 'BinaryBento' ||
+    scene.type === 'MinimalHeadline' ||
+    Boolean(scene.tweet) ||
+    Boolean(scene.binaryBento)
+  ) {
+    return <TechNewsShortsScene scene={scene} activeTheme={theme} />;
+  }
 
   // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage/heroVideo/videoPath，优先光栅化电影级 2.5D 原画或动态视频流
   const hasVisualMedia = Boolean(scene.heroImage || scene.heroVideo || scene.videoPath);
