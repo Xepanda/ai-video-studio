@@ -59,6 +59,7 @@ CASE_SENSITIVE_ACRONYM_MAP: Dict[str, str] = {
     "ESP32": "E-S-P 32",
     "RISC-V": "Risk-Five",
     "VM": "V-M",
+    "PPT": "P-P-T",
 }
 
 # 2. 支持大小写不敏感的专有技术名词 (如 Nginx/nginx/NGINX -> Engine X)
@@ -76,6 +77,7 @@ CASE_INSENSITIVE_MAP: Dict[str, str] = {
     "remotion": "Re-motion",
     "cloudflare": "Cloud-flare",
     "modelscope": "Model-Scope",
+    "antigravity": "Anti-gravity",
 }
 
 # 预编译单遍扫描 Regex 模式 (ASCII 边界断言，按长度逆序匹配最长项)

@@ -65,6 +65,7 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
         durationInFrames={scene.durationInFrames}
         sceneIndex={sceneIndex}
         totalScenes={totalScenes}
+        systemTag={scene.systemTag || (timelineData as any).systemTag || 'DIGITAL GRAVITY · ANTIGRAVITY LAB'}
       />
     );
   }

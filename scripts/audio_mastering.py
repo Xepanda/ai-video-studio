@@ -40,11 +40,15 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 def find_ffmpeg() -> str:
     """
-    定位可用 FFmpeg 可执行文件 (优先使用 Remotion 内置静态编译版)
+    定位可用 FFmpeg 可执行文件 (若在 WSL/Linux 优先使用原生路径，Windows 优先使用 Remotion 内置静态版)
     """
+    if sys.platform != "win32":
+        sys_ffmpeg = shutil.which("ffmpeg")
+        if sys_ffmpeg:
+            return sys_ffmpeg
+
     remotion_ffmpeg = os.path.join(
         PROJECT_ROOT,
         "node_modules",
