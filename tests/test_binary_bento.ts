@@ -17,7 +17,7 @@ import type {
 function testBinaryBentoContract() {
   console.log('Testing BinaryBentoCard & ProgressBlocks interface contracts...');
 
-  // 1. 验证 ProgressBlocks 极简与全量参数契约
+  // 1. 验证 ProgressBlocks 极简与全量参数契约（包括 delay 属性）
   const minimalProgressProps: ProgressBlocksProps = {};
   const minimalProgressElem = React.createElement(ProgressBlocks, minimalProgressProps);
   if (!minimalProgressElem || minimalProgressElem.type !== ProgressBlocks) {
@@ -29,7 +29,8 @@ function testBinaryBentoContract() {
     active: 4,
     activeColor: '#38bdf8',
     inactiveColor: 'rgba(255, 255, 255, 0.15)',
-    animated: false,
+    animated: true,
+    delay: 12,
     className: 'custom-progress-blocks',
     style: { marginTop: 12 },
   };
@@ -38,16 +39,17 @@ function testBinaryBentoContract() {
     throw new Error('Failed to create full ProgressBlocks element');
   }
 
-  // 渲染 ProgressBlocks HTML 并验证节点数量
+  // 渲染 ProgressBlocks HTML 并验证节点输出
   const progressHtml = ReactDOMServer.renderToStaticMarkup(fullProgressElem);
   if (!progressHtml || !progressHtml.includes('custom-progress-blocks')) {
     throw new Error('ProgressBlocks HTML render failed or missing className');
   }
 
-  // 2. 验证 ProgressBlocks 边界条件（active > total, active = 0, total = 0）
+  // 2. 验证 ProgressBlocks 边界条件（active > total, active = 0, total = 0, delay > 0）
   const edgeProgressProps: ProgressBlocksProps = {
     total: 0,
     active: 10,
+    delay: 20,
     animated: true,
   };
   const edgeProgressHtml = ReactDOMServer.renderToStaticMarkup(
@@ -82,7 +84,7 @@ function testBinaryBentoContract() {
     throw new Error('Minimal BinaryBentoCard HTML missing default divider "或"');
   }
 
-  // 4. 验证 Codex 风格全量参数契约（二选一规则：每日刷新 vs 重置卡）
+  // 4. 验证 Codex 风格全量参数契约（二选一规则：每日刷新 vs 重置卡，包含 blocksDelay 定制）
   const fullLeftCard: BentoSubCard = {
     title: '等待每日刷新',
     desc: '系统于每日 04:00 自动释放额度，单次消耗 1 格进度。',
@@ -90,6 +92,7 @@ function testBinaryBentoContract() {
     icon: '⏳',
     blocksTotal: 5,
     blocksActive: 2,
+    blocksDelay: 8,
     highlightWords: ['每日 04:00', '1 格进度'],
     accentColor: '#38bdf8',
   };
@@ -102,6 +105,7 @@ function testBinaryBentoContract() {
     icon: '⚡',
     blocksTotal: 5,
     blocksActive: 5,
+    blocksDelay: 14,
     highlightWords: ['全部 5 格配额', '无需等待'],
     accentColor: '#8b5cf6',
   };
@@ -154,15 +158,20 @@ function testBinaryBentoContract() {
     throw new Error('Light BinaryBentoCard HTML missing custom divider "VS"');
   }
 
-  // 6. 验证文字高亮解析辅助函数 renderHighlightText
-  const sampleText = '采用 GPT-SoVITS 极速克隆声线，效果远超预期。';
-  const highlights = ['GPT-SoVITS', '声线'];
+  // 6. 验证文字高亮解析辅助函数 renderHighlightText 及较长词汇优先匹配逻辑
+  const sampleText = '采用 GPT-SoVITS 极速克隆声线，效果远超预期。重置卡配额可即时清零。';
+  // 故意传入具有子串包含关系的词：'重置' 与 '重置卡配额'，测试较长词是否优先完整匹配
+  const highlights = ['声线', '重置', 'GPT-SoVITS', '重置卡配额'];
   const highlightNodes = renderHighlightText(sampleText, highlights);
   const renderedHighlightHtml = ReactDOMServer.renderToStaticMarkup(
     React.createElement('div', null, highlightNodes)
   );
   if (!renderedHighlightHtml.includes('GPT-SoVITS') || !renderedHighlightHtml.includes('声线')) {
     throw new Error('renderHighlightText failed to render highlighted tokens');
+  }
+  // 必须完整匹配 "重置卡配额"，而不是被 "重置" 提前截断
+  if (!renderedHighlightHtml.includes('重置卡配额')) {
+    throw new Error('renderHighlightText failed to prioritize longer phrases over substrings');
   }
 
   console.log('✓ All BinaryBentoCard & ProgressBlocks interface compatibility and runtime SSR checks passed cleanly!');

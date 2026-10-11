@@ -8,6 +8,7 @@ export interface BentoSubCard {
   pill?: string; // 醒目胶囊标签，例如 "重置卡"、"限时免费"
   blocksTotal?: number; // 进度槽总格数（默认 5）
   blocksActive?: number; // 激活/点亮格数
+  blocksDelay?: number; // 进度槽起始延迟帧数（可选）
   highlightWords?: string[];
   icon?: string;
   accentColor?: string;
@@ -31,6 +32,7 @@ export interface ProgressBlocksProps {
   activeColor?: string; // 默认 '#6366f1' 或 '#8b5cf6'
   inactiveColor?: string; // 默认 'rgba(255, 255, 255, 0.12)'
   animated?: boolean; // 是否逐格点亮动画
+  delay?: number; // 起始延迟帧数，默认 0
   style?: React.CSSProperties;
   className?: string;
 }
@@ -62,7 +64,11 @@ export function renderHighlightText(
     return text;
   }
 
-  const validWords = highlightWords.filter((w) => Boolean(w && w.trim()));
+  // 优先按长度降序排序，确保长短词汇重叠时最长词优先完整匹配
+  const validWords = highlightWords
+    .filter((w) => Boolean(w && w.trim()))
+    .sort((a, b) => b.length - a.length);
+
   if (validWords.length === 0) return text;
 
   const escaped = validWords.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -96,7 +102,7 @@ export function renderHighlightText(
 
 /**
  * 动态点亮进度槽微组件 (ProgressBlocks)
- * 水平排列 5~7 个小方格胶囊，支持逐格点亮动效与电光发光阴影
+ * 水平排列 5~7 个小方格胶囊，支持起始延迟与逐格点亮动效、电光发光阴影
  */
 export const ProgressBlocks: React.FC<ProgressBlocksProps> = ({
   total = 5,
@@ -104,6 +110,7 @@ export const ProgressBlocks: React.FC<ProgressBlocksProps> = ({
   activeColor = '#6366f1',
   inactiveColor = 'rgba(255, 255, 255, 0.12)',
   animated = true,
+  delay = 0,
   style,
   className,
 }) => {
@@ -125,18 +132,21 @@ export const ProgressBlocks: React.FC<ProgressBlocksProps> = ({
       {Array.from({ length: safeTotal }).map((_, index) => {
         const isTargetActive = index < safeActive;
 
-        // 若启用动画，每个激活小格子以 4 帧间隔逐格点亮
+        // 若启用动画，每个激活小格子以 4 帧间隔逐格点亮，并支持整体 delay 延迟启动
         let isLit = isTargetActive;
         let scale = 1;
         let opacity = isTargetActive ? 1 : 0.45;
 
         if (animated) {
-          const delay = index * 4;
-          const blockProgress = spring({
-            frame: frame - delay,
-            fps,
-            config: { damping: 14, stiffness: 140 },
-          });
+          const blockFrame = Math.max(0, frame - delay - index * 4);
+          const blockProgress =
+            frame - delay - index * 4 <= 0
+              ? 0
+              : spring({
+                  frame: blockFrame,
+                  fps,
+                  config: { damping: 14, stiffness: 140 },
+                });
 
           if (isTargetActive) {
             isLit = blockProgress >= 0.4;
@@ -185,6 +195,7 @@ interface SubCardItemProps {
   card: BentoSubCard;
   isLight: boolean;
   animated: boolean;
+  defaultBlockDelay?: number;
   style?: React.CSSProperties;
 }
 
@@ -192,6 +203,7 @@ const SubCardItem: React.FC<SubCardItemProps> = ({
   card,
   isLight,
   animated,
+  defaultBlockDelay = 10,
   style,
 }) => {
   const cardAccent = card.accentColor || (isLight ? '#7c3aed' : '#8b5cf6');
@@ -355,6 +367,7 @@ const SubCardItem: React.FC<SubCardItemProps> = ({
             activeColor={cardAccent}
             inactiveColor={isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.12)'}
             animated={animated}
+            delay={card.blocksDelay ?? defaultBlockDelay}
           />
         </div>
       )}
@@ -417,21 +430,51 @@ export const BinaryBentoCard: React.FC<BinaryBentoCardProps> = ({
       })
     : 1;
 
-  // 变换插值
-  const headerOpacity = animated ? interpolate(headerSpring, [0, 1], [0, 1]) : 1;
+  // 变换插值（所有 opacity 与 scale 均严格配置 clamp 截断，防止弹簧超调过冲产生负透明度）
+  const headerOpacity = animated
+    ? interpolate(headerSpring, [0, 1], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 1;
   const headerTranslateY = animated ? interpolate(headerSpring, [0, 1], [-16, 0]) : 0;
 
   const leftScale = animated ? interpolate(leftSpring, [0, 1], [0.92, 1.0]) : 1;
   const leftTranslateY = animated ? interpolate(leftSpring, [0, 1], [20, 0]) : 0;
-  const leftOpacity = animated ? interpolate(leftSpring, [0, 1], [0, 1]) : 1;
+  const leftOpacity = animated
+    ? interpolate(leftSpring, [0, 1], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 1;
 
   const rightScale = animated ? interpolate(rightSpring, [0, 1], [0.92, 1.0]) : 1;
   const rightTranslateY = animated ? interpolate(rightSpring, [0, 1], [20, 0]) : 0;
-  const rightOpacity = animated ? interpolate(rightSpring, [0, 1], [0, 1]) : 1;
+  const rightOpacity = animated
+    ? interpolate(rightSpring, [0, 1], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 1;
 
-  const badgeScale = animated ? interpolate(dividerSpring, [0, 1], [0, 1]) : 1;
-  const rippleScale = animated ? interpolate(dividerSpring, [0, 1], [0.8, 1.45]) : 1;
-  const rippleOpacity = animated ? interpolate(dividerSpring, [0, 0.4, 1], [0, 0.7, 0]) : 0;
+  const badgeScale = animated
+    ? interpolate(dividerSpring, [0, 1], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 1;
+  const rippleScale = animated
+    ? interpolate(dividerSpring, [0, 1], [0.8, 1.45], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 1;
+  const rippleOpacity = animated
+    ? interpolate(dividerSpring, [0, 0.4, 1], [0, 0.7, 0], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 0;
 
   return (
     <div
@@ -511,6 +554,7 @@ export const BinaryBentoCard: React.FC<BinaryBentoCardProps> = ({
           card={leftCard}
           isLight={isLight}
           animated={animated}
+          defaultBlockDelay={10}
           style={{
             opacity: leftOpacity,
             transform: `scale(${leftScale}) translateY(${leftTranslateY}px)`,
@@ -523,6 +567,7 @@ export const BinaryBentoCard: React.FC<BinaryBentoCardProps> = ({
           card={rightCard}
           isLight={isLight}
           animated={animated}
+          defaultBlockDelay={14}
           style={{
             opacity: rightOpacity,
             transform: `scale(${rightScale}) translateY(${rightTranslateY}px)`,

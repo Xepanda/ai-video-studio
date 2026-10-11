@@ -58,5 +58,18 @@
    # 验证 TweetEmbedCard 依旧 100% 正常运行无回归。
    ```
 
-## 5. 结论与交付状态
-Task 2 所有核心功能、接口规范、视觉动效指标及自动化测试已 100% 高标准完成，处于生产就绪状态。
+## 5. 代码审查修复与演进 (Code Review Fixes)
+针对 Task 2 代码审查反馈，完成以下高优先级与体验增强修复：
+1. **动画插值 Clamp 严格约束 (Must Fix)**：
+   - 针对 `rippleOpacity`、`headerOpacity`、`leftOpacity`、`rightOpacity`、`rippleScale` 等 Remotion `interpolate` 动效，补齐 `{ extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }`；
+   - 彻底解决 `damping: 12, stiffness: 160` 弹簧动画在轻微超调过冲（> 1.0）时发生反向外推导致 CSS `opacity` 出现无效负数（如 `-0.08`）的潜在渲染隐患。
+2. **ProgressBlocks 起始延迟解耦 (`delay` 属性)**：
+   - `ProgressBlocksProps` 增加可选 `delay?: number` 属性（默认 0），单格帧数严格计算为 `Math.max(0, frame - delay - index * 4)`；
+   - `BentoSubCard` 支持 `blocksDelay?: number`，卡片内进度槽默认在卡片弹簧稳定后（左卡 10 帧、右卡 14 帧）逐格点亮，视觉节奏层次更分明。
+3. **关键词高亮正则长词优先排序**：
+   - 在 `renderHighlightText` 中引入 `validWords.sort((a, b) => b.length - a.length)`，确保复合长词（如 `"重置卡配额"`）优先于子串（如 `"重置"`）匹配，避免短词提前截断破坏长词胶囊。
+4. **自动化测试套件扩充**：
+   - 在 `tests/test_binary_bento.ts` 中增补延迟点亮、长短包含词高亮识别完整性断言，所有测试保持 100% 绿灯。
+
+## 6. 结论与交付状态
+Task 2 所有核心功能、接口规范、视觉动效指标、代码审查修复项及自动化测试已 100% 高标准完成，处于生产就绪状态。
