@@ -3,3 +3,9 @@ export type { TweetEmbedCardProps, TweetMetrics } from './TweetEmbedCard';
 
 export { BinaryBentoCard, ProgressBlocks, renderHighlightText } from './BinaryBentoCard';
 export type { BentoSubCard, BinaryBentoCardProps, ProgressBlocksProps } from './BinaryBentoCard';
+
+export { MinimalHeadlineScene, renderHeadlineText } from './MinimalHeadlineScene';
+export type { MinimalHeadlineSceneProps } from './MinimalHeadlineScene';
+
+export { TechNewsShortsScene } from './TechNewsShortsScene';
+export type { TechNewsShortsSceneProps } from './TechNewsShortsScene';
