@@ -255,14 +255,111 @@ def validate(timeline_path: str = None):
         print(f"\n{BColors.OKGREEN}✅ [ALL CHECKS PASSED] 所有数据契约与资产审查 100% 通过！{BColors.ENDC}")
         print(f"{BColors.OKGREEN}🚀 可以安全启动 Remotion Studio 或执行 MP4 导出。{BColors.ENDC}\n")
 
+def validate_script_file(script_path: str):
+    """分镜脚本 Schema 契约与各类型视效组件规范性审查"""
+    print(f"\n{BColors.HEADER}===================================================={BColors.ENDC}")
+    print(f"{BColors.BOLD}🔍 [Quality Gate] 启动分镜脚本数据契约审查...{BColors.ENDC}")
+    print(f"{BColors.HEADER}===================================================={BColors.ENDC}\n")
+
+    errors = []
+    warnings = []
+
+    if not os.path.exists(script_path):
+        print(f"{BColors.FAIL}[ERROR] 关键剧本缺失: 找不到 {script_path}{BColors.ENDC}")
+        sys.exit(1)
+
+    with open(script_path, 'r', encoding='utf-8') as f:
+        try:
+            data = json.load(f)
+        except Exception as e:
+            print(f"{BColors.FAIL}[ERROR] {script_path} JSON 解析失败: {e}{BColors.ENDC}")
+            sys.exit(1)
+
+    project = data.get("project")
+    if not project:
+        errors.append("剧本根对象缺少必填字段: 'project'")
+
+    scenes = data.get("scenes", [])
+    if not isinstance(scenes, list) or len(scenes) == 0:
+        errors.append("剧本 'scenes' 列表为空或未配置！")
+        scenes = []
+
+    print(f"📊 项目名称: {BColors.OKCYAN}{project or 'unknown'}{BColors.ENDC}")
+    print(f"🎯 视觉主题: {data.get('theme', 'default')} | 分镜总数: {len(scenes)} 幕")
+    print(f"🎙️ 配音引擎: {data.get('engine', 'unknown')} | 音色: {data.get('voice', 'default')}")
+    print("-" * 52)
+
+    for i, scene in enumerate(scenes):
+        scene_id = scene.get("id", f"scene_{i+1}")
+        scene_type = scene.get("type", "Default")
+        text = scene.get("text", "").strip()
+
+        if not text:
+            errors.append(f"分镜 [{scene_id}] 缺少有效旁白文案 (text 为空)！")
+
+        # 视效组件契约审查
+        if scene_type == "TweetEmbed":
+            tweet = scene.get("tweet")
+            if not isinstance(tweet, dict):
+                errors.append(f"分镜 [{scene_id}] 声明为 TweetEmbed，但 tweet 不是合法字典对象！")
+            else:
+                for k in ["authorName", "authorHandle", "content"]:
+                    if not tweet.get(k):
+                        errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 '{k}'！")
+        elif scene_type == "BinaryBento":
+            bento = scene.get("binaryBento")
+            if not isinstance(bento, dict):
+                errors.append(f"分镜 [{scene_id}] 声明为 BinaryBento，但 binaryBento 不是合法字典对象！")
+            else:
+                left_card = bento.get("leftCard")
+                right_card = bento.get("rightCard")
+                if not isinstance(left_card, dict) or not isinstance(right_card, dict):
+                    errors.append(f"分镜 [{scene_id}] binaryBento 必须同时包含 leftCard 与 rightCard 对象！")
+                else:
+                    if not left_card.get("title") or not right_card.get("title"):
+                        errors.append(f"分镜 [{scene_id}] binaryBento 卡片缺少 title 字段！")
+        elif scene_type == "MinimalHeadline":
+            title = scene.get("title") or text
+            if not title:
+                errors.append(f"分镜 [{scene_id}] MinimalHeadline 缺少 title 或 text！")
+        elif scene_type in ["MetricComparison", "MetricChart"]:
+            metrics = scene.get("metrics", [])
+            if not metrics:
+                errors.append(f"分镜 [{scene_id}] 声明类型为 {scene_type}，但未提供 metrics 数据数组！")
+        elif scene_type in ["ArchitectureTopology", "TopologyFlow"]:
+            nodes = scene.get("topologyNodes", [])
+            if not nodes:
+                errors.append(f"分镜 [{scene_id}] 声明类型为 {scene_type}，但未提供 topologyNodes 节点列表！")
+
+    # 打印审查结果
+    if warnings:
+        print(f"\n{BColors.WARNING}⚠️  发现 {len(warnings)} 个警告项 (建议优化):{BColors.ENDC}")
+        for w in warnings:
+            print(f"  • {w}")
+
+    if errors:
+        print(f"\n{BColors.FAIL}❌ 发现 {len(errors)} 个致命错误 (阻断生成):{BColors.ENDC}")
+        for err in errors:
+            print(f"  ✖ {err}")
+        print(f"\n{BColors.FAIL}💥 剧本契约审查未通过！{BColors.ENDC}\n")
+        sys.exit(1)
+    else:
+        print(f"\n{BColors.OKGREEN}✅ [ALL CHECKS PASSED] 分镜脚本契约审查 100% 通过！{BColors.ENDC}")
+        print(f"{BColors.OKGREEN}🚀 剧本契约完备，可安全进入音频合成与 ASR 声学对齐。{BColors.ENDC}\n")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="视频工程数据契约与静态资产审查 (Quality Gate)")
     parser.add_argument("--timeline", type=str, default=None, help="指定待审查的 timeline.json 路径")
     parser.add_argument("--project", type=str, default=None, help="项目名称 (自动寻找 public/projects/{project}/timeline.json)")
+    parser.add_argument("--script", type=str, default=None, help="指定待审查的分镜脚本 JSON 路径 (content/scripts/xxx.json)")
     args = parser.parse_args()
 
-    target_timeline = args.timeline
-    if not target_timeline and args.project:
-        target_timeline = os.path.join(PUBLIC_DIR, "projects", args.project, "timeline.json")
+    if args.script:
+        validate_script_file(script_path=args.script)
+    else:
+        target_timeline = args.timeline
+        if not target_timeline and args.project:
+            target_timeline = os.path.join(PUBLIC_DIR, "projects", args.project, "timeline.json")
 
-    validate(timeline_path=target_timeline)
+        validate(timeline_path=target_timeline)
+
