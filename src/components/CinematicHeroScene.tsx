@@ -1,5 +1,5 @@
 import React from 'react';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, Video, staticFile } from 'remotion';
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, OffthreadVideo, Loop, staticFile } from 'remotion';
 import { ThemeConfig, safeColorWithAlpha } from '../styles/theme';
 
 export interface CinematicHeroProps {
@@ -8,6 +8,7 @@ export interface CinematicHeroProps {
   title?: string;
   badge?: string;
   pill?: string;
+  systemTag?: string;
   highlights?: Array<{ label: string; value: string; color?: string }>;
   cameraMotion?: 'push-in' | 'pan-left' | 'pan-right' | 'pull-out';
   theme: ThemeConfig;
@@ -22,6 +23,7 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
   title,
   badge,
   pill,
+  systemTag,
   highlights = [],
   cameraMotion = 'push-in',
   theme,
@@ -89,12 +91,22 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
     ? (heroImage.startsWith('http://') || heroImage.startsWith('https://') ? heroImage : staticFile(heroImage))
     : '';
 
+  // 5. 电影级视频慢放与时长自适应 (Time-Stretch):
+  // Flow 原生视频约为 10 秒，将其自适应放慢至与当前分镜时长完全匹配，
+  // 彻底消除 10 秒处的硬跳切回弹，呈现高级且沉浸的电影慢动作长镜头
+  const videoNativeDuration = 10.0;
+  const sceneDurationSeconds = safeDuration / fps;
+  const playbackRate = isVideo
+    ? Math.max(0.15, Math.min(1.0, (videoNativeDuration - 0.05) / sceneDurationSeconds))
+    : 1.0;
+  const videoLoopFrames = Math.max(1, Math.ceil((videoNativeDuration / playbackRate) * fps));
+
   // 纯粹纪实摄影/苹果发布会风 (去除重度赛博假光，呈现自然光影与通透质感)
   const isEditorial = theme.name === 'cinema-editorial' || theme.name === 'vercel-geist';
 
   return (
     <AbsoluteFill style={{ backgroundColor: isEditorial ? '#0a0b0e' : '#05070e', overflow: 'hidden' }}>
-      {/* 1. 2.5D 电影级动态原画 / 真实生成式视频背景 (Cinematic Hero Video or Photo) */}
+      {/* 1. 2.5D 电影级动态原画 / 真实生成式视频背景 (双轨复合平滑运镜：视频局部微动 + Remotion 亚像素推镜) */}
       <div
         style={{
           position: 'absolute',
@@ -102,23 +114,24 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
           left: 0,
           width: '100%',
           height: '100%',
-          transform: isVideo
-            ? undefined
-            : `scale(${cameraScale}) translate3d(${cameraTranslateX}px, ${cameraTranslateY}px, 0) rotate(${cameraRotateZ}deg)`,
+          transform: `scale(${cameraScale}) translate3d(${cameraTranslateX}px, ${cameraTranslateY}px, 0) rotate(${cameraRotateZ}deg)`,
           transformOrigin: 'center center',
           filter: isEditorial ? 'contrast(1.02) saturate(1.03)' : 'contrast(1.05) saturate(1.08)',
         }}
       >
         {isVideo ? (
-          <Video
-            src={resolvedVideoSrc}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-            loop
-          />
+          <Loop durationInFrames={videoLoopFrames}>
+            <OffthreadVideo
+              src={resolvedVideoSrc}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+              playbackRate={playbackRate}
+              pauseWhenBuffering
+            />
+          </Loop>
         ) : (
           <Img
             src={resolvedSrc}
@@ -235,7 +248,7 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
               }}
             />
             <span style={{ fontSize: '13px', fontWeight: 600, color: '#f1f5f9', letterSpacing: '0.05em' }}>
-              META MUSE · AGENT ARCHITECTURE
+              {systemTag || 'DIGITAL GRAVITY · ANTIGRAVITY LAB'}
             </span>
           </div>
 
