@@ -206,6 +206,7 @@ def align_audio_files(
                 "heroImage", "heroVideo", "videoPath", "cameraMotion", "highlights", "pill", "sceneIndex", "totalScenes",
                 "tag", "dateText", "date", "desc",
                 "tweet", "binaryBento", "inverted", "category", "blocksActive", "blocksTotal", "highlightWords",
+                "browser", "image", "url",
                 "wechat", "protocolTower", "packetAssembly", "routerInspection"
             ]:
                 if field in meta:

@@ -36,3 +36,19 @@ description: Use when producing technical project deep-dives, architectural brea
 - **动态终端仿真 (`TerminalWindow.tsx`)**：
   - 支持命令敲击打字效果、ANSI 颜色高亮、真实编译进度条动画；
   - 窗口右上角红黄绿三色控制按钮。
+- **拟真浏览器视窗组件 (`WebBrowserMockupScene.tsx`)**：
+  - 呈现真实 GitHub 仓库看板、Star 历史折线、官方技术文档或本地运行的 UI 页面；
+  - 自带安全锁真实 URL 地址栏、平滑运镜微推拉与底部核心实证指标胶囊。
+- **无头截屏与证据链抓取 (`scripts/generate_evidence_screenshots.py`)**：
+  - 支持直接截取任意本地/线上服务页面并输出 1080p 超清无畸变图像。
+
+---
+
+## 3. 色彩与听觉工程规范
+- **主题风格选择**：
+  - 极客工程案例可选用 `linear-graphite` 或 `cyber-blueprint`；
+  - 开源指南、技术白皮书、架构规范类推荐采用 `editorial-paper-light` 浅色暖纸底，阅读舒适、护眼自然。
+- **音效清理**：
+  - 严禁在分镜切换处添加尖锐刺耳的科技扫频音效；
+  - 纯净叙事人声配合双遍 EBU R128 (-11.0 LUFS) 广播级母带，保证小音量字字清晰。
+

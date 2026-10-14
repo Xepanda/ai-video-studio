@@ -8,6 +8,7 @@ import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
 import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics } from './shorts';
+import { WebBrowserMockupScene } from './shorts/WebBrowserMockupScene';
 
 export interface SceneMeta {
   id: string;
@@ -68,6 +69,24 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
   const derivedIndex = allScenes.findIndex((s: any) => s.id === scene.id) + 1;
   const sceneIndex = scene.sceneIndex || (derivedIndex > 0 ? derivedIndex : 1);
   const totalScenes = scene.totalScenes || (allScenes.length > 0 ? allScenes.length : 6);
+
+  // 网页/代码仓库真实截图视窗场景
+  if (scene.type === 'WebBrowserMockup' || scene.type === 'BrowserScreenshot' || Boolean((scene as any).browser)) {
+    const browser = (scene as any).browser || {};
+    return (
+      <WebBrowserMockupScene
+        url={browser.url || (scene as any).url}
+        image={browser.image || scene.heroImage || (scene as any).image || ''}
+        title={scene.title}
+        subtitle={(scene as any).subtitle || (scene as any).desc}
+        badge={scene.badge}
+        pill={scene.pill}
+        highlights={scene.highlights || browser.highlights}
+        cameraMotion={scene.cameraMotion || browser.cameraMotion}
+        theme={theme}
+      />
+    );
+  }
 
   // 极简科技资讯 / 竖屏短视频场景优先路由
   if (
