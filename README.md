@@ -25,15 +25,22 @@ ai-video-studio/
 ├── templates/
 │   └── PROJECT_SPEC_TEMPLATE.md   # 📋 创作者需求填写模板（只需填此文档即可出片）
 │
-├── skills/                        # 🧠 8+1 大专业 Skills 知识库与规范
-│   ├── live-ecommerce-video-editor/ # 🛍️ 抖音/快手直播带货短视频工业化剪辑（黄金3s/镜像贴纸/双色对比/封面）
-│   ├── google-flow-broll/         # Google Flow 镜头提示词与 Web 协同规范
-│   ├── remotion/                  # Remotion 底座规范
-│   ├── motion-design/             # 阻尼动效法则
-│   ├── video-shotcraft/           # 镜头语言与特效
-│   ├── handdrawn/                 # 白板手绘擦除
-│   ├── pixel2motion/              # 矢量动态 SVG
-│   └── gsap/                      # 复杂路径补间
+├── .agents/                      # 🤖 【跨 Agent 通用标准】(遵循 Agent Skills 规范: ~/.agents/skills/)
+│   └── skills/                   # 🧠 10+ 大专业 Skills 知识库与规范
+│       ├── live-ecommerce-video-editor/ # 🛍️ 抖音/快手直播带货（黄金3s/推镜/镜像贴纸/双色对比/封面）
+│       ├── tech-tutorial-video-production/ # 💻 自媒体技术教学与硬核科普短视频
+│       ├── project-case-study-video-production/ # 🏗️ 项目复盘与系统架构深度解析
+│       ├── google-flow-broll/    # Google Flow 镜头提示词与 Web 协同规范
+│       ├── remotion/             # Remotion 底座规范
+│       ├── motion-design/        # 阻尼动效法则
+│       ├── video-shotcraft/      # 镜头语言与特效
+│       ├── pixel2motion/         # 矢量动态 SVG
+│       ├── handdrawn/            # 白板手绘擦除
+│       ├── hyperframes/          # HTML/GSAP 极速渲染规范
+│       └── gsap/                 # 复杂路径补间
+│
+├── workflows/                    # ⭐️ 【标准化工作流矩阵】
+│   └── README.md                 # 4 大类视频生产标准 SOP 总控索引
 │
 ├── docs/                          # 📚 深度文档与模型知识库
 │   ├── LIVE_ECOMMERCE_SOP.md      # 🛍️ 抖音带货短视频 6 步标准 SOP
