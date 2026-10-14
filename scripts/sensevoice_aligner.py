@@ -205,7 +205,8 @@ def align_audio_files(
                 "topologyNodes", "topologyLinks", "metrics", "theme", "voiceVolume",
                 "heroImage", "heroVideo", "videoPath", "cameraMotion", "highlights", "pill", "sceneIndex", "totalScenes",
                 "tag", "dateText", "date", "desc",
-                "tweet", "binaryBento", "inverted", "category", "blocksActive", "blocksTotal", "highlightWords"
+                "tweet", "binaryBento", "inverted", "category", "blocksActive", "blocksTotal", "highlightWords",
+                "wechat", "protocolTower", "packetAssembly", "routerInspection"
             ]:
                 if field in meta:
                     scene_data[field] = meta[field]
@@ -367,7 +368,7 @@ def main():
     audio_files = [
         os.path.join(target_audio_dir, f)
         for f in sorted(os.listdir(target_audio_dir), key=natural_sort_key)
-        if f.lower().endswith(SUPPORTED_EXTS)
+        if f.lower().endswith(SUPPORTED_EXTS) and f.lower().startswith("scene_")
     ]
 
     if not audio_files:
