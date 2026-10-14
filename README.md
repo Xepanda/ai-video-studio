@@ -25,7 +25,8 @@ ai-video-studio/
 ├── templates/
 │   └── PROJECT_SPEC_TEMPLATE.md   # 📋 创作者需求填写模板（只需填此文档即可出片）
 │
-├── skills/                        # 🧠 7+1 大专业 Skills 知识库与规范
+├── skills/                        # 🧠 8+1 大专业 Skills 知识库与规范
+│   ├── live-ecommerce-video-editor/ # 🛍️ 抖音/快手直播带货短视频工业化剪辑（黄金3s/镜像贴纸/双色对比/封面）
 │   ├── google-flow-broll/         # Google Flow 镜头提示词与 Web 协同规范
 │   ├── remotion/                  # Remotion 底座规范
 │   ├── motion-design/             # 阻尼动效法则
@@ -34,13 +35,21 @@ ai-video-studio/
 │   ├── pixel2motion/              # 矢量动态 SVG
 │   └── gsap/                      # 复杂路径补间
 │
+├── docs/                          # 📚 深度文档与模型知识库
+│   ├── LIVE_ECOMMERCE_SOP.md      # 🛍️ 抖音带货短视频 6 步标准 SOP
+│   ├── tools_setup.md             # 各种工具下载、安装与环境配置指南
+│   └── knowledge_base/
+│       └── ai_video_engines_playbook.md # 📖 ASR/TTS/Google Flow/确定性渲染全模型实测与排坑宝典
+│
 ├── models/                        # 🧠 AI 模型与核心声音资产库
 │   ├── gpt_sovits/                # 专属微调导出的声音权重 (.pth / .ckpt)
 │   └── reference_audio/           # 提示音频 (5s) 与训练切片数据集
 │
 ├── scripts/                       # 🛠️ 自动化 Python 工具中枢
-│   ├── generate_audio.py          # 多服务商配音生成中枢 (GPT-SoVITS / Edge-TTS)
+│   ├── live_ecommerce_pipeline.py # 🛍️ 直播带货短视频全自动切片、打点、大卡合成流水线
+│   ├── generate_audio.py          # 多服务商配音生成中枢 (ChatTTS / GPT-SoVITS / Edge-TTS)
 │   ├── sensevoice_aligner.py      # SenseVoice 毫秒打点与情绪提取
+│   ├── browser_flow_automation.js # 🌐 Google Flow (flow.google.com) 浏览器 CDP 全自动接管引擎
 │   ├── validator.py               # 数据契约自动化审查脚本 (Quality Gate)
 │   └── pipeline.py                # 一键端到端总控流水线
 │
