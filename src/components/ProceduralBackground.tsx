@@ -75,15 +75,17 @@ export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }
         />
       )}
 
-      {/* 4. 电影级暗角 (Vignette)，压暗边缘使中心内容更有悬浮通透感 */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.70) 100%)',
-          pointerEvents: 'none',
-        }}
-      />
+      {/* 4. 边缘暗角 (仅在深色模式下压暗，浅色模式下保持通透纯净) */}
+      {!theme.isLight && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.70) 100%)',
+            pointerEvents: 'none',
+          }}
+        />
+      )}
     </AbsoluteFill>
   );
 };

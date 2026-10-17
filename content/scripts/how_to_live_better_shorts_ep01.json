@@ -1,0 +1,156 @@
+{
+  "project": "how_to_live_better_shorts_ep01",
+  "title": "高性价比人生指南：几乎零成本，换回十年寿命！",
+  "theme": "editorial-paper-light",
+  "voice": "zh-CN-YunjianNeural",
+  "engine": "edge_tts",
+  "fps": 30,
+  "bgm": "bgm_cyber_ambient.wav",
+  "bgmPath": "audio/bgm_cyber_ambient.wav",
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": true,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MinimalHeadline",
+      "title": "拼命搞钱，别在最底层翻车！",
+      "text": "大家平时都在拼命搞钱、内卷升职，但你有没有想过，如果最底层的健康和安全出了问题，前头的所有努力都会瞬间归零？",
+      "category": "LIFE HACKS · 认知觉醒",
+      "highlightWords": [
+        "拼命搞钱",
+        "瞬间归零"
+      ],
+      "inverted": false
+    },
+    {
+      "id": "scene_02",
+      "type": "WebBrowserMockup",
+      "title": "今天我们来讲：开源神作《高性价比人生指南》",
+      "subtitle": "基于现代医学实证的生活操作手册 · 投入极小成本，换取确定性收益",
+      "badge": "GITHUB 12.8K STARS · 开源神作",
+      "browser": {
+        "url": "github.com/eternity4719/HowToLiveBetter",
+        "image": "images/evidence_github_repo.png",
+        "cameraMotion": "push-in",
+        "highlights": [
+          { "label": "收录建议", "value": "690+ 条实证" },
+          { "label": "四大维度", "value": "寿命/精力/金钱/自由" },
+          { "label": "实证门槛", "value": "A/B 级循证医学", "color": "#15803d" }
+        ]
+      },
+      "text": "最近在开源社区有一份爆火的宝藏神作《高性价比人生指南》。今天第一期，我们就来拆解里面几乎零成本、却能帮你硬生生换回十年寿命的硬核操作！"
+    },
+    {
+      "id": "scene_03",
+      "type": "WebBrowserMockup",
+      "title": "顶级医学期刊实证：两万人餐桌换盐奇迹",
+      "subtitle": "新英格兰医学杂志 (NEJM) · 大型前瞻性随机对照临床试验",
+      "badge": "NEJM 权威顶刊 · A级临床实证",
+      "browser": {
+        "url": "nejm.org/doi/full/10.1056/NEJMoa2105675",
+        "image": "images/evidence_nejm_paper.png",
+        "cameraMotion": "pan-down",
+        "highlights": [
+          { "label": "临床样本", "value": "20,995 人" },
+          { "label": "全因死亡率", "value": "直降 12%", "color": "#15803d" },
+          { "label": "中风发生率", "value": "直降 14%", "color": "#15803d" }
+        ]
+      },
+      "text": "首先是每天都要吃的食盐。新英格兰医学杂志跟踪两万多名老人近五年发现：仅仅是在买盐时换成含钾低钠盐，全因死亡率直接下降百分之十二，中风下降百分之十四！"
+    },
+    {
+      "id": "scene_04",
+      "type": "BinaryBento",
+      "title": "餐桌低钠盐对决：二选一生死账本",
+      "text": "口味几乎没有区别，一袋盐只贵两三块钱，却能无痛降低一成多的猝死风险，这是普通人性价比极高的保命操作。",
+      "binaryBento": {
+        "title": "餐桌换盐决策",
+        "subtitle": "二选一真实账本",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "普通高钠精盐",
+          "desc": "长期高钠推高血压与中风风险",
+          "tag": "传统吃法",
+          "blocksTotal": 5,
+          "blocksActive": 5
+        },
+        "rightCard": {
+          "title": "含钾低钠替代盐",
+          "desc": "口味不变，直接换回生存胜率",
+          "tag": "高性价比",
+          "pill": "全因降死12%"
+        }
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "TweetEmbed",
+      "title": "WHO 官方数据：系好安全带挡掉一半死神",
+      "text": "接下来这个动作更夸张，每天出门多花两秒钟，就能挡掉一半的意外死神。世卫组织统计：系好安全带减少五成致命伤，后排同样必须系好；骑车戴头盔且扣紧卡扣，死亡降四成二！",
+      "tweet": {
+        "authorName": "World Health Organization (WHO)",
+        "authorHandle": "@WHO",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "Official",
+        "content": "Wearing a seatbelt reduces the risk of fatal injury by 45-50% for drivers and front-seat occupants. Fasten your seatbelt every time you travel.",
+        "highlightWords": [
+          "reduces the risk",
+          "45-50%",
+          "every time you travel"
+        ],
+        "subtitle": "WHO 官方权威数据：系好安全带减少 50% 致命伤害，扣好头盔减少 42% 死亡",
+        "metrics": {
+          "replies": "189",
+          "retweets": "1.4K",
+          "likes": "6.2K",
+          "views": "850K"
+        }
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "BinaryBento",
+      "title": "睡梦中的隐形杀手：报警器二选一",
+      "text": "住宅火灾四成遇难者起火时在熟睡，人在深度睡眠中闻不到烟。几十元装个独立烟雾报警器，能把死亡概率硬生生斩断六成！",
+      "binaryBento": {
+        "title": "夜间住宅火灾防范",
+        "subtitle": "生命守护二选一",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "无警报熟睡盲区",
+          "desc": "睡眠嗅觉休眠，41%遇难死于未觉察",
+          "tag": "致命盲区",
+          "blocksTotal": 5,
+          "blocksActive": 4
+        },
+        "rightCard": {
+          "title": "独立烟雾报警器",
+          "desc": "几十块钱装上，刺耳蜂鸣唤醒逃生",
+          "tag": "火灾克星",
+          "pill": "降低60%死亡"
+        }
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "WebBrowserMockup",
+      "title": "挑走一两条照着做，你就是人生赢家！",
+      "subtitle": "HowToLiveBetter 在线自查手册 · 挑选属于你自己的高性价比清单",
+      "badge": "ACTIONABLE LIFE · 落地实操",
+      "browser": {
+        "url": "eternity4719.github.io/HowToLiveBetter",
+        "image": "images/repo_web_screenshot.png",
+        "cameraMotion": "push-in",
+        "highlights": [
+          { "label": "操作原则", "value": "非任务打卡清单" },
+          { "label": "执行策略", "value": "挑 1~2 条照做即稳赚", "color": "#15803d" }
+        ]
+      },
+      "text": "这绝不是让人焦虑打卡的任务清单。六百多条实证建议，你只要挑走一两条照着做，就抓住了人生最大的确定性。关注我们，下期继续解锁高性价比生活黑客！"
+    }
+  ]
+}

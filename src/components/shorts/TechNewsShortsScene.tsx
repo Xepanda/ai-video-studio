@@ -1,4 +1,5 @@
 import React from 'react';
+import { useVideoConfig } from 'remotion';
 import { SceneMeta } from '../UniversalScene';
 import { ThemeConfig } from '../../styles/theme';
 import { MetricCategory } from '../MetricComparison';
@@ -85,11 +86,21 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
   activeTheme,
   style,
 }) => {
-  // 1. 判断是否反转色彩模式（白底黑字视觉爆破）
-  const isInverted = Boolean(
-    scene.inverted ||
-      (scene.binaryBento && scene.binaryBento.theme === 'light')
-  );
+  const { width = 1920, height = 1080 } = (() => {
+    try {
+      return useVideoConfig();
+    } catch {
+      return { width: 1920, height: 1080 };
+    }
+  })();
+  const isVertical = width < height;
+
+  // 1. 判断是否浅色模式与色彩反转
+  const themeIsLight = Boolean(activeTheme?.isLight);
+  const isInverted = Boolean(scene.inverted);
+  // 当全局主题为浅色时：正常模式为雅致浅色纸张，inverted 为沉浸深色；
+  // 当全局主题为深色时：正常模式为极客黑，inverted 为高亮纯白底爆破。
+  const isLightMode = themeIsLight ? !isInverted : isInverted;
 
   // 2. 映射推文卡片属性 (TweetEmbedCard)
   const renderTweetCard = () => {
@@ -105,7 +116,7 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       subtitle: tweet.subtitle || scene.desc || scene.subtitle,
       metrics: tweet.metrics || (!Array.isArray(scene.metrics) ? scene.metrics : undefined),
       theme: activeTheme,
-      maxWidth: tweet.maxWidth || 920,
+      maxWidth: isVertical ? (tweet.maxWidth || 920) : (tweet.maxWidth || 1200),
       style: tweet.style,
       className: tweet.className,
     };
@@ -149,10 +160,13 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       subtitle: bento.subtitle || scene.desc || scene.subtitle,
       leftCard,
       rightCard,
-      dividerText: bento.dividerText || '或',
-      theme: bento.theme || (isInverted ? 'light' : 'dark'),
+      dividerText: bento.dividerText || 'VS',
+      theme: bento.theme || (isLightMode ? 'light' : 'dark'),
       animated: bento.animated !== undefined ? bento.animated : true,
-      style: bento.style,
+      style: {
+        maxWidth: isVertical ? 960 : 1240,
+        ...bento.style,
+      },
       className: bento.className,
     };
     return <BinaryBentoCard {...bentoProps} />;
@@ -166,11 +180,12 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
       category: scene.category || scene.pill || scene.badge,
       tag: scene.tag || scene.systemTag,
       highlightWords: scene.highlightWords,
-      inverted: isInverted,
+      inverted: isLightMode,
       dateText: scene.dateText || scene.date,
       accentColor: activeTheme?.accentColor || '#8b5cf6',
       style: {
         backgroundColor: 'transparent',
+        maxWidth: isVertical ? '100%' : 1200,
       },
     };
     return <MinimalHeadlineScene {...headlineProps} />;
@@ -197,30 +212,33 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
   // 6. 容器背景与样式设置
   const defaultDarkBg =
     'radial-gradient(ellipse 90% 70% at 50% 25%, #181825 0%, #0c0d14 60%, #050508 100%)';
-  const containerBg = isInverted ? '#ffffff' : (activeTheme?.background || defaultDarkBg);
+  const containerBg = isLightMode
+    ? (activeTheme?.background || '#fbf8f1')
+    : (themeIsLight ? '#1e232d' : (activeTheme?.background || defaultDarkBg));
 
   return (
     <div
       className="technews-shorts-scene"
       style={{
-        width: 1080,
-        height: 1920,
-        position: 'relative',
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        inset: 0,
         display: 'flex',
         flexDirection: 'column',
         boxSizing: 'border-box',
         overflow: 'hidden',
-        backgroundColor: isInverted ? '#ffffff' : '#09090b',
+        backgroundColor: isLightMode ? '#fbf8f1' : '#09090b',
         background: containerBg,
-        color: isInverted ? '#09090b' : '#ffffff',
+        color: isLightMode ? '#0f172a' : '#ffffff',
         ...style,
       }}
     >
       {/* 7. 深色模式下的可选工科网格/点阵覆盖装饰 (支持 dots 与 grid) */}
-      {!isInverted && renderBackgroundOverlay(activeTheme)}
+      {!isLightMode && renderBackgroundOverlay(activeTheme)}
 
       {/* 8. 深色模式下的可选环境顶光 (Spotlight) */}
-      {!isInverted && activeTheme?.spotlight && (
+      {!isLightMode && activeTheme?.spotlight && (
         <div
           style={{
             position: 'absolute',
@@ -237,13 +255,13 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
         />
       )}
 
-      {/* 9. 竖屏黄金视觉中心与底部安全区避让容器 (y: 45%~50%，避开抖音右侧互动栏与底部标题) */}
+      {/* 9. 黄金视觉中心与底部安全区避让容器 (横屏 16:9 与竖屏自适应) */}
       <div
         className="technews-shorts-content"
         style={{
           flex: 1,
           width: '100%',
-          maxWidth: 1000,
+          maxWidth: isVertical ? 1000 : 1380,
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
@@ -251,7 +269,7 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
           justifyContent: 'center',
           paddingLeft: 40,
           paddingRight: 40,
-          paddingBottom: 220, // 底部 220px 预留交互安全区
+          paddingBottom: isVertical ? 220 : 100, // 竖屏 220px 避让，横屏 100px 优雅避让底部字幕 Dock
           boxSizing: 'border-box',
           zIndex: 2,
         }}

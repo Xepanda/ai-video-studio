@@ -1,0 +1,101 @@
+{
+  "project": "test_hyperframes_integration",
+  "title": "HyperFrames 极速渲染双引擎全链路集成实测",
+  "theme": "linear-graphite",
+  "voice": "4444",
+  "engine": "chattts",
+  "fps": 30,
+  "bgm": "bgm_cyber_ambient.wav",
+  "bgmPath": "audio/bgm_cyber_ambient.wav",
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": true,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MinimalHeadline",
+      "title": "双引擎调度：HyperFrames 全链路极速转译",
+      "text": "双引擎调度，HyperFrames 全链路极速转译！",
+      "category": "TECH ARCHITECTURE",
+      "highlightWords": [
+        "双引擎调度",
+        "极速转译"
+      ],
+      "inverted": false,
+      "estimatedDuration": 4.0,
+      "estimatedFrames": 120
+    },
+    {
+      "id": "scene_02",
+      "type": "TweetEmbed",
+      "title": "官方推文确认无头光栅化加速",
+      "text": "官方发推宣布，无头光栅化渲染大幅提速。",
+      "tweet": {
+        "authorName": "HyperFrames Team",
+        "authorHandle": "@hyperframes_io",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "2h",
+        "content": "Excited to launch HyperFrames Headless Renderer. Instant GSAP animation compilation with zero overhead.",
+        "highlightWords": [
+          "HyperFrames",
+          "zero overhead"
+        ],
+        "metrics": {
+          "replies": "246",
+          "reposts": "890",
+          "likes": "4.5K",
+          "views": "280K"
+        },
+        "subtitle": "官方确认：全新无头渲染架构已全面集成"
+      },
+      "highlightWords": [
+        "HyperFrames",
+        "zero overhead"
+      ],
+      "estimatedDuration": 5.0,
+      "estimatedFrames": 150
+    },
+    {
+      "id": "scene_03",
+      "type": "BinaryBento",
+      "title": "渲染架构深度对比",
+      "text": "方案对比：传统光栅化与现代化双引擎调度。",
+      "binaryBento": {
+        "title": "渲染引擎对比",
+        "subtitle": "双引擎自适应架构",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "单轨引擎模式",
+          "desc": "启动重开销且缺乏多格式兼容",
+          "tag": "传统模式"
+        },
+        "rightCard": {
+          "title": "双引擎矩阵",
+          "desc": "Remotion 与 HyperFrames 按需调度",
+          "tag": "双引擎调度"
+        }
+      },
+      "blocksActive": 6,
+      "blocksTotal": 8,
+      "estimatedDuration": 5.0,
+      "estimatedFrames": 150
+    },
+    {
+      "id": "scene_04",
+      "type": "VideoBroll",
+      "title": "实测渲染视窗画质与流畅度",
+      "text": "实测视窗高画质渲染与平滑转场动画。",
+      "footage": "public/footage/sample_broll.mp4",
+      "mode": "pip",
+      "highlightWords": [
+        "实测视窗",
+        "平滑转场"
+      ],
+      "estimatedDuration": 5.0,
+      "estimatedFrames": 150
+    }
+  ]
+}

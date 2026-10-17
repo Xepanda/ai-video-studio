@@ -169,21 +169,30 @@ def generate_scene_audio(text: str, out_path: str, env: dict, normalize_phonetic
 
     # 1. 主力引擎: ChatTTS 本地口语化对话与多元种子声学引擎
     if provider in ("chattts", "chat_tts"):
-        from scripts.tts_chattts import synthesize_chattts
+        try:
+            from scripts.audio_engines.tts_chattts import synthesize_chattts
+        except ImportError:
+            from scripts.tts_chattts import synthesize_chattts
         seed = int(env.get("CHATTTS_SEED", 4444))
         print(f"    [ChatTTS] 正在使用本地极速口语合成 (Seed: {seed} · 随和生活男声)...")
         return synthesize_chattts(speech_text, out_path, seed=seed)
 
     # 2. Kokoro-82M 超轻量极速 CPU 引擎 (保留)
     elif provider in ("kokoro", "kokoro-82m", "kokoro_82m"):
-        from scripts.tts_kokoro import synthesize_kokoro
+        try:
+            from scripts.audio_engines.tts_kokoro import synthesize_kokoro
+        except ImportError:
+            from scripts.tts_kokoro import synthesize_kokoro
         kokoro_voice = env.get("KOKORO_VOICE", "zm_031")
         print(f"    [Kokoro-82M] 正在使用本地 CPU 极速合成 (音色: {kokoro_voice})...")
         return synthesize_kokoro(speech_text, out_path, voice=kokoro_voice)
 
     # 3. 优先尝试 F5-TTS 扩散流匹配引擎
     elif provider in ("f5_tts", "f5tts", "f5"):
-        from scripts.tts_f5tts import synthesize_f5tts
+        try:
+            from scripts.audio_engines.tts_f5tts import synthesize_f5tts
+        except ImportError:
+            from scripts.tts_f5tts import synthesize_f5tts
         f5_ref = env.get("F5_REF_AUDIO", os.path.join(PROJECT_ROOT, "models", "reference_audio", "my_voice_ref_5s.wav"))
         f5_text = env.get("F5_REF_TEXT", "大家好，接下来我简单聊聊日常观察到的生活与技术里的小事。")
         print(f"    [F5-TTS] 正在使用本地扩散流匹配零样本克隆...")

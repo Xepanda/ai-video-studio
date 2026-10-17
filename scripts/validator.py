@@ -196,9 +196,12 @@ def validate(timeline_path: str = None):
             if not isinstance(tweet, dict):
                 errors.append(f"分镜 [{scene_id}] 声明为 TweetEmbed，但 tweet 不是合法字典对象！")
             else:
-                for k in ["authorName", "authorHandle", "content"]:
-                    if not tweet.get(k):
-                        errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 '{k}'！")
+                if not (tweet.get("authorName") or tweet.get("author")):
+                    errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 'authorName'！")
+                if not (tweet.get("authorHandle") or tweet.get("handle")):
+                    errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 'authorHandle'！")
+                if not tweet.get("content"):
+                    errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 'content'！")
         elif scene_type == "BinaryBento" or scene.get("binaryBento"):
             bento = scene.get("binaryBento")
             if not isinstance(bento, dict):
@@ -327,9 +330,12 @@ def validate_script_file(script_path: str):
             if not isinstance(tweet, dict):
                 errors.append(f"分镜 [{scene_id}] 声明为 TweetEmbed，但 tweet 不是合法字典对象！")
             else:
-                for k in ["authorName", "authorHandle", "content"]:
-                    if not tweet.get(k):
-                        errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 '{k}'！")
+                if not (tweet.get("authorName") or tweet.get("author")):
+                    errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 'authorName'！")
+                if not (tweet.get("authorHandle") or tweet.get("handle")):
+                    errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 'authorHandle'！")
+                if not tweet.get("content"):
+                    errors.append(f"分镜 [{scene_id}] tweet 缺失核心字段 'content'！")
         elif scene_type == "BinaryBento":
             bento = scene.get("binaryBento")
             if not isinstance(bento, dict):
