@@ -176,6 +176,7 @@ def standardize_video(input_path: str, output_path: str, fps: int = 30) -> str:
         "ffmpeg", "-y", "-i", input_path,
         "-vf", f"fps={fps}",
         "-c:v", "libx264", "-preset", "fast", "-crf", "18",
+        "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k",
         output_path,
     ]
@@ -203,14 +204,15 @@ def ingest_asset(
     """
     project_slug = project if project and project != "common" else "common"
     clean_name = normalize_name(name) if name else None
+    cached_info = None
 
-    # 若未指定 name 且需要执行下载，可尝试快速拉取元数据获取 title
+    # 若未指定 name 且需要执行下载/提取，可尝试快速拉取元数据获取 title
     if not clean_name:
         try:
             info_cmd = [PYTHON_EXE, "-m", "yt_dlp", url, "--dump-json", "--no-download"]
             probe_ret = subprocess.run(info_cmd, capture_output=True, text=True, check=True)
-            info_data = json.loads(probe_ret.stdout)
-            clean_name = normalize_name(info_data.get("title", "material"))
+            cached_info = json.loads(probe_ret.stdout)
+            clean_name = normalize_name(cached_info.get("title", "material"))
         except Exception:
             clean_name = "material"
 
@@ -228,9 +230,12 @@ def ingest_asset(
     # 1. 仅提取元数据
     if extract_info:
         metadata_dir.mkdir(parents=True, exist_ok=True)
-        cmd = build_ytdlp_command(url=url, out_path="", extract_info=True)
-        ret = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        info_json = json.loads(ret.stdout)
+        if cached_info is not None:
+            info_json = cached_info
+        else:
+            cmd = build_ytdlp_command(url=url, out_path="", extract_info=True)
+            ret = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            info_json = json.loads(ret.stdout)
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(info_json, f, ensure_ascii=False, indent=2)
         return {
