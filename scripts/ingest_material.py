@@ -174,7 +174,7 @@ def standardize_video(input_path: str, output_path: str, fps: int = 30) -> str:
 
     ffmpeg_cmd = [
         "ffmpeg", "-y", "-i", input_path,
-        "-vf", f"fps={fps}",
+        "-vf", f"fps={fps},scale=trunc(iw/2)*2:trunc(ih/2)*2",
         "-c:v", "libx264", "-preset", "fast", "-crf", "18",
         "-pix_fmt", "yuv420p",
         "-c:a", "aac", "-b:a", "192k",

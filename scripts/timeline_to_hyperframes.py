@@ -263,6 +263,8 @@ def generate_hyperframes_css(resolution: str = "portrait") -> str:
     is_portrait = resolution == "portrait"
     width = 1080 if is_portrait else 1920
     height = 1920 if is_portrait else 1080
+    is_vertical = height > width
+    subtitle_bottom = "220px" if is_vertical else "80px"
 
     return f"""
       * {{
@@ -583,8 +585,9 @@ def generate_hyperframes_css(resolution: str = "portrait") -> str:
       }}
       /* Subtitles Fixed Safe Area */
       .scene-subtitles {{
+        opacity: 0;
         position: absolute;
-        bottom: 220px; /* Safe area for TikTok / Reels UI */
+        bottom: {subtitle_bottom}; /* Safe area for TikTok / Reels UI */
         left: 48px;
         right: 48px;
         display: flex;
@@ -681,18 +684,14 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
 
         # GSAP Animations
         gsap_timelines.append(f"// Scene {scene_id} Animation")
-        # Spring entrance
         gsap_timelines.append(
-            f'tl.fromTo("#{scene_id} .content-card", {{ opacity: 0, y: 40, scale: 0.94 }}, {{ opacity: 1, y: 0, scale: 1.0, duration: 0.45, ease: "power2.out" }}, {format_sec(start_sec)});'
+            f'tl.fromTo("#{scene_id} .content-card, #{scene_id} .scene-subtitles", '
+            f'{{ opacity: 0, y: 30 }}, {{ opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }}, {format_sec(start_sec)});'
         )
-        # Subtle exit transition right before end of clip
-        entrance_duration = 0.45
-        exit_duration = 0.15
-        exit_time = start_sec + duration_sec - exit_duration
-        if exit_time >= start_sec + entrance_duration:
-            gsap_timelines.append(
-                f'tl.to("#{scene_id} .content-card, #{scene_id} .scene-subtitles", {{ opacity: 0, scale: 0.98, duration: {exit_duration}, ease: "power2.in" }}, {format_sec(exit_time)});'
-            )
+        gsap_timelines.append(
+            f'tl.to("#{scene_id} .content-card, #{scene_id} .scene-subtitles", '
+            f'{{ opacity: 0, duration: 0.3, ease: "power2.in" }}, {format_sec(start_sec + duration_sec - 0.3)});'
+        )
 
         # Word-level karaoke highlights
         for w_idx, w in enumerate(words):
@@ -705,6 +704,16 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
             gsap_timelines.append(
                 f'tl.to("{word_elem_id}", {{ color: "#ffffff", scale: 1.0, duration: 0.12, ease: "power1.out" }}, {format_sec(word_end_sec)});'
             )
+
+    # Inject BGM audio track if enabled and present
+    enable_bgm = timeline.get("enableBgm") is not False
+    bgm_prop = timeline.get("bgmPath") or timeline.get("bgm")
+    if enable_bgm and bgm_prop:
+        bgm_filename = Path(bgm_prop).name
+        bgm_volume = timeline.get("bgmVolume") if timeline.get("bgmVolume") is not None else 0.035
+        audio_elements.append(
+            f'<audio id="bgm" src="assets/audio/{bgm_filename}" data-start="0" data-duration="{format_sec(total_duration_sec)}" data-volume="{bgm_volume}" loop></audio>'
+        )
 
     combined_scenes = "\n".join(scenes_html)
     combined_audio = "\n    ".join(audio_elements)
@@ -803,6 +812,31 @@ def build_hyperframes_project(
             dest_file = assets_audio_dir / found_src.name
             if dest_file.resolve() != found_src.resolve():
                 shutil.copy2(found_src, dest_file)
+
+    # 1.5. Copy BGM asset
+    bgm_prop = timeline.get("bgmPath") or timeline.get("bgm")
+    if bgm_prop:
+        bgm_filename = Path(bgm_prop).name
+        bgm_candidates = [
+            timeline_dir / bgm_prop,
+            timeline_dir / bgm_filename,
+            timeline_dir / "audio" / bgm_filename,
+            PROJECT_ROOT / "public" / bgm_prop,
+            PROJECT_ROOT / "public" / "audio" / bgm_filename,
+            PROJECT_ROOT / bgm_prop,
+            Path(bgm_prop),
+        ]
+
+        found_bgm = None
+        for cand in bgm_candidates:
+            if cand.exists() and cand.is_file():
+                found_bgm = cand
+                break
+
+        if found_bgm:
+            dest_file = assets_audio_dir / bgm_filename
+            if dest_file.resolve() != found_bgm.resolve():
+                shutil.copy2(found_bgm, dest_file)
 
     # 2. Copy footage assets
     for scene in timeline.get("scenes", []):

@@ -64,7 +64,7 @@ def build_render_commands(
     if engine in ("remotion", "both"):
         target_name = f"{project}_remotion" if engine == "both" else project
         out_mp4 = f"out/{target_name}.mp4"
-        remotion_cmd = f"npx remotion render src/index.ts MasterVideo {out_mp4} --concurrency={concurrency}"
+        remotion_cmd = f'npx remotion render src/index.ts MasterVideo "{out_mp4}" --concurrency={concurrency}'
         if isolated:
             remotion_cmd += f' --props="{{\\"timeline\\": \\"public/projects/{project}/timeline.json\\"}}"'
         steps.append({
@@ -80,19 +80,19 @@ def build_render_commands(
         # 步骤 1: timeline_to_hyperframes 时钟转译
         steps.append({
             "name": f"HyperFrames 工程时钟转译 [{project}]",
-            "cmd": f'"{PYTHON_EXE}" scripts/timeline_to_hyperframes.py --project {project}',
+            "cmd": f'"{PYTHON_EXE}" scripts/timeline_to_hyperframes.py --project "{project}"',
             "output_mp4": None,
         })
         # 步骤 2: hyperframes check 静态审查质量门禁
         steps.append({
             "name": f"HyperFrames 静态质量门禁 [{project}]",
-            "cmd": f"npx hyperframes check projects_hf/{project}",
+            "cmd": f'npx hyperframes check "projects_hf/{project}"',
             "output_mp4": None,
         })
         # 步骤 3: hyperframes render 无头光栅化渲染
         steps.append({
             "name": f"HyperFrames 无头光栅化渲染 MP4 [{target_name}]",
-            "cmd": f"npx hyperframes render projects_hf/{project} -o {out_mp4}",
+            "cmd": f'npx hyperframes render "projects_hf/{project}" -o "{out_mp4}"',
             "output_mp4": out_mp4,
         })
 
@@ -207,6 +207,8 @@ def main():
                         f"成品视频音轨商业广播响度标准化 (EBU R128 -11 LUFS): {os.path.basename(mp4_abs)}",
                         [PYTHON_EXE, master_script, "--video", mp4_abs]
                     )
+                else:
+                    print(f"⚠️ [WARN] 目标成片不存在，跳过母带处理: {mp4_abs}")
 
         print(f"\n🎉 视频渲染完成！成片文件:")
         for mp4_rel in rendered_mp4s:

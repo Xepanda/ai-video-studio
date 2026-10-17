@@ -135,7 +135,11 @@ def test_standardize_video(tmp_path):
         mock_run.assert_called_once()
         args = mock_run.call_args[0][0]
         assert "ffmpeg" in args[0]
-        assert "fps=30" in args[args.index("-vf") + 1]
+        vf_arg = args[args.index("-vf") + 1]
+        assert "fps=30" in vf_arg
+        assert "trunc(iw/2)*2" in vf_arg
+        assert "-pix_fmt" in args
+        assert "yuv420p" in args
         assert "18" in args
         assert "192k" in args
 

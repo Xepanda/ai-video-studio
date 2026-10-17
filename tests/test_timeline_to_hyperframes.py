@@ -128,9 +128,11 @@ class TestTimelineToHyperframes(unittest.TestCase):
         self.assertIn("Tibo", html)
         self.assertIn("@tibo_maker", html)
 
-        # Subtitles safe margin and exit transition
+        # Subtitles safe margin, opacity, and GSAP animations
         self.assertIn("bottom: 220px", html)
-        self.assertIn('.scene-subtitles", { opacity: 0', html)
+        self.assertIn("opacity: 0;", html)
+        self.assertIn('.scene-subtitles", { opacity: 0, y: 30', html)
+        self.assertIn('.scene-subtitles", { opacity: 0, duration: 0.3', html)
 
     def test_binary_bento_and_inverted_rendering(self):
         bento_timeline = {
@@ -339,13 +341,65 @@ class TestTimelineToHyperframes(unittest.TestCase):
         self.assertIn('data-out="2.0"', index_html)
 
     def test_generate_hyperframes_css_classes(self):
-        css = generate_hyperframes_css("portrait")
-        self.assertIn(".broll-card", css)
-        self.assertIn(".broll-clip", css)
-        self.assertIn(".pip-frame", css)
-        self.assertIn(".fullscreen-broll", css)
-        self.assertIn(".broll-overlay", css)
-        self.assertIn(".broll-badge", css)
+        css_portrait = generate_hyperframes_css("portrait")
+        self.assertIn(".broll-card", css_portrait)
+        self.assertIn(".broll-clip", css_portrait)
+        self.assertIn(".pip-frame", css_portrait)
+        self.assertIn(".fullscreen-broll", css_portrait)
+        self.assertIn(".broll-overlay", css_portrait)
+        self.assertIn(".broll-badge", css_portrait)
+        self.assertIn("opacity: 0;", css_portrait)
+        self.assertIn("bottom: 220px;", css_portrait)
+
+        css_landscape = generate_hyperframes_css("landscape")
+        self.assertIn("opacity: 0;", css_landscape)
+        self.assertIn("bottom: 80px;", css_landscape)
+
+    def test_bgm_audio_element_injection_and_copying(self):
+        timeline_with_bgm = {
+            "project": "bgm_showcase",
+            "fps": 30,
+            "totalDurationInFrames": 90,
+            "bgmPath": "audio/bgm_cyber_ambient.wav",
+            "enableBgm": True,
+            "bgmVolume": 0.04,
+            "scenes": [
+                {
+                    "id": "scene_01",
+                    "type": "MinimalHeadline",
+                    "startFrame": 0,
+                    "durationInFrames": 90,
+                    "title": "BGM Injected Scene",
+                }
+            ],
+        }
+
+        # 1. Verify BGM element injected in HTML with data-start, duration, volume and loop
+        html = render_hyperframes_html(timeline_with_bgm, resolution="portrait")
+        self.assertIn(
+            '<audio id="bgm" src="assets/audio/bgm_cyber_ambient.wav" data-start="0" data-duration="3.0" data-volume="0.04" loop></audio>',
+            html,
+        )
+
+        # 2. Verify enableBgm=False suppresses BGM element
+        timeline_no_bgm = dict(timeline_with_bgm, enableBgm=False)
+        html_disabled = render_hyperframes_html(timeline_no_bgm, resolution="portrait")
+        self.assertNotIn('<audio id="bgm"', html_disabled)
+
+        # 3. Verify BGM asset copying in build_hyperframes_project
+        dummy_bgm = Path(self.test_dir) / "bgm_cyber_ambient.wav"
+        dummy_bgm.write_bytes(b"dummy bgm audio test content")
+
+        timeline_file = Path(self.test_dir) / "tl_bgm.json"
+        with open(timeline_file, "w", encoding="utf-8") as f:
+            json.dump(timeline_with_bgm, f)
+
+        out_bgm_dir = Path(self.test_dir) / "hf_bgm_out"
+        res = build_hyperframes_project(timeline_file, out_bgm_dir, resolution="portrait")
+        self.assertTrue(res["success"])
+        copied_bgm = out_bgm_dir / "assets" / "audio" / "bgm_cyber_ambient.wav"
+        self.assertTrue(copied_bgm.exists())
+        self.assertEqual(copied_bgm.read_bytes(), b"dummy bgm audio test content")
 
 
 if __name__ == "__main__":
