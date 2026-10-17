@@ -1,0 +1,99 @@
+{
+  "project": "hf_tech_demo",
+  "title": "代码定义视频时代：HyperFrames与yt-dlp双引擎实测",
+  "theme": "linear-graphite",
+  "voice": "2222",
+  "engine": "chattts",
+  "fps": 30,
+  "bgm": "bgm_cyber_ambient.wav",
+  "bgmPath": "audio/bgm_cyber_ambient.wav",
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": false,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MinimalHeadline",
+      "title": "告别传统剪辑软件！代码定义视频时代正式到来",
+      "text": "告别繁琐的传统剪辑软件，以代码直接驱动视觉与时钟的时代已经到来。",
+      "category": "TECH REVOLUTION",
+      "highlightWords": ["告别繁琐", "代码直接驱动"],
+      "estimatedDuration": 5.2
+    },
+    {
+      "id": "scene_02",
+      "type": "TweetEmbed",
+      "title": "HeyGen 官方开源 HyperFrames 视频渲染引擎",
+      "text": "HeyGen 官方正式开源 HyperFrames，用原生 HTML、CSS 与 GSAP 打造高保真确定性视频。",
+      "category": "OPEN SOURCE",
+      "highlightWords": ["HyperFrames", "HTML与CSS", "确定性视频"],
+      "tweet": {
+        "author": "HeyGen Engineering",
+        "handle": "@heygen_official",
+        "authorName": "HeyGen Engineering",
+        "authorHandle": "@heygen_official",
+        "content": "We open-sourced HyperFrames! Pure HTML, CSS, and GSAP now power deterministic, frame-accurate video rendering for developers and AI agents.",
+        "avatar": "",
+        "verified": true,
+        "dateText": "Just now",
+        "highlightWords": ["HyperFrames", "Pure HTML, CSS, and GSAP", "deterministic"],
+        "metrics": {
+          "likes": "8.2K",
+          "retweets": "1.4K",
+          "views": "285K"
+        }
+      },
+      "estimatedDuration": 6.8
+    },
+    {
+      "id": "scene_03",
+      "type": "VideoBroll",
+      "title": "yt-dlp 流媒体素材智能切片与高品质画中画",
+      "text": "上游通过 yt-dlp 自动切取高保真视频流，无需下载冗余素材，毫秒级嵌入动态视窗。",
+      "category": "INGESTION HUB",
+      "footage": "public/projects/hf_tech_demo/footage/broll_bbb.mp4",
+      "mode": "pip",
+      "highlightWords": ["yt-dlp", "高保真视频流", "动态视窗"],
+      "estimatedDuration": 6.5
+    },
+    {
+      "id": "scene_04",
+      "type": "BinaryBento",
+      "title": "Remotion 与 HyperFrames 双引擎协同",
+      "text": "Remotion 胜任三维复杂动效，HyperFrames 专注轻量极速排版，双引擎自由按需调度。",
+      "category": "DUAL ENGINES",
+      "highlightWords": ["Remotion", "HyperFrames", "双引擎自由调度"],
+      "binaryBento": {
+        "leftCard": {
+          "title": "Remotion 旗舰引擎",
+          "subtitle": "复杂 3D 与全真交互组件",
+          "desc": "React 19 虚拟 DOM，2.5D 深度摄像机，适合五层网络塔等重度拓扑动效",
+          "tag": "深度交互",
+          "active": true
+        },
+        "rightCard": {
+          "title": "HyperFrames 轻量引擎",
+          "subtitle": "原生 Web 标准与 GSAP 缓动",
+          "desc": "原生 HTML/CSS/GSAP，毫秒级轻量预览，大模型生成稳定零代码负担",
+          "tag": "轻量极速",
+          "active": true
+        },
+        "blocksActive": 8,
+        "blocksTotal": 8
+      },
+      "estimatedDuration": 7.2
+    },
+    {
+      "id": "scene_05",
+      "type": "MinimalHeadline",
+      "title": "全自动工业级管线：从素材采集到商业广播母带，仅需一键！",
+      "text": "从上游素材切片到最终 EBU R128 商业级广播母带压制，全自动生产流仅需一键指令！",
+      "category": "AI VIDEO STUDIO",
+      "inverted": true,
+      "highlightWords": ["全自动生产流", "商业级广播母带", "仅需一键指令"],
+      "estimatedDuration": 6.0
+    }
+  ]
+}
