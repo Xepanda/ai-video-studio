@@ -11,7 +11,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 # Ensure project root in sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -171,105 +171,99 @@ def render_binary_bento(scene: Dict[str, Any], scene_id: str) -> str:
     """
 
 
-def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrait") -> str:
-    fps = timeline.get("fps", 30)
-    total_frames = timeline.get("totalDurationInFrames", 300)
-    total_duration_sec = total_frames / fps
-    scenes = timeline.get("scenes", [])
+def render_broll_clip(scene: Dict[str, Any], scene_id: str) -> str:
+    """
+    Renders a B-Roll video clip container.
+    Supports 'pip' (picture-in-picture) and 'fullscreen' modes.
+    """
+    fps = scene.get("fps", 30)
 
+    # Determine deterministic in and out timestamps
+    if scene.get("startSec") is not None:
+        start_sec = float(scene["startSec"])
+    elif scene.get("data-in") is not None:
+        start_sec = float(scene["data-in"])
+    elif scene.get("startFrame") is not None:
+        start_sec = float(scene["startFrame"]) / fps
+    else:
+        start_sec = 0.0
+
+    if scene.get("durationSec") is not None:
+        duration_sec = float(scene["durationSec"])
+    elif scene.get("data-out") is not None:
+        duration_sec = float(scene["data-out"]) - start_sec
+    elif scene.get("durationInFrames") is not None:
+        duration_sec = float(scene["durationInFrames"]) / fps
+    else:
+        duration_sec = 0.0
+
+    end_sec = start_sec + duration_sec
+    data_in_val = format_sec(start_sec)
+    data_out_val = format_sec(end_sec)
+
+    # Resolve footage relative path to assets/footage/{basename}
+    raw_footage = scene.get("footage") or scene.get("video") or scene.get("src") or ""
+    if raw_footage:
+        basename = Path(raw_footage).name
+        footage_rel = f"assets/footage/{basename}"
+    else:
+        footage_rel = "assets/footage/placeholder.mp4"
+
+    # Support mode: "pip" (picture-in-picture) and "fullscreen" (full screen background)
+    mode = str(scene.get("mode", "pip")).lower()
+    if mode == "fullscreen":
+        mode_class = "fullscreen-broll"
+        overlay_html = '<div class="broll-overlay"></div>'
+    else:
+        mode_class = "pip-frame"
+        overlay_html = ""
+
+    # Floating title badge
+    title = scene.get("title") or scene.get("badge") or scene.get("text")
+    if title:
+        highlight_words = scene.get("highlightWords", [])
+        rendered_title = render_text_with_highlights(title, highlight_words, "headline-capsule")
+        badge_html = f'<div class="broll-badge">{rendered_title}</div>'
+    else:
+        badge_html = ""
+
+    return f"""
+    <div class="content-card broll-card {mode_class}">
+      <video class="broll-clip" src="{footage_rel}" data-in="{data_in_val}" data-out="{data_out_val}" autoplay muted playsinline loop></video>
+      {overlay_html}
+      {badge_html}
+    </div>
+    """
+
+
+def generate_scene_html(scene: Dict[str, Any], scene_id: Optional[str] = None) -> str:
+    """
+    Polymorphic scene dispatching based on scene metadata or type.
+    """
+    if scene_id is None:
+        scene_id = scene.get("id", "scene_00")
+
+    scene_type = scene.get("type", "MinimalHeadline")
+
+    if scene_type in ("VideoBroll", "VideoClip", "Broll") or scene.get("footage") or scene.get("video"):
+        return render_broll_clip(scene, scene_id)
+    elif scene_type == "TweetEmbed" or scene.get("tweet"):
+        return render_tweet_embed(scene, scene_id)
+    elif scene_type == "BinaryBento" or scene.get("binaryBento"):
+        return render_binary_bento(scene, scene_id)
+    else:
+        return render_minimal_headline(scene, scene_id)
+
+
+def generate_hyperframes_css(resolution: str = "portrait") -> str:
+    """
+    Generates CSS styles for HyperFrames composition.
+    """
     is_portrait = resolution == "portrait"
     width = 1080 if is_portrait else 1920
     height = 1920 if is_portrait else 1080
 
-    scenes_html: List[str] = []
-    audio_elements: List[str] = []
-    gsap_timelines: List[str] = []
-
-    for scene in scenes:
-        scene_id = scene.get("id", "scene_00")
-        scene_type = scene.get("type", "MinimalHeadline")
-        start_frame = scene.get("startFrame", 0)
-        duration_frames = scene.get("durationInFrames", 60)
-
-        start_sec = start_frame / fps
-        duration_sec = duration_frames / fps
-
-        # Render visual card content
-        if scene_type == "TweetEmbed" or scene.get("tweet"):
-            card_content = render_tweet_embed(scene, scene_id)
-        elif scene_type == "BinaryBento" or scene.get("binaryBento"):
-            card_content = render_binary_bento(scene, scene_id)
-        else:
-            card_content = render_minimal_headline(scene, scene_id)
-
-        # Build Subtitles HTML for this scene
-        words = scene.get("words", [])
-        sub_spans = []
-        for w_idx, w in enumerate(words):
-            sub_spans.append(
-                f'<span id="sub_{scene_id}_{w_idx}" class="sub-word">{escape_text(w.get("text", ""))}</span>'
-            )
-        subtitles_html = f'<div class="scene-subtitles">{" ".join(sub_spans)}</div>'
-
-        # Scene clip element
-        scene_markup = f"""
-        <!-- Scene: {scene_id} ({scene_type}) -->
-        <section id="{scene_id}" class="clip scene-clip" data-start="{format_sec(start_sec)}" data-duration="{format_sec(duration_sec)}" data-track-index="0">
-          <div class="scene-inner">
-            {card_content}
-            {subtitles_html}
-          </div>
-        </section>
-        """
-        scenes_html.append(scene_markup)
-
-        # Audio tag
-        audio_path = scene.get("audioPath")
-        if audio_path:
-            # Point to local assets path
-            asset_audio_rel = f"assets/audio/{Path(audio_path).name}"
-            audio_markup = f'<audio id="voice_{scene_id}" src="{asset_audio_rel}" data-start="{format_sec(start_sec)}" data-duration="{format_sec(duration_sec)}" data-volume="1"></audio>'
-            audio_elements.append(audio_markup)
-
-        # GSAP Animations
-        gsap_timelines.append(f"// Scene {scene_id} Animation")
-        # Spring entrance
-        gsap_timelines.append(
-            f'tl.fromTo("#{scene_id} .content-card", {{ opacity: 0, y: 40, scale: 0.94 }}, {{ opacity: 1, y: 0, scale: 1.0, duration: 0.45, ease: "power2.out" }}, {format_sec(start_sec)});'
-        )
-        # Subtle exit transition right before end of clip
-        entrance_duration = 0.45
-        exit_duration = 0.15
-        exit_time = start_sec + duration_sec - exit_duration
-        if exit_time >= start_sec + entrance_duration:
-            gsap_timelines.append(
-                f'tl.to("#{scene_id} .content-card, #{scene_id} .scene-subtitles", {{ opacity: 0, scale: 0.98, duration: {exit_duration}, ease: "power2.in" }}, {format_sec(exit_time)});'
-            )
-
-        # Word-level karaoke highlights
-        for w_idx, w in enumerate(words):
-            word_start_sec = start_sec + (w.get("startMs", 0) / 1000.0)
-            word_end_sec = start_sec + (w.get("endMs", 0) / 1000.0)
-            word_elem_id = f"#sub_{scene_id}_{w_idx}"
-            gsap_timelines.append(
-                f'tl.fromTo("{word_elem_id}", {{ color: "#71717a", scale: 0.96 }}, {{ color: "#facc15", scale: 1.06, duration: 0.12, ease: "power1.out" }}, {format_sec(word_start_sec)});'
-            )
-            gsap_timelines.append(
-                f'tl.to("{word_elem_id}", {{ color: "#ffffff", scale: 1.0, duration: 0.12, ease: "power1.out" }}, {format_sec(word_end_sec)});'
-            )
-
-    combined_scenes = "\n".join(scenes_html)
-    combined_audio = "\n    ".join(audio_elements)
-    combined_gsap = "\n      ".join(gsap_timelines)
-
-    html_template = f"""<!doctype html>
-<html lang="zh-CN" data-resolution="{resolution}">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width={width}, height={height}" />
-    <title>HyperFrames Video Composition</title>
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <style>
+    return f"""
       * {{
         margin: 0;
         padding: 0;
@@ -532,6 +526,60 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
       .progress-block.inactive {{
         background: rgba(255, 255, 255, 0.1);
       }}
+      /* B-Roll Video Card Styles */
+      .broll-card {{
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+      }}
+      .broll-clip {{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }}
+      .pip-frame {{
+        width: 100%;
+        max-width: 960px;
+        aspect-ratio: 16 / 9;
+        border-radius: 36px;
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        background: #000000;
+        box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.2);
+      }}
+      .fullscreen-broll {{
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+        z-index: 0;
+      }}
+      .broll-overlay {{
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(0, 0, 0, 0.15) 0%, rgba(9, 9, 11, 0.85) 100%);
+        pointer-events: none;
+        z-index: 1;
+      }}
+      .broll-badge {{
+        position: absolute;
+        top: 36px;
+        left: 44px;
+        z-index: 10;
+        padding: 12px 28px;
+        border-radius: 9999px;
+        background: rgba(24, 24, 27, 0.85);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 28px;
+        font-weight: 700;
+        color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }}
       /* Subtitles Fixed Safe Area */
       .scene-subtitles {{
         position: absolute;
@@ -545,6 +593,7 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
         gap: 12px;
         text-align: center;
         pointer-events: none;
+        z-index: 20;
       }}
       .sub-word {{
         font-size: 44px;
@@ -552,6 +601,107 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
         color: #71717a;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
       }}
+    """
+
+
+def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrait") -> str:
+    fps = timeline.get("fps", 30)
+    total_frames = timeline.get("totalDurationInFrames", 300)
+    total_duration_sec = total_frames / fps
+    scenes = timeline.get("scenes", [])
+
+    is_portrait = resolution == "portrait"
+    width = 1080 if is_portrait else 1920
+    height = 1920 if is_portrait else 1080
+
+    scenes_html: List[str] = []
+    audio_elements: List[str] = []
+    gsap_timelines: List[str] = []
+
+    for scene in scenes:
+        scene_id = scene.get("id", "scene_00")
+        scene_type = scene.get("type", "MinimalHeadline")
+        start_frame = scene.get("startFrame", 0)
+        duration_frames = scene.get("durationInFrames", 60)
+
+        start_sec = start_frame / fps
+        duration_sec = duration_frames / fps
+
+        # Render visual card content
+        scene_with_ctx = dict(scene)
+        if "fps" not in scene_with_ctx:
+            scene_with_ctx["fps"] = fps
+        card_content = generate_scene_html(scene_with_ctx, scene_id)
+
+        # Build Subtitles HTML for this scene
+        words = scene.get("words", [])
+        sub_spans = []
+        for w_idx, w in enumerate(words):
+            sub_spans.append(
+                f'<span id="sub_{scene_id}_{w_idx}" class="sub-word">{escape_text(w.get("text", ""))}</span>'
+            )
+        subtitles_html = f'<div class="scene-subtitles">{" ".join(sub_spans)}</div>'
+
+        # Scene clip element
+        scene_markup = f"""
+        <!-- Scene: {scene_id} ({scene_type}) -->
+        <section id="{scene_id}" class="clip scene-clip" data-start="{format_sec(start_sec)}" data-duration="{format_sec(duration_sec)}" data-in="{format_sec(start_sec)}" data-out="{format_sec(start_sec + duration_sec)}" data-track-index="0">
+          <div class="scene-inner">
+            {card_content}
+            {subtitles_html}
+          </div>
+        </section>
+        """
+        scenes_html.append(scene_markup)
+
+        # Audio tag
+        audio_path = scene.get("audioPath")
+        if audio_path:
+            # Point to local assets path
+            asset_audio_rel = f"assets/audio/{Path(audio_path).name}"
+            audio_markup = f'<audio id="voice_{scene_id}" src="{asset_audio_rel}" data-start="{format_sec(start_sec)}" data-duration="{format_sec(duration_sec)}" data-volume="1"></audio>'
+            audio_elements.append(audio_markup)
+
+        # GSAP Animations
+        gsap_timelines.append(f"// Scene {scene_id} Animation")
+        # Spring entrance
+        gsap_timelines.append(
+            f'tl.fromTo("#{scene_id} .content-card", {{ opacity: 0, y: 40, scale: 0.94 }}, {{ opacity: 1, y: 0, scale: 1.0, duration: 0.45, ease: "power2.out" }}, {format_sec(start_sec)});'
+        )
+        # Subtle exit transition right before end of clip
+        entrance_duration = 0.45
+        exit_duration = 0.15
+        exit_time = start_sec + duration_sec - exit_duration
+        if exit_time >= start_sec + entrance_duration:
+            gsap_timelines.append(
+                f'tl.to("#{scene_id} .content-card, #{scene_id} .scene-subtitles", {{ opacity: 0, scale: 0.98, duration: {exit_duration}, ease: "power2.in" }}, {format_sec(exit_time)});'
+            )
+
+        # Word-level karaoke highlights
+        for w_idx, w in enumerate(words):
+            word_start_sec = start_sec + (w.get("startMs", 0) / 1000.0)
+            word_end_sec = start_sec + (w.get("endMs", 0) / 1000.0)
+            word_elem_id = f"#sub_{scene_id}_{w_idx}"
+            gsap_timelines.append(
+                f'tl.fromTo("{word_elem_id}", {{ color: "#71717a", scale: 0.96 }}, {{ color: "#facc15", scale: 1.06, duration: 0.12, ease: "power1.out" }}, {format_sec(word_start_sec)});'
+            )
+            gsap_timelines.append(
+                f'tl.to("{word_elem_id}", {{ color: "#ffffff", scale: 1.0, duration: 0.12, ease: "power1.out" }}, {format_sec(word_end_sec)});'
+            )
+
+    combined_scenes = "\n".join(scenes_html)
+    combined_audio = "\n    ".join(audio_elements)
+    combined_gsap = "\n      ".join(gsap_timelines)
+
+    html_template = f"""<!doctype html>
+<html lang="zh-CN" data-resolution="{resolution}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width={width}, height={height}" />
+    <title>HyperFrames Video Composition</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+{generate_hyperframes_css(resolution)}
     </style>
   </head>
   <body>
@@ -584,36 +734,43 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
     return html_template
 
 
-def convert_timeline_to_hyperframes(
-    timeline_path: str,
-    out_dir: str,
+def build_hyperframes_project(
+    timeline_path: Union[str, Path, Dict[str, Any]],
+    out_dir: Union[str, Path],
     resolution: str = "portrait",
 ) -> Dict[str, Any]:
     """
     Main conversion entrypoint.
+    Builds a complete, self-contained HyperFrames project directory.
     """
-    timeline_file = Path(timeline_path).resolve()
-    if not timeline_file.exists():
-        raise FileNotFoundError(f"Timeline file not found: {timeline_path}")
-
-    with open(timeline_file, "r", encoding="utf-8") as f:
-        timeline = json.load(f)
+    if isinstance(timeline_path, dict):
+        timeline = timeline_path
+        timeline_dir = Path(out_dir).resolve()
+    else:
+        timeline_file = Path(timeline_path).resolve()
+        if not timeline_file.exists():
+            raise FileNotFoundError(f"Timeline file not found: {timeline_path}")
+        with open(timeline_file, "r", encoding="utf-8") as f:
+            timeline = json.load(f)
+        timeline_dir = timeline_file.parent
 
     out_path = Path(out_dir).resolve()
     out_path.mkdir(parents=True, exist_ok=True)
     assets_audio_dir = out_path / "assets" / "audio"
     assets_audio_dir.mkdir(parents=True, exist_ok=True)
+    assets_footage_dir = out_path / "assets" / "footage"
+    assets_footage_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Copy audio assets
-    timeline_dir = timeline_file.parent
     for scene in timeline.get("scenes", []):
         audio_rel = scene.get("audioPath")
         if not audio_rel:
             continue
 
-        # Look in multiple candidate paths
         candidate_paths = [
             timeline_dir / audio_rel,
+            timeline_dir / Path(audio_rel).name,
+            timeline_dir / "audio" / Path(audio_rel).name,
             PROJECT_ROOT / "public" / audio_rel,
             PROJECT_ROOT / audio_rel,
             Path(audio_rel),
@@ -627,15 +784,43 @@ def convert_timeline_to_hyperframes(
 
         if found_src:
             dest_file = assets_audio_dir / found_src.name
-            shutil.copy2(found_src, dest_file)
+            if dest_file.resolve() != found_src.resolve():
+                shutil.copy2(found_src, dest_file)
 
-    # 2. Render index.html
+    # 2. Copy footage assets
+    for scene in timeline.get("scenes", []):
+        footage_src = scene.get("footage") or scene.get("video") or scene.get("src")
+        if not footage_src:
+            continue
+
+        candidate_paths = [
+            timeline_dir / footage_src,
+            timeline_dir / Path(footage_src).name,
+            timeline_dir / "footage" / Path(footage_src).name,
+            timeline_dir / "assets" / "footage" / Path(footage_src).name,
+            PROJECT_ROOT / "public" / footage_src,
+            PROJECT_ROOT / footage_src,
+            Path(footage_src),
+        ]
+
+        found_src = None
+        for cand in candidate_paths:
+            if cand.exists() and cand.is_file():
+                found_src = cand
+                break
+
+        if found_src:
+            dest_file = assets_footage_dir / found_src.name
+            if dest_file.resolve() != found_src.resolve():
+                shutil.copy2(found_src, dest_file)
+
+    # 3. Render index.html
     html_content = render_hyperframes_html(timeline, resolution=resolution)
     index_file = out_path / "index.html"
     with open(index_file, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    # 3. Write hyperframes.json
+    # 4. Write hyperframes.json
     hf_config = {
         "$schema": "https://hyperframes.heygen.com/schema/hyperframes.json",
         "registry": "https://raw.githubusercontent.com/heygen-com/hyperframes/main/registry",
@@ -651,7 +836,7 @@ def convert_timeline_to_hyperframes(
     with open(out_path / "hyperframes.json", "w", encoding="utf-8") as f:
         json.dump(hf_config, f, indent=2)
 
-    # 4. Write meta.json
+    # 5. Write meta.json
     meta_config = {
         "id": timeline.get("project", "hyperframes_composition"),
         "name": timeline.get("project", "hyperframes_composition"),
@@ -668,6 +853,10 @@ def convert_timeline_to_hyperframes(
     }
 
 
+# Backwards compatibility alias
+convert_timeline_to_hyperframes = build_hyperframes_project
+
+
 def main():
     parser = argparse.ArgumentParser(description="Convert timeline.json to HyperFrames composition project")
     parser.add_argument("--timeline", required=True, help="Path to input timeline.json")
@@ -675,7 +864,7 @@ def main():
     parser.add_argument("--resolution", default="portrait", choices=["portrait", "landscape"], help="Canvas resolution")
 
     args = parser.parse_args()
-    result = convert_timeline_to_hyperframes(
+    result = build_hyperframes_project(
         timeline_path=args.timeline,
         out_dir=args.out_dir,
         resolution=args.resolution,
@@ -685,3 +874,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
