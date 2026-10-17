@@ -26,19 +26,15 @@ def run_step(step_name: str, cmd):
     print(f"🚀 [Pipeline Step] 正在执行: {step_name}")
     print(f"=======================================================\n")
     if isinstance(cmd, str):
-        if sys.platform == "win32":
-            actual_cmd = ["cmd.exe", "/c", cmd]
-        else:
-            actual_cmd = ["/bin/sh", "-c", cmd]
+        ret = subprocess.run(cmd, shell=True, cwd=PROJECT_ROOT)
     elif isinstance(cmd, list):
         if sys.platform == "win32" and cmd and cmd[0] in ("npx", "hyperframes", "remotion"):
             actual_cmd = ["cmd.exe", "/c"] + cmd
         else:
             actual_cmd = cmd
+        ret = subprocess.run(actual_cmd, cwd=PROJECT_ROOT)
     else:
-        actual_cmd = cmd
-
-    ret = subprocess.run(actual_cmd, cwd=PROJECT_ROOT)
+        ret = subprocess.run(cmd, cwd=PROJECT_ROOT)
     if ret.returncode != 0:
         print(f"\n❌ [Pipeline Failed] 步骤 [{step_name}] 执行失败，错误码: {ret.returncode}")
         sys.exit(ret.returncode)

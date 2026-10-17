@@ -227,9 +227,10 @@ def render_broll_clip(scene: Dict[str, Any], scene_id: str) -> str:
     else:
         badge_html = ""
 
+    video_id = f"video_{scene_id}"
     return f"""
     <div class="content-card broll-card {mode_class}">
-      <video class="broll-clip" src="{footage_rel}" data-in="{data_in_val}" data-out="{data_out_val}" autoplay muted playsinline loop></video>
+      <video id="{video_id}" class="broll-clip" src="{footage_rel}" data-start="{format_sec(start_sec)}" data-duration="{format_sec(duration_sec)}" data-in="{data_in_val}" data-out="{data_out_val}" autoplay muted playsinline loop></video>
       {overlay_html}
       {badge_html}
     </div>
@@ -633,17 +634,33 @@ def render_hyperframes_html(timeline: Dict[str, Any], resolution: str = "portrai
             scene_with_ctx["fps"] = fps
         card_content = generate_scene_html(scene_with_ctx, scene_id)
 
+        # Check if scene is video
+        is_video_scene = scene_type in ("VideoBroll", "VideoClip", "Broll") or bool(scene.get("footage")) or bool(scene.get("video"))
+
         # Build Subtitles HTML for this scene
         words = scene.get("words", [])
         sub_spans = []
         for w_idx, w in enumerate(words):
+            overlap_attr = ' data-layout-allow-overlap="true"' if is_video_scene else ''
             sub_spans.append(
-                f'<span id="sub_{scene_id}_{w_idx}" class="sub-word">{escape_text(w.get("text", ""))}</span>'
+                f'<span id="sub_{scene_id}_{w_idx}" class="sub-word"{overlap_attr}>{escape_text(w.get("text", ""))}</span>'
             )
-        subtitles_html = f'<div class="scene-subtitles">{" ".join(sub_spans)}</div>'
+        subtitles_attr = ' data-layout-allow-overlap="true"' if is_video_scene else ''
+        subtitles_html = f'<div class="scene-subtitles"{subtitles_attr}>{" ".join(sub_spans)}</div>'
 
         # Scene clip element
-        scene_markup = f"""
+        if is_video_scene:
+            scene_markup = f"""
+        <!-- Scene: {scene_id} ({scene_type}) -->
+        <section id="{scene_id}" class="clip scene-clip" data-layout-allow-overlap="true">
+          <div class="scene-inner" data-layout-allow-overlap="true">
+            {card_content}
+            {subtitles_html}
+          </div>
+        </section>
+        """
+        else:
+            scene_markup = f"""
         <!-- Scene: {scene_id} ({scene_type}) -->
         <section id="{scene_id}" class="clip scene-clip" data-start="{format_sec(start_sec)}" data-duration="{format_sec(duration_sec)}" data-in="{format_sec(start_sec)}" data-out="{format_sec(start_sec + duration_sec)}" data-track-index="0">
           <div class="scene-inner">
