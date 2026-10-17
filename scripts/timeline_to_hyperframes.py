@@ -859,14 +859,28 @@ convert_timeline_to_hyperframes = build_hyperframes_project
 
 def main():
     parser = argparse.ArgumentParser(description="Convert timeline.json to HyperFrames composition project")
-    parser.add_argument("--timeline", required=True, help="Path to input timeline.json")
-    parser.add_argument("--out_dir", required=True, help="Path to output project directory")
+    parser.add_argument("--project", default=None, help="Project name (defaults timeline to public/projects/{project}/timeline.json and out_dir to projects_hf/{project})")
+    parser.add_argument("--timeline", default=None, help="Path to input timeline.json")
+    parser.add_argument("--out_dir", default=None, help="Path to output project directory")
     parser.add_argument("--resolution", default="portrait", choices=["portrait", "landscape"], help="Canvas resolution")
 
     args = parser.parse_args()
+    timeline_path = args.timeline
+    out_dir = args.out_dir
+    if args.project:
+        if not timeline_path:
+            isolated_tl = PROJECT_ROOT / "public" / "projects" / args.project / "timeline.json"
+            default_tl = PROJECT_ROOT / "public" / "timeline.json"
+            timeline_path = str(isolated_tl if isolated_tl.exists() else default_tl)
+        if not out_dir:
+            out_dir = str(PROJECT_ROOT / "projects_hf" / args.project)
+
+    if not timeline_path or not out_dir:
+        parser.error("Either --project or both --timeline and --out_dir must be specified")
+
     result = build_hyperframes_project(
-        timeline_path=args.timeline,
-        out_dir=args.out_dir,
+        timeline_path=timeline_path,
+        out_dir=out_dir,
         resolution=args.resolution,
     )
     print(f"Successfully generated HyperFrames project at: {result['out_dir']}")
