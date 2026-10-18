@@ -12,6 +12,14 @@
   ```bash
   python scripts/live_ecommerce_pipeline.py --project "D:/dy-video-projects/project1_jacket"
   ```
+- **⭐ 数据驱动批量化升级（多 SKU 一键成片）**：[`scripts/live_ecommerce_batch_pipeline.py`](../scripts/live_ecommerce_batch_pipeline.py)
+  - 每个 SKU 一份「剪辑计划 JSON」（`02_scripts_and_docs/plans/<sku>.plan.json`），声明切片/推镜/镜像/分屏/贴纸/字幕/封面全要素；
+  - 所有时间点**锚定到切片**（`{clip, off, dur}`），按渲染后实测时长解析，彻底消除累积漂移；
+  - 自动产出：黄金3秒钩子卡（胸前带避脸位）、6 款利益点挂角徽章（低位 y=1400 安全带）、50:50 对称双色分屏（居中发光分割线 + 左右胶囊标签）、ASS 发光字幕（关键词亮黄）、Sub-Bass Boom、尾部 CTA 气泡、Option 1 爆款封面；
+  - 执行命令：
+  ```bash
+  python scripts/live_ecommerce_batch_pipeline.py --project "D:/dy-video-projects/dy_live_20261014" --sku sku09_thinsulate
+  ```
 
 ---
 

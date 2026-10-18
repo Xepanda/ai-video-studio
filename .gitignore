@@ -49,8 +49,12 @@ public/projects/
 .audio_cache.json
 *.audio_cache.json
 
-# Local binaries and tooling
+# Local binaries, snapshots, caches, and tooling
 bin/
+.workbuddy/
+.cache/
+.snapshots/
+*.tmp*
 
 # HyperFrames project audio outputs
 projects_hf/*/assets/audio/*

@@ -1,0 +1,64 @@
+{
+  "id": "architecture_flow",
+  "name": "System Architecture Flow",
+  "resolution": "portrait",
+  "duration": 5.0,
+  "fps": 30,
+  "badge": "DISTRIBUTED ARCHITECTURE",
+  "title": "HIGH-CONCURRENCY EVENT STREAM",
+  "subtitle": "Low-Latency Event-Driven Microservices",
+  "nodes": [
+    {
+      "id": "node_client",
+      "type": "Client",
+      "title": "Client Tier",
+      "subtitle": "Web / Mobile SDK",
+      "badge": "120k RPS",
+      "icon": "globe",
+      "status": "ONLINE"
+    },
+    {
+      "id": "node_gateway",
+      "type": "Gateway",
+      "title": "API Gateway",
+      "subtitle": "JWT & Rate Limiter",
+      "badge": "p99 < 2ms",
+      "icon": "shield",
+      "status": "ROUTING"
+    },
+    {
+      "id": "node_queue",
+      "type": "Queue",
+      "title": "Message Broker",
+      "subtitle": "Distributed Kafka",
+      "badge": "Partitioned",
+      "icon": "layers",
+      "status": "QUEUED"
+    },
+    {
+      "id": "node_worker",
+      "type": "Worker",
+      "title": "Compute Pool",
+      "subtitle": "Autoscaling Workers",
+      "badge": "64 Pods",
+      "icon": "cpu",
+      "status": "PROCESSING"
+    }
+  ],
+  "metrics": [
+    { "label": "Latency", "value": "< 1.8ms" },
+    { "label": "Throughput", "value": "120,000 req/s" },
+    { "label": "Reliability", "value": "99.999%" }
+  ],
+  "theme": {
+    "accentColor": "#6366f1",
+    "accentGlow": "rgba(99, 102, 241, 0.4)",
+    "pulseColor": "#38bdf8",
+    "pulseGlow": "rgba(56, 189, 248, 0.9)",
+    "nodeBg": "rgba(18, 18, 23, 0.88)",
+    "nodeBorder": "rgba(255, 255, 255, 0.1)",
+    "bgGradient": "radial-gradient(ellipse at 50% 25%, #181824 0%, #09090d 100%)",
+    "textColor": "#f8fafc",
+    "textMuted": "#94a3b8"
+  }
+}
