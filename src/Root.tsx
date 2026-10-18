@@ -21,19 +21,20 @@ declare const require: any;
 // =========================================================================
 const Scene01VoiceClone: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const isVertical = height > width;
 
   const titleSpring = spring({ frame, fps, config: { damping: 14, stiffness: 120 } });
   const pulse = Math.sin(frame / 5) * 5;
 
   return (
-    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px' }}>
-      <div style={{ transform: `scale(${interpolate(titleSpring, [0, 1], [0.85, 1.0])})`, textAlign: 'center', marginBottom: '36px' }}>
-        <div style={{ fontSize: '20px', color: '#38bdf8', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
+    <AbsoluteFill style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: isVertical ? '30px' : '50px' }}>
+      <div style={{ transform: `scale(${interpolate(titleSpring, [0, 1], [0.85, 1.0])})`, textAlign: 'center', marginBottom: isVertical ? '20px' : '36px' }}>
+        <div style={{ fontSize: isVertical ? '16px' : '20px', color: '#38bdf8', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase' }}>
           FOUNDATION MODULE · 物理时钟中枢
         </div>
         <div style={{
-          fontSize: '56px',
+          fontSize: isVertical ? '38px' : '56px',
           fontWeight: 900,
           background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%)',
           WebkitBackgroundClip: 'text',
@@ -44,7 +45,7 @@ const Scene01VoiceClone: React.FC<{ durationInFrames: number }> = ({ durationInF
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '36px', width: '100%', maxWidth: '1400px' }}>
+      <div style={{ display: 'flex', flexDirection: isVertical ? 'column' : 'row', gap: isVertical ? '20px' : '36px', width: '100%', maxWidth: isVertical ? '920px' : '1400px' }}>
         {/* 左卡：个人声纹特征提取 */}
         <div style={{ flex: 1, backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '24px', padding: '32px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>

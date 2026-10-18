@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Architecture Flow - HyperFrames Template</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --canvas-width: 1080px;
+        --canvas-height: 1920px;
+        --accent-color: #6366f1;
+        --accent-glow: rgba(99, 102, 241, 0.4);
+        --pulse-color: #38bdf8;
+        --pulse-glow: rgba(56, 189, 248, 0.9);
+        --node-bg: rgba(18, 18, 23, 0.88);
+        --node-border: rgba(255, 255, 255, 0.1);
+        --bg-gradient: radial-gradient(ellipse at 50% 25%, #181824 0%, #09090d 100%);
+        --text-color: #f8fafc;
+        --text-muted: #94a3b8;
+      }
+
+      html[data-resolution="landscape"],
+      body[data-resolution="landscape"] {
+        --canvas-width: 1920px;
+        --canvas-height: 1080px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: var(--canvas-width);
+        height: var(--canvas-height);
+        overflow: hidden;
+        background: #09090b;
+        color: var(--text-color);
+        font-family: sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #root {
+        position: relative;
+        width: var(--canvas-width);
+        height: var(--canvas-height);
+        overflow: hidden;
+        background: var(--bg-gradient);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 80px 48px 60px;
+      }
+
+      /* Technical Grid Background */
+      .tech-grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-size: 60px 60px;
+        background-image: 
+          linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        mask-image: radial-gradient(circle at 50% 50%, black 60%, transparent 95%);
+        -webkit-mask-image: radial-gradient(circle at 50% 50%, black 60%, transparent 95%);
+      }
+
+      .glow-orb {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+        filter: blur(60px);
+        opacity: 0.35;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      /* Header Section */
+      .header-section {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 960px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .tech-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 22px;
+        border-radius: 9999px;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid var(--accent-color);
+        box-shadow: 0 0 20px var(--accent-glow);
+        color: #a5b4fc;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+      }
+
+      .tech-badge-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--pulse-color);
+        box-shadow: 0 0 10px var(--pulse-color);
+      }
+
+      .flow-title {
+        font-size: 64px;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+        text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+        margin-bottom: 16px;
+      }
+
+      .flow-subtitle {
+        font-size: 26px;
+        font-weight: 400;
+        color: var(--text-muted);
+        letter-spacing: 0.01em;
+      }
+
+      /* Diagram Canvas & Nodes */
+      .diagram-canvas {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 40px 0;
+      }
+
+      /* Connector SVG */
+      .connector-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* Portrait Flow (Vertical) */
+      .flow-container-portrait {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px 0;
+      }
+
+      /* Landscape Flow (Horizontal) */
+      .flow-container-landscape {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        display: none;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 40px;
+      }
+
+      html[data-resolution="landscape"] .flow-container-portrait {
+        display: none;
+      }
+
+      html[data-resolution="landscape"] .flow-container-landscape {
+        display: flex;
+      }
+
+      /* Node Card Styles */
+      .node-card {
+        width: 720px;
+        background: var(--node-bg);
+        border: 1.5px solid var(--node-border);
+        border-radius: 24px;
+        padding: 26px 36px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      html[data-resolution="landscape"] .node-card {
+        width: 380px;
+        height: 380px;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        padding: 32px 28px;
+      }
+
+      .node-left {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      html[data-resolution="landscape"] .node-left {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .node-icon-box {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--pulse-color);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      }
+
+      .node-title-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .node-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+      }
+
+      html[data-resolution="landscape"] .node-title {
+        font-size: 26px;
+      }
+
+      .node-subtitle {
+        font-size: 20px;
+        color: var(--text-muted);
+      }
+
+      html[data-resolution="landscape"] .node-subtitle {
+        font-size: 16px;
+      }
+
+      .node-right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      html[data-resolution="landscape"] .node-right {
+        align-items: center;
+        width: 100%;
+      }
+
+      .node-badge {
+        padding: 6px 16px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 18px;
+        font-weight: 600;
+        color: #e2e8f0;
+        font-family: monospace;
+      }
+
+      html[data-resolution="landscape"] .node-badge {
+        font-size: 14px;
+      }
+
+      .node-status {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #34d399;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .node-status::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #34d399;
+        box-shadow: 0 0 8px #34d399;
+      }
+
+      /* SVG Paths and Pulses */
+      .base-path {
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-width: 4;
+        fill: none;
+        stroke-linecap: round;
+      }
+
+      .glow-path {
+        stroke: var(--accent-color);
+        stroke-width: 4;
+        fill: none;
+        opacity: 0.3;
+        filter: drop-shadow(0 0 8px var(--accent-color));
+      }
+
+      .pulse-dot {
+        fill: var(--pulse-color);
+        filter: drop-shadow(0 0 10px var(--pulse-color));
+      }
+
+      /* Footer Telemetry Bar */
+      .footer-bar {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 840px;
+        background: rgba(18, 18, 23, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 16px 36px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        backdrop-filter: blur(12px);
+      }
+
+      .metric-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .metric-label {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+      }
+
+      .metric-val {
+        font-size: 22px;
+        font-weight: 700;
+        color: #ffffff;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="architecture_flow" data-start="0" data-duration="5" data-width="1080" data-height="1920" class="clip">
+      <div class="tech-grid"></div>
+      <div class="glow-orb"></div>
+
+      <!-- Header -->
+      <header class="header-section">
+        <div class="tech-badge">
+          <div class="tech-badge-dot"></div>
+          <span id="header-badge">DISTRIBUTED ARCHITECTURE</span>
+        </div>
+        <h1 class="flow-title" id="header-title">HIGH-CONCURRENCY EVENT STREAM</h1>
+        <p class="flow-subtitle" id="header-subtitle">Low-Latency Event-Driven Microservices</p>
+      </header>
+
+      <!-- Diagram Area -->
+      <main class="diagram-canvas" id="canvas-area">
+        <!-- Portrait Connectors SVG -->
+        <svg id="svg-portrait" class="connector-svg" viewBox="0 0 1080 1200" preserveAspectRatio="none">
+          <defs>
+            <filter id="glow-p" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <line class="base-path" x1="540" y1="180" x2="540" y2="350" />
+          <circle id="pulse-p-0" class="pulse-dot" cx="540" cy="180" r="8" filter="url(#glow-p)" opacity="0" />
+
+          <line class="base-path" x1="540" y1="490" x2="540" y2="660" />
+          <circle id="pulse-p-1" class="pulse-dot" cx="540" cy="490" r="8" filter="url(#glow-p)" opacity="0" />
+
+          <line class="base-path" x1="540" y1="800" x2="540" y2="970" />
+          <circle id="pulse-p-2" class="pulse-dot" cx="540" cy="800" r="8" filter="url(#glow-p)" opacity="0" />
+        </svg>
+
+        <!-- Landscape Connectors SVG -->
+        <svg id="svg-landscape" class="connector-svg" viewBox="0 0 1920 600" preserveAspectRatio="none" style="display: none;">
+          <defs>
+            <filter id="glow-l" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <line class="base-path" x1="430" y1="300" x2="570" y2="300" />
+          <circle id="pulse-l-0" class="pulse-dot" cx="430" cy="300" r="8" filter="url(#glow-l)" opacity="0" />
+
+          <line class="base-path" x1="870" y1="300" x2="1010" y2="300" />
+          <circle id="pulse-l-1" class="pulse-dot" cx="870" cy="300" r="8" filter="url(#glow-l)" opacity="0" />
+
+          <line class="base-path" x1="1310" y1="300" x2="1450" y2="300" />
+          <circle id="pulse-l-2" class="pulse-dot" cx="1310" cy="300" r="8" filter="url(#glow-l)" opacity="0" />
+        </svg>
+
+        <!-- Portrait Container -->
+        <div class="flow-container-portrait" id="nodes-portrait"></div>
+
+        <!-- Landscape Container -->
+        <div class="flow-container-landscape" id="nodes-landscape"></div>
+      </main>
+
+      <!-- Footer Metrics -->
+      <footer class="footer-bar" id="metrics-bar">
+        <div class="metric-item">
+          <span class="metric-label" id="m0-label">Latency</span>
+          <span class="metric-val" id="m0-val">&lt; 1.8ms</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label" id="m1-label">Throughput</span>
+          <span class="metric-val" id="m1-val">120,000 req/s</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label" id="m2-label">Reliability</span>
+          <span class="metric-val" id="m2-val">99.999%</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Embedded Meta Definition -->
+    <script id="template-meta" type="application/json">
+    {
+      "id": "architecture_flow",
+      "name": "System Architecture Flow",
+      "resolution": "portrait",
+      "duration": 5.0,
+      "fps": 30,
+      "badge": "DISTRIBUTED ARCHITECTURE",
+      "title": "HIGH-CONCURRENCY EVENT STREAM",
+      "subtitle": "Low-Latency Event-Driven Microservices",
+      "nodes": [
+        {
+          "id": "node_client",
+          "type": "Client",
+          "title": "Client Tier",
+          "subtitle": "Web / Mobile SDK",
+          "badge": "120k RPS",
+          "icon": "globe",
+          "status": "ONLINE"
+        },
+        {
+          "id": "node_gateway",
+          "type": "Gateway",
+          "title": "API Gateway",
+          "subtitle": "JWT & Rate Limiter",
+          "badge": "p99 < 2ms",
+          "icon": "shield",
+          "status": "ROUTING"
+        },
+        {
+          "id": "node_queue",
+          "type": "Queue",
+          "title": "Message Broker",
+          "subtitle": "Distributed Kafka",
+          "badge": "Partitioned",
+          "icon": "layers",
+          "status": "QUEUED"
+        },
+        {
+          "id": "node_worker",
+          "type": "Worker",
+          "title": "Compute Pool",
+          "subtitle": "Autoscaling Workers",
+          "badge": "64 Pods",
+          "icon": "cpu",
+          "status": "PROCESSING"
+        }
+      ],
+      "metrics": [
+        { "label": "Latency", "value": "< 1.8ms" },
+        { "label": "Throughput", "value": "120,000 req/s" },
+        { "label": "Reliability", "value": "99.999%" }
+      ],
+      "theme": {
+        "accentColor": "#6366f1",
+        "accentGlow": "rgba(99, 102, 241, 0.4)",
+        "pulseColor": "#38bdf8",
+        "pulseGlow": "rgba(56, 189, 248, 0.9)",
+        "nodeBg": "rgba(18, 18, 23, 0.88)",
+        "nodeBorder": "rgba(255, 255, 255, 0.1)",
+        "bgGradient": "radial-gradient(ellipse at 50% 25%, #181824 0%, #09090d 100%)",
+        "textColor": "#f8fafc",
+        "textMuted": "#94a3b8"
+      }
+    }
+    </script>
+
+    <script>
+      // 1. Icon Library
+      const ICONS = {
+        globe: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>',
+        shield: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>',
+        layers: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>',
+        cpu: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>'
+      };
+
+      // 2. Parse Meta Parameters
+      let meta = {};
+      try {
+        const raw = document.getElementById("template-meta").textContent;
+        meta = JSON.parse(raw);
+      } catch (e) {
+        meta = {};
+      }
+      if (window.__META__) {
+        meta = Object.assign({}, meta, window.__META__);
+      }
+
+      // Check HyperFrames CLI variables
+      if (window.__hyperframes && typeof window.__hyperframes.getVariables === "function") {
+        try {
+          const cliVars = window.__hyperframes.getVariables();
+          if (cliVars) meta = Object.assign({}, meta, cliVars);
+        } catch (e) {}
+      }
+
+      // Resolution setup
+      const isLandscape = (meta.resolution === "landscape");
+      if (isLandscape) {
+        document.documentElement.setAttribute("data-resolution", "landscape");
+        document.querySelector('meta[name="viewport"]').setAttribute("content", "width=1920, height=1080");
+        document.getElementById("root").setAttribute("data-width", "1920");
+        document.getElementById("root").setAttribute("data-height", "1080");
+        document.getElementById("svg-portrait").style.display = "none";
+        document.getElementById("svg-landscape").style.display = "block";
+      }
+
+      // Apply Theme Variables
+      if (meta.theme) {
+        const root = document.documentElement;
+        if (meta.theme.accentColor) root.style.setProperty("--accent-color", meta.theme.accentColor);
+        if (meta.theme.accentGlow) root.style.setProperty("--accent-glow", meta.theme.accentGlow);
+        if (meta.theme.pulseColor) root.style.setProperty("--pulse-color", meta.theme.pulseColor);
+        if (meta.theme.pulseGlow) root.style.setProperty("--pulse-glow", meta.theme.pulseGlow);
+        if (meta.theme.nodeBg) root.style.setProperty("--node-bg", meta.theme.nodeBg);
+        if (meta.theme.nodeBorder) root.style.setProperty("--node-border", meta.theme.nodeBorder);
+        if (meta.theme.bgGradient) root.style.setProperty("--bg-gradient", meta.theme.bgGradient);
+        if (meta.theme.textColor) root.style.setProperty("--text-color", meta.theme.textColor);
+        if (meta.theme.textMuted) root.style.setProperty("--text-muted", meta.theme.textMuted);
+      }
+
+      // Inject Header Text
+      if (meta.badge) document.getElementById("header-badge").textContent = meta.badge;
+      if (meta.title) document.getElementById("header-title").textContent = meta.title;
+      if (meta.subtitle) document.getElementById("header-subtitle").textContent = meta.subtitle;
+
+      // Inject Metrics
+      if (meta.metrics && meta.metrics.length >= 3) {
+        document.getElementById("m0-label").textContent = meta.metrics[0].label || "Metric 1";
+        document.getElementById("m0-val").textContent = meta.metrics[0].value || "-";
+        document.getElementById("m1-label").textContent = meta.metrics[1].label || "Metric 2";
+        document.getElementById("m1-val").textContent = meta.metrics[1].value || "-";
+        document.getElementById("m2-label").textContent = meta.metrics[2].label || "Metric 3";
+        document.getElementById("m2-val").textContent = meta.metrics[2].value || "-";
+      }
+
+      // Render Node Cards
+      function createNodeHtml(node, idx, prefix) {
+        const iconSvg = ICONS[node.icon] || ICONS.cpu;
+        return `
+          <div class="node-card" id="${prefix}-node-${idx}">
+            <div class="node-left">
+              <div class="node-icon-box" id="${prefix}-icon-${idx}">
+                ${iconSvg}
+              </div>
+              <div class="node-title-group">
+                <div class="node-title">${node.title || ("Node " + (idx + 1))}</div>
+                <div class="node-subtitle">${node.subtitle || ""}</div>
+              </div>
+            </div>
+            <div class="node-right">
+              <div class="node-badge" id="${prefix}-badge-${idx}">${node.badge || ""}</div>
+              <div class="node-status" id="${prefix}-status-${idx}">${node.status || "READY"}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      const nodes = meta.nodes || [];
+      const pContainer = document.getElementById("nodes-portrait");
+      const lContainer = document.getElementById("nodes-landscape");
+
+      pContainer.innerHTML = nodes.map((n, i) => createNodeHtml(n, i, "p")).join("");
+      lContainer.innerHTML = nodes.map((n, i) => createNodeHtml(n, i, "l")).join("");
+
+      // GSAP Video Timeline
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const totalDuration = meta.duration || 5.0;
+      document.getElementById("root").setAttribute("data-duration", totalDuration);
+
+      const prefix = isLandscape ? "l" : "p";
+      const cardSelector = `#nodes-${isLandscape ? "landscape" : "portrait"} .node-card`;
+
+      // Phase 1: Entrance (0.0s - 0.7s)
+      tl.fromTo(".header-section", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.0);
+      tl.fromTo(".footer-bar", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+
+      tl.fromTo(cardSelector, 
+        { opacity: 0, scale: 0.88, y: 30 }, 
+        { opacity: 1, scale: 1.0, y: 0, duration: 0.5, stagger: 0.15, ease: "back.out(1.2)" }, 
+        0.3
+      );
+
+      // Phase 2: Flow Pulses & Node Activations (1.0s - 3.6s)
+      if (!isLandscape) {
+        // Vertical pulses
+        tl.fromTo("#pulse-p-0", { attr: { cy: 180 }, opacity: 0 }, { opacity: 1, duration: 0.1 }, 1.1);
+        tl.to("#pulse-p-0", { attr: { cy: 350 }, duration: 0.6, ease: "power1.inOut" }, 1.2);
+        tl.to("#pulse-p-0", { opacity: 0, duration: 0.1 }, 1.8);
+
+        tl.to("#p-node-1", { borderColor: "var(--pulse-color)", boxShadow: "0 0 30px var(--pulse-glow)", duration: 0.25 }, 1.75);
+        tl.to("#p-icon-1", { scale: 1.15, color: "#38bdf8", duration: 0.2 }, 1.75);
+        tl.to("#p-icon-1", { scale: 1.0, duration: 0.2 }, 1.95);
+
+        tl.fromTo("#pulse-p-1", { attr: { cy: 490 }, opacity: 0 }, { opacity: 1, duration: 0.1 }, 1.9);
+        tl.to("#pulse-p-1", { attr: { cy: 660 }, duration: 0.6, ease: "power1.inOut" }, 2.0);
+        tl.to("#pulse-p-1", { opacity: 0, duration: 0.1 }, 2.6);
+
+        tl.to("#p-node-2", { borderColor: "var(--pulse-color)", boxShadow: "0 0 30px var(--pulse-glow)", duration: 0.25 }, 2.55);
+        tl.to("#p-icon-2", { scale: 1.15, color: "#38bdf8", duration: 0.2 }, 2.55);
+        tl.to("#p-icon-2", { scale: 1.0, duration: 0.2 }, 2.75);
+
+        tl.fromTo("#pulse-p-2", { attr: { cy: 800 }, opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.7);
+        tl.to("#pulse-p-2", { attr: { cy: 970 }, duration: 0.6, ease: "power1.inOut" }, 2.8);
+        tl.to("#pulse-p-2", { opacity: 0, duration: 0.1 }, 3.4);
+
+        tl.to("#p-node-3", { borderColor: "var(--pulse-color)", boxShadow: "0 0 30px var(--pulse-glow)", duration: 0.25 }, 3.35);
+        tl.to("#p-icon-3", { scale: 1.15, color: "#38bdf8", duration: 0.2 }, 3.35);
+        tl.to("#p-icon-3", { scale: 1.0, duration: 0.2 }, 3.55);
+
+        tl.fromTo("#pulse-p-0, #pulse-p-1, #pulse-p-2", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 3.7);
+        tl.to("#pulse-p-0", { attr: { cy: 350 }, duration: 0.7, ease: "linear" }, 3.7);
+        tl.to("#pulse-p-1", { attr: { cy: 660 }, duration: 0.7, ease: "linear" }, 3.7);
+        tl.to("#pulse-p-2", { attr: { cy: 970 }, duration: 0.7, ease: "linear" }, 3.7);
+        tl.to("#pulse-p-0, #pulse-p-1, #pulse-p-2", { opacity: 0, duration: 0.15 }, 4.4);
+      } else {
+        // Horizontal pulses
+        tl.fromTo("#pulse-l-0", { attr: { cx: 430 }, opacity: 0 }, { opacity: 1, duration: 0.1 }, 1.1);
+        tl.to("#pulse-l-0", { attr: { cx: 570 }, duration: 0.6, ease: "power1.inOut" }, 1.2);
+        tl.to("#pulse-l-0", { opacity: 0, duration: 0.1 }, 1.8);
+
+        tl.to("#l-node-1", { borderColor: "var(--pulse-color)", boxShadow: "0 0 30px var(--pulse-glow)", duration: 0.25 }, 1.75);
+        tl.to("#l-icon-1", { scale: 1.15, color: "#38bdf8", duration: 0.2 }, 1.75);
+        tl.to("#l-icon-1", { scale: 1.0, duration: 0.2 }, 1.95);
+
+        tl.fromTo("#pulse-l-1", { attr: { cx: 870 }, opacity: 0 }, { opacity: 1, duration: 0.1 }, 1.9);
+        tl.to("#pulse-l-1", { attr: { cx: 1010 }, duration: 0.6, ease: "power1.inOut" }, 2.0);
+        tl.to("#pulse-l-1", { opacity: 0, duration: 0.1 }, 2.6);
+
+        tl.to("#l-node-2", { borderColor: "var(--pulse-color)", boxShadow: "0 0 30px var(--pulse-glow)", duration: 0.25 }, 2.55);
+        tl.to("#l-icon-2", { scale: 1.15, color: "#38bdf8", duration: 0.2 }, 2.55);
+        tl.to("#l-icon-2", { scale: 1.0, duration: 0.2 }, 2.75);
+
+        tl.fromTo("#pulse-l-2", { attr: { cx: 1310 }, opacity: 0 }, { opacity: 1, duration: 0.1 }, 2.7);
+        tl.to("#pulse-l-2", { attr: { cx: 1450 }, duration: 0.6, ease: "power1.inOut" }, 2.8);
+        tl.to("#pulse-l-2", { opacity: 0, duration: 0.1 }, 3.4);
+
+        tl.to("#l-node-3", { borderColor: "var(--pulse-color)", boxShadow: "0 0 30px var(--pulse-glow)", duration: 0.25 }, 3.35);
+        tl.to("#l-icon-3", { scale: 1.15, color: "#38bdf8", duration: 0.2 }, 3.35);
+        tl.to("#l-icon-3", { scale: 1.0, duration: 0.2 }, 3.55);
+
+        tl.fromTo("#pulse-l-0, #pulse-l-1, #pulse-l-2", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 3.7);
+        tl.to("#pulse-l-0", { attr: { cx: 570 }, duration: 0.7, ease: "linear" }, 3.7);
+        tl.to("#pulse-l-1", { attr: { cx: 1010 }, duration: 0.7, ease: "linear" }, 3.7);
+        tl.to("#pulse-l-2", { attr: { cx: 1450 }, duration: 0.7, ease: "linear" }, 3.7);
+        tl.to("#pulse-l-0, #pulse-l-1, #pulse-l-2", { opacity: 0, duration: 0.15 }, 4.4);
+      }
+
+      // Telemetry Pulse (3.5s - 4.8s)
+      tl.to(".footer-bar", { borderColor: "#10b981", boxShadow: "0 0 24px rgba(16, 185, 129, 0.4)", duration: 0.3 }, 3.6);
+      tl.to("#m2-val", { color: "#34d399", scale: 1.08, duration: 0.2 }, 3.6);
+      tl.to("#m2-val", { scale: 1.0, duration: 0.2 }, 3.8);
+
+      window.__timelines["architecture_flow"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

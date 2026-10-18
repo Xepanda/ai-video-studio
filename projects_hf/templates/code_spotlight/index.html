@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Code Spotlight - HyperFrames Template</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --canvas-width: 1080px;
+        --canvas-height: 1920px;
+        --accent-color: #10b981;
+        --accent-glow: rgba(16, 185, 129, 0.4);
+        --spotlight-color: rgba(16, 185, 129, 0.14);
+        --spotlight-border: #10b981;
+        --window-bg: rgba(15, 23, 42, 0.94);
+        --window-border: rgba(255, 255, 255, 0.08);
+        --bg-gradient: radial-gradient(ellipse at 50% 25%, #064e3b25 0%, #09090d 100%);
+        --text-color: #e2e8f0;
+        --text-muted: #94a3b8;
+        --code-line-height: 44px;
+        --code-font-size: 20px;
+      }
+
+      html[data-resolution="landscape"],
+      body[data-resolution="landscape"] {
+        --canvas-width: 1920px;
+        --canvas-height: 1080px;
+        --code-line-height: 38px;
+        --code-font-size: 20px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: var(--canvas-width);
+        height: var(--canvas-height);
+        overflow: hidden;
+        background: #09090b;
+        color: var(--text-color);
+        font-family: sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #root {
+        position: relative;
+        width: var(--canvas-width);
+        height: var(--canvas-height);
+        overflow: hidden;
+        background: var(--bg-gradient);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 80px 48px 60px;
+      }
+
+      /* Ambient Background */
+      .ambient-glow {
+        position: absolute;
+        width: 700px;
+        height: 700px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+        filter: blur(80px);
+        opacity: 0.3;
+        top: 25%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      .scanline-grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-size: 100% 4px;
+        background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        opacity: 0.6;
+      }
+
+      /* Header */
+      .header-section {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 960px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 22px;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid var(--accent-color);
+        box-shadow: 0 0 20px var(--accent-glow);
+        color: #6ee7b7;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+      }
+
+      .badge-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        box-shadow: 0 0 10px var(--accent-color);
+      }
+
+      .header-title {
+        font-size: 64px;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: #ffffff;
+        text-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+        margin-bottom: 14px;
+      }
+
+      .header-subtitle {
+        font-size: 26px;
+        font-weight: 400;
+        color: var(--text-muted);
+        letter-spacing: 0.01em;
+      }
+
+      /* Terminal Window */
+      .terminal-window {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        max-width: 980px;
+        background: var(--window-bg);
+        border: 1.5px solid var(--window-border);
+        border-radius: 24px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(20px);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        margin: 30px 0;
+      }
+
+      html[data-resolution="landscape"] .terminal-window {
+        max-width: 1540px;
+        margin: 20px 0;
+      }
+
+      .terminal-titlebar {
+        height: 56px;
+        background: rgba(15, 23, 42, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
+
+      .traffic-lights {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .light {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+      }
+
+      .light-close { background: #ff5f56; }
+      .light-min { background: #ffbd2e; }
+      .light-max { background: #27c93f; }
+
+      .terminal-filename {
+        font-family: monospace;
+        font-size: 18px;
+        font-weight: 600;
+        color: #94a3b8;
+        letter-spacing: 0.04em;
+      }
+
+      .terminal-status-tag {
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: 700;
+        color: #34d399;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 4px 12px;
+        border-radius: 6px;
+      }
+
+      /* Code Area */
+      .terminal-body {
+        position: relative;
+        padding: 28px 24px;
+        font-family: monospace;
+        font-size: var(--code-font-size);
+        line-height: var(--code-line-height);
+        overflow: hidden;
+      }
+
+      /* Animated Spotlight Box */
+      .spotlight-box {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 28px;
+        height: var(--code-line-height);
+        transform-origin: top left;
+        background: var(--spotlight-color);
+        border-left: 4px solid var(--spotlight-border);
+        border-radius: 8px;
+        box-shadow: 0 0 25px var(--accent-glow), inset 0 0 15px rgba(16, 185, 129, 0.08);
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0;
+      }
+
+      .spotlight-tag {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #a7f3d0;
+        background: rgba(16, 185, 129, 0.25);
+        padding: 3px 10px;
+        border-radius: 4px;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+      }
+
+      /* Code Rows */
+      .code-container {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .code-row {
+        display: flex;
+        align-items: center;
+        height: var(--code-line-height);
+        padding: 0 12px;
+        white-space: pre;
+      }
+
+      .line-num {
+        width: 50px;
+        color: #94a3b8;
+        user-select: none;
+        text-align: right;
+        margin-right: 28px;
+        font-weight: 600;
+      }
+
+      .line-code {
+        color: #f1f5f9;
+        font-weight: 500;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 10px;
+        height: 22px;
+        background: var(--accent-color);
+        box-shadow: 0 0 10px var(--accent-color);
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+
+      /* Syntax Colors */
+      .kw { color: #f472b6; font-weight: 600; }
+      .fn { color: #38bdf8; font-weight: 600; }
+      .type { color: #fde047; }
+      .str { color: #86efac; }
+      .num { color: #fb923c; }
+      .comment { color: #64748b; font-style: italic; }
+      .punct { color: #94a3b8; }
+
+      /* Callout Note Banner */
+      .callout-card {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 980px;
+        background: rgba(18, 18, 23, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 18px 32px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        backdrop-filter: blur(12px);
+      }
+
+      html[data-resolution="landscape"] .callout-card {
+        max-width: 1540px;
+      }
+
+      .callout-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #34d399;
+        flex-shrink: 0;
+      }
+
+      .callout-text-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .callout-label {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #34d399;
+      }
+
+      .callout-desc {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="code_spotlight" data-start="0" data-duration="5" data-width="1080" data-height="1920" class="clip">
+      <div class="ambient-glow"></div>
+      <div class="scanline-grid"></div>
+
+      <!-- Header -->
+      <header class="header-section">
+        <div class="badge-pill">
+          <div class="badge-dot"></div>
+          <span id="badge-text">ZERO-COST RUNTIME</span>
+        </div>
+        <h1 class="header-title" id="title-text">LOCK-FREE CONCURRENT DISPATCH</h1>
+        <p class="header-subtitle" id="subtitle-text">SIMD Accelerated Event Loop</p>
+      </header>
+
+      <!-- Terminal Window -->
+      <div class="terminal-window" id="terminal">
+        <div class="terminal-titlebar">
+          <div class="traffic-lights">
+            <div class="light light-close"></div>
+            <div class="light light-min"></div>
+            <div class="light light-max"></div>
+          </div>
+          <div class="terminal-filename" id="filename-text">pipeline_engine.rs</div>
+          <div class="terminal-status-tag" id="status-tag">RUST 1.80</div>
+        </div>
+
+        <div class="terminal-body" id="term-body">
+          <div id="spotlight-box" class="spotlight-box" data-layout-allow-overlap="true">
+            <span class="spotlight-tag" id="spotlight-tag" data-layout-allow-overlap="true">FOCUS</span>
+          </div>
+
+          <div class="code-container" id="code-list"></div>
+        </div>
+      </div>
+
+      <!-- Callout Insight Card -->
+      <footer class="callout-card" id="callout-card">
+        <div class="callout-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </div>
+        <div class="callout-text-group">
+          <span class="callout-label" id="callout-label">ARCHITECTURE HIGHLIGHT</span>
+          <span class="callout-desc" id="callout-desc">Zero-allocation batch buffer reservation</span>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Embedded Meta Definition -->
+    <script id="template-meta" type="application/json">
+    {
+      "id": "code_spotlight",
+      "name": "Code Spotlight Terminal",
+      "resolution": "portrait",
+      "duration": 5.0,
+      "fps": 30,
+      "filename": "pipeline_engine.rs",
+      "language": "rust",
+      "badge": "ZERO-COST RUNTIME",
+      "title": "LOCK-FREE CONCURRENT DISPATCH",
+      "subtitle": "SIMD Accelerated Event Loop",
+      "code": [
+        "#[inline(always)]",
+        "pub async fn dispatch(queue: &Arc<EventQueue>) -> Result<()> {",
+        "    let mut batch = queue.reserve_batch(4096).await?;",
+        "    let processed = rayon::join(",
+        "        || batch.left().process_simd(),",
+        "        || batch.right().process_simd(),",
+        "    );",
+        "    metrics::record(processed.len());",
+        "    Ok(processed)",
+        "}"
+      ],
+      "highlightLines": [3, 4, 8],
+      "lineNotes": {
+        "3": "Zero-allocation batch buffer reservation",
+        "4": "SIMD-accelerated parallel partition compute",
+        "8": "Sub-millisecond lock-free telemetry sync"
+      },
+      "theme": {
+        "accentColor": "#10b981",
+        "accentGlow": "rgba(16, 185, 129, 0.4)",
+        "spotlightColor": "rgba(16, 185, 129, 0.14)",
+        "spotlightBorder": "#10b981",
+        "windowBg": "rgba(15, 23, 42, 0.94)",
+        "windowBorder": "rgba(255, 255, 255, 0.08)",
+        "bgGradient": "radial-gradient(ellipse at 50% 25%, #064e3b25 0%, #09090d 100%)",
+        "textColor": "#e2e8f0",
+        "textMuted": "#94a3b8"
+      }
+    }
+    </script>
+
+    <script>
+      // 1. Parse Meta
+      let meta = {};
+      try {
+        const raw = document.getElementById("template-meta").textContent;
+        meta = JSON.parse(raw);
+      } catch (e) {
+        meta = {};
+      }
+      if (window.__META__) {
+        meta = Object.assign({}, meta, window.__META__);
+      }
+
+      if (window.__hyperframes && typeof window.__hyperframes.getVariables === "function") {
+        try {
+          const cliVars = window.__hyperframes.getVariables();
+          if (cliVars) meta = Object.assign({}, meta, cliVars);
+        } catch (e) {}
+      }
+
+      // Resolution setup
+      const isLandscape = (meta.resolution === "landscape");
+      if (isLandscape) {
+        document.documentElement.setAttribute("data-resolution", "landscape");
+        document.querySelector('meta[name="viewport"]').setAttribute("content", "width=1920, height=1080");
+        document.getElementById("root").setAttribute("data-width", "1920");
+        document.getElementById("root").setAttribute("data-height", "1080");
+      }
+
+      // Theme injection
+      if (meta.theme) {
+        const root = document.documentElement;
+        if (meta.theme.accentColor) root.style.setProperty("--accent-color", meta.theme.accentColor);
+        if (meta.theme.accentGlow) root.style.setProperty("--accent-glow", meta.theme.accentGlow);
+        if (meta.theme.spotlightColor) root.style.setProperty("--spotlight-color", meta.theme.spotlightColor);
+        if (meta.theme.spotlightBorder) root.style.setProperty("--spotlight-border", meta.theme.spotlightBorder);
+        if (meta.theme.windowBg) root.style.setProperty("--window-bg", meta.theme.windowBg);
+        if (meta.theme.windowBorder) root.style.setProperty("--window-border", meta.theme.windowBorder);
+        if (meta.theme.bgGradient) root.style.setProperty("--bg-gradient", meta.theme.bgGradient);
+        if (meta.theme.textColor) root.style.setProperty("--text-color", meta.theme.textColor);
+      }
+
+      // Header Text
+      if (meta.badge) document.getElementById("badge-text").textContent = meta.badge;
+      if (meta.title) document.getElementById("title-text").textContent = meta.title;
+      if (meta.subtitle) document.getElementById("subtitle-text").textContent = meta.subtitle;
+      if (meta.filename) document.getElementById("filename-text").textContent = meta.filename;
+      if (meta.language) document.getElementById("status-tag").textContent = meta.language.toUpperCase();
+
+      // Syntax Highlighter Helper
+      function highlightRust(code) {
+        let escaped = code
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+
+        // Keywords
+        escaped = escaped.replace(/\b(pub|async|fn|let|mut|match|if|else|return|Ok|Err|Result|Arc)\b/g, '<span class="kw">$1</span>');
+        // Functions
+        escaped = escaped.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g, '<span class="fn">$1</span>');
+        // Numbers
+        escaped = escaped.replace(/\b([0-9]+)\b/g, '<span class="num">$1</span>');
+        // Types
+        escaped = escaped.replace(/\b([A-Z][a-zA-Z0-9_]*)\b/g, '<span class="type">$1</span>');
+        return escaped;
+      }
+
+      // Render Code Lines
+      const codeLines = meta.code || [];
+      const codeList = document.getElementById("code-list");
+      codeList.innerHTML = codeLines.map((line, idx) => {
+        const lineNum = String(idx + 1).padStart(2, "0");
+        const hl = highlightRust(line);
+        return `
+          <div class="code-row" id="row-${idx + 1}">
+            <span class="line-num">${lineNum}</span>
+            <span class="line-code" id="code-${idx + 1}">${hl}</span>
+          </div>
+        `;
+      }).join("");
+
+      // Cursor element on last line
+      const lastRow = document.getElementById(`row-${codeLines.length}`);
+      if (lastRow) {
+        const cursor = document.createElement("span");
+        cursor.className = "cursor";
+        cursor.id = "term-cursor";
+        lastRow.querySelector(".line-code").appendChild(cursor);
+      }
+
+      // Calculate Line Positions for Spotlight
+      const lineHeight = isLandscape ? 38 : 44;
+      const basePaddingTop = 28;
+
+      function getLineTop(lineNum) {
+        return basePaddingTop + (lineNum - 1) * lineHeight;
+      }
+
+      // GSAP Animation Timeline
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      const totalDuration = meta.duration || 5.0;
+      document.getElementById("root").setAttribute("data-duration", totalDuration);
+
+      // Entrance (0.0s - 0.7s)
+      tl.fromTo(".header-section", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.0);
+      tl.fromTo(".terminal-window", { opacity: 0, scale: 0.92, y: 30 }, { opacity: 1, scale: 1.0, y: 0, duration: 0.6, ease: "power2.out" }, 0.2);
+      tl.fromTo(".callout-card", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.4);
+
+      // Code Line Reveal (0.5s - 1.2s)
+      tl.fromTo(".code-row", 
+        { opacity: 0, x: -15 }, 
+        { opacity: 1, x: 0, duration: 0.35, stagger: 0.06, ease: "power1.out" }, 
+        0.5
+      );
+
+      // Spotlight Box Movements via sub-pixel transforms
+      const notes = meta.lineNotes || {};
+
+      // Stage 1: Spotlight Line 3 (1.4s - 2.5s)
+      const yL3 = 2 * lineHeight;
+      tl.set("#spotlight-box", { y: yL3, scaleY: 1, opacity: 0 }, 1.3);
+      tl.to("#spotlight-box", { opacity: 1, duration: 0.2 }, 1.4);
+      tl.to("#row-3 .line-code", { color: "#6ee7b7", textShadow: "0 0 12px rgba(16, 185, 129, 0.6)", duration: 0.2 }, 1.4);
+
+      // Stage 2: Spotlight Lines 4-7 (2.6s - 3.7s)
+      const yL4 = 3 * lineHeight;
+      tl.to("#spotlight-box", { 
+        y: yL4, 
+        scaleY: 4, 
+        duration: 0.4, 
+        ease: "power2.inOut" 
+      }, 2.6);
+
+      tl.to("#row-3 .line-code", { color: "#f1f5f9", textShadow: "none", duration: 0.2 }, 2.6);
+      tl.to("#row-4 .line-code, #row-5 .line-code, #row-6 .line-code, #row-7 .line-code", { 
+        color: "#6ee7b7", 
+        textShadow: "0 0 10px rgba(16, 185, 129, 0.5)", 
+        duration: 0.2 
+      }, 2.8);
+
+      // Update Callout Text at 2.6s
+      if (notes["4"]) {
+        tl.to("#callout-desc", { 
+          opacity: 0, 
+          duration: 0.15, 
+          onComplete: () => { document.getElementById("callout-desc").textContent = notes["4"]; } 
+        }, 2.55);
+        tl.to("#callout-desc", { opacity: 1, duration: 0.15 }, 2.7);
+      }
+
+      // Stage 3: Spotlight Line 8 (3.8s - 4.8s)
+      const yL8 = 7 * lineHeight;
+      tl.to("#spotlight-box", { 
+        y: yL8, 
+        scaleY: 1, 
+        duration: 0.4, 
+        ease: "power2.inOut" 
+      }, 3.8);
+
+      tl.to("#row-4 .line-code, #row-5 .line-code, #row-6 .line-code, #row-7 .line-code", { 
+        color: "#f1f5f9", 
+        textShadow: "none", 
+        duration: 0.2 
+      }, 3.8);
+      tl.to("#row-8 .line-code", { color: "#6ee7b7", textShadow: "0 0 12px rgba(16, 185, 129, 0.6)", duration: 0.2 }, 4.0);
+
+      if (notes["8"]) {
+        tl.to("#callout-desc", { 
+          opacity: 0, 
+          duration: 0.15, 
+          onComplete: () => { document.getElementById("callout-desc").textContent = notes["8"]; } 
+        }, 3.75);
+        tl.to("#callout-desc", { opacity: 1, duration: 0.15 }, 3.9);
+      }
+
+      // Cursor Blink
+      tl.to("#term-cursor", { opacity: 0, duration: 0.25, repeat: 7, yoyo: true }, 1.0);
+
+      window.__timelines["code_spotlight"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

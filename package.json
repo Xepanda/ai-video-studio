@@ -12,7 +12,22 @@
     "render:hf": "hyperframes render",
     "validate": "python scripts/validator.py",
     "pipeline": "python scripts/pipeline.py",
-    "pipeline:hf": "python scripts/pipeline.py --render --engine_render hyperframes"
+    "pipeline:hf": "python scripts/pipeline.py --render --engine_render hyperframes",
+    "bridge:to-chatcut": "node scripts/bridge/timeline_to_chatcut.js",
+    "bridge:from-chatcut": "node scripts/bridge/chatcut_to_timeline.js",
+    "bridge:watch": "node scripts/bridge/watch_chatcut.js",
+    "qc": "python scripts/utils/visual_qc.py --video out/master_video.mp4",
+    "cache:stats": "python scripts/utils/asset_cache_manager.py stats",
+    "cache:clean": "python scripts/utils/asset_cache_manager.py clean",
+    "hf:list": "python scripts/hf_builder.py --list-templates",
+    "snapshot:create": "python scripts/utils/snapshot_manager.py create",
+    "snapshot:list": "python scripts/utils/snapshot_manager.py list",
+    "snapshot:rollback": "python scripts/utils/snapshot_manager.py rollback",
+    "test:bridge": "node tests/test_bridge.js",
+    "test:hf": "python tests/test_hf_builder.py",
+    "test:audio": "python tests/test_audio_utils.py",
+    "test:qc": "python tests/test_qc_cache.py",
+    "test:all": "node tests/test_bridge.js && python tests/test_hf_builder.py && python tests/test_audio_utils.py && python tests/test_qc_cache.py"
   },
   "keywords": [
     "remotion",

@@ -1,0 +1,41 @@
+{
+  "id": "code_spotlight",
+  "name": "Code Spotlight Terminal",
+  "resolution": "portrait",
+  "duration": 5.0,
+  "fps": 30,
+  "filename": "pipeline_engine.rs",
+  "language": "rust",
+  "badge": "ZERO-COST RUNTIME",
+  "title": "LOCK-FREE CONCURRENT DISPATCH",
+  "subtitle": "SIMD Accelerated Event Loop",
+  "code": [
+    "#[inline(always)]",
+    "pub async fn dispatch(queue: &Arc<EventQueue>) -> Result<()> {",
+    "    let mut batch = queue.reserve_batch(4096).await?;",
+    "    let processed = rayon::join(",
+    "        || batch.left().process_simd(),",
+    "        || batch.right().process_simd(),",
+    "    );",
+    "    metrics::record(processed.len());",
+    "    Ok(processed)",
+    "}"
+  ],
+  "highlightLines": [3, 4, 8],
+  "lineNotes": {
+    "3": "Zero-allocation batch buffer reservation",
+    "4": "SIMD-accelerated parallel partition compute",
+    "8": "Sub-millisecond lock-free telemetry sync"
+  },
+  "theme": {
+    "accentColor": "#10b981",
+    "accentGlow": "rgba(16, 185, 129, 0.4)",
+    "spotlightColor": "rgba(16, 185, 129, 0.14)",
+    "spotlightBorder": "#10b981",
+    "windowBg": "rgba(15, 23, 42, 0.94)",
+    "windowBorder": "rgba(255, 255, 255, 0.08)",
+    "bgGradient": "radial-gradient(ellipse at 50% 25%, #064e3b25 0%, #09090d 100%)",
+    "textColor": "#e2e8f0",
+    "textMuted": "#94a3b8"
+  }
+}
