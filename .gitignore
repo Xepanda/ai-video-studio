@@ -60,4 +60,12 @@ bin/
 projects_hf/*/assets/audio/*
 !projects_hf/*/assets/audio/.gitkeep
 
+# Temporary test artifacts
+temp_*
+*.tmp
+inputs/extracted_live/
+inputs/transcripts/
+
+
+
 

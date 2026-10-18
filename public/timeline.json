@@ -1,324 +1,530 @@
 {
-  "project": "codex_day6_reset_demo",
-  "theme": "linear-graphite",
+  "project": null,
+  "theme": "editorial-paper-light",
   "fps": 30,
-  "totalDurationInFrames": 754,
+  "totalDurationInFrames": 2939,
   "scenes": [
     {
       "id": "scene_01",
       "type": "MinimalHeadline",
       "startFrame": 0,
-      "durationInFrames": 54,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_01.wav",
-      "text": "没有新功能，只有重置！",
-      "rawText": "没 有 新 功 能 只 有 重 置",
+      "durationInFrames": 349,
+      "audioPath": "audio/scene_01.mp3",
+      "text": "大家平时都在拼命搞钱、内卷升职，但你有没有想过，如果最底层的健康和安全出了问题，前头的所有努力都会瞬间归零？",
+      "rawText": "大 家 平 时 都 在 拼 命 搞 钱 内 卷 升 职 但 你 有 没 有 想 过 如 果 最 底 层 的 健 康 和 安 全 出 了 问 题 前 头 的 所 有 努 力 都 会 瞬 间 归 零",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "没有新功能",
+          "text": "大家平时都在拼命搞钱",
           "startFrame": 6,
-          "endFrame": 31,
+          "endFrame": 68,
           "globalStartFrame": 6,
-          "globalEndFrame": 31,
+          "globalEndFrame": 68,
           "startMs": 190,
-          "endMs": 1030
+          "endMs": 2250
         },
         {
-          "text": "只有重置",
-          "startFrame": 31,
-          "endFrame": 51,
-          "globalStartFrame": 31,
-          "globalEndFrame": 51,
-          "startMs": 1030,
-          "endMs": 1705
+          "text": "内卷升职",
+          "startFrame": 75,
+          "endFrame": 102,
+          "globalStartFrame": 75,
+          "globalEndFrame": 102,
+          "startMs": 2490,
+          "endMs": 3390
+        },
+        {
+          "text": "但你有没有想过",
+          "startFrame": 108,
+          "endFrame": 144,
+          "globalStartFrame": 108,
+          "globalEndFrame": 144,
+          "startMs": 3610,
+          "endMs": 4810
+        },
+        {
+          "text": "如果最底层的健康和安全出了问题",
+          "startFrame": 150,
+          "endFrame": 236,
+          "globalStartFrame": 150,
+          "globalEndFrame": 236,
+          "startMs": 4990,
+          "endMs": 7850
+        },
+        {
+          "text": "前头的所有努力都会瞬间归零",
+          "startFrame": 242,
+          "endFrame": 335,
+          "globalStartFrame": 242,
+          "globalEndFrame": 335,
+          "startMs": 8050,
+          "endMs": 11155
         }
       ],
-      "title": "没有新功能，只有重置！",
+      "title": "拼命搞钱，别在最底层翻车！",
       "inverted": false,
-      "category": "CODEX DAY 6",
+      "category": "LIFE HACKS · 认知觉醒",
       "highlightWords": [
-        "没有新功能",
-        "重置"
+        "拼命搞钱",
+        "瞬间归零"
       ]
     },
     {
       "id": "scene_02",
-      "type": "TweetEmbed",
-      "startFrame": 54,
-      "durationInFrames": 91,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_02.wav",
-      "text": "Tibo 发推表示，第六天只做 Reset。",
-      "rawText": "七 比 欧 发 崔 表 示 第 六 天 只 做 reset",
+      "type": "WebBrowserMockup",
+      "startFrame": 349,
+      "durationInFrames": 408,
+      "audioPath": "audio/scene_02.mp3",
+      "text": "最近在开源社区有一份爆火的宝藏神作《高性价比人生指南》。今天第一期，我们就来拆解里面几乎零成本、却能帮你硬生生换回十年寿命的硬核操作！",
+      "rawText": "最 近 在 开 元 社 区 有 一 份 爆 火 的 宝 藏 神 作 高 性 价 比 人 生 指 南 今 天 第 一 期 我 们 就 来 拆 解 里 面 几 乎 零 成 本 却 能 帮 你 硬 生 生 换 回 十 年 寿 命 的 硬 核 操 作",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "Tibo 发推表示",
-          "startFrame": 4,
-          "endFrame": 48,
-          "globalStartFrame": 58,
-          "globalEndFrame": 102,
-          "startMs": 130,
-          "endMs": 1610
+          "text": "最近在开源社区有一份爆火的宝藏神作《高性价比人生指南》",
+          "startFrame": 6,
+          "endFrame": 159,
+          "globalStartFrame": 355,
+          "globalEndFrame": 508,
+          "startMs": 210,
+          "endMs": 5290
         },
         {
-          "text": "第六天只做 Reset",
-          "startFrame": 48,
-          "endFrame": 84,
-          "globalStartFrame": 102,
-          "globalEndFrame": 138,
-          "startMs": 1610,
-          "endMs": 2785
+          "text": "今天第一期",
+          "startFrame": 177,
+          "endFrame": 202,
+          "globalStartFrame": 526,
+          "globalEndFrame": 551,
+          "startMs": 5890,
+          "endMs": 6730
+        },
+        {
+          "text": "我们就来拆解里面几乎零成本",
+          "startFrame": 208,
+          "endFrame": 275,
+          "globalStartFrame": 557,
+          "globalEndFrame": 624,
+          "startMs": 6930,
+          "endMs": 9170
+        },
+        {
+          "text": "却能帮你硬生生换回十年寿命的硬核操作",
+          "startFrame": 282,
+          "endFrame": 393,
+          "globalStartFrame": 631,
+          "globalEndFrame": 742,
+          "startMs": 9410,
+          "endMs": 13105
         }
       ],
-      "title": "Tibo 官方推文确认第 6 天重置",
-      "tweet": {
-        "authorName": "Tibo",
-        "authorHandle": "@tibo_maker",
-        "avatarUrl": "",
-        "isVerified": true,
-        "timeAgo": "14h",
-        "content": "Day 6: Reset\n\nNo new features today, just resetting quotas for everyone.",
-        "highlightWords": [
-          "Reset",
-          "No new features"
-        ],
-        "metrics": {
-          "replies": "128",
-          "retweets": "450",
-          "likes": "3.4K",
-          "views": "150K"
-        },
-        "subtitle": "官方确认：第六天无新功能发布，仅执行全局重置"
+      "title": "今天我们来讲：开源神作《高性价比人生指南》",
+      "badge": "GITHUB 12.8K STARS · 开源神作",
+      "subtitle": "基于现代医学实证的生活操作手册 · 投入极小成本，换取确定性收益",
+      "browser": {
+        "url": "github.com/eternity4719/HowToLiveBetter",
+        "image": "images/evidence_github_repo.png",
+        "cameraMotion": "push-in",
+        "highlights": [
+          {
+            "label": "收录建议",
+            "value": "690+ 条实证"
+          },
+          {
+            "label": "四大维度",
+            "value": "寿命/精力/金钱/自由"
+          },
+          {
+            "label": "实证门槛",
+            "value": "A/B 级循证医学",
+            "color": "#15803d"
+          }
+        ]
       }
     },
     {
       "id": "scene_03",
-      "type": "BinaryBento",
-      "startFrame": 145,
-      "durationInFrames": 113,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_03.wav",
-      "text": "二选一规则：要么直接刷新额度，要么给重置卡。",
-      "rawText": "二 选 一 规 则 要 么 直 接 刷 新 额 度 要 么 给 重 置 卡",
+      "type": "WebBrowserMockup",
+      "startFrame": 757,
+      "durationInFrames": 485,
+      "audioPath": "audio/scene_03.mp3",
+      "text": "首先是每天都要吃的食盐。新英格兰医学杂志跟踪两万多名老人近五年发现：仅仅是在买盐时换成含钾低钠盐，全因死亡率直接下降百分之十二，中风下降百分之十四！",
+      "rawText": "首 先 是 每 天 都 要 吃 的 食 盐 新 英 格 兰 医 学 杂 志 跟 踪 两 万 多 名 老 人 近 五 年 发 现 仅 仅 是 在 买 盐 时 患 橙 含 钾 低 钠 盐 全 因 死 亡 率 直 接 下 降 百 分 之 十 二 中 风 下 降 百 分 之 十 四",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "二选一规则：要么直接刷新额度",
-          "startFrame": 2,
-          "endFrame": 66,
-          "globalStartFrame": 147,
-          "globalEndFrame": 211,
-          "startMs": 70,
-          "endMs": 2210
+          "text": "首先是每天都要吃的食盐",
+          "startFrame": 6,
+          "endFrame": 68,
+          "globalStartFrame": 763,
+          "globalEndFrame": 825,
+          "startMs": 210,
+          "endMs": 2250
         },
         {
-          "text": "要么给重置卡",
-          "startFrame": 67,
-          "endFrame": 101,
-          "globalStartFrame": 212,
-          "globalEndFrame": 246,
-          "startMs": 2230,
-          "endMs": 3355
+          "text": "新英格兰医学杂志跟踪两万多名老人近五年发现：仅仅是在买盐时换成含钾低钠盐",
+          "startFrame": 85,
+          "endFrame": 308,
+          "globalStartFrame": 842,
+          "globalEndFrame": 1065,
+          "startMs": 2830,
+          "endMs": 10250
+        },
+        {
+          "text": "全因死亡率直接下降百分之十二",
+          "startFrame": 315,
+          "endFrame": 399,
+          "globalStartFrame": 1072,
+          "globalEndFrame": 1156,
+          "startMs": 10510,
+          "endMs": 13290
+        },
+        {
+          "text": "中风下降百分之十四",
+          "startFrame": 405,
+          "endFrame": 469,
+          "globalStartFrame": 1162,
+          "globalEndFrame": 1226,
+          "startMs": 13490,
+          "endMs": 15625
         }
       ],
-      "title": "配额重置机制与规则",
-      "binaryBento": {
-        "title": "配额重置机制",
-        "subtitle": "二选一规则",
-        "dividerText": "或",
-        "leftCard": {
-          "title": "消耗每日配额",
-          "desc": "等待每日零点自动刷新",
-          "tag": "方案 A",
-          "blocksTotal": 5,
-          "blocksActive": 3
-        },
-        "rightCard": {
-          "title": "使用月度重置卡",
-          "desc": "即时恢复全部对话算力",
-          "pill": "重置卡",
-          "tag": "方案 B"
-        }
+      "title": "顶级医学期刊实证：两万人餐桌换盐奇迹",
+      "badge": "NEJM 权威顶刊 · A级临床实证",
+      "subtitle": "新英格兰医学杂志 (NEJM) · 大型前瞻性随机对照临床试验",
+      "browser": {
+        "url": "nejm.org/doi/full/10.1056/NEJMoa2105675",
+        "image": "images/evidence_nejm_paper.png",
+        "cameraMotion": "pan-down",
+        "highlights": [
+          {
+            "label": "临床样本",
+            "value": "20,995 人"
+          },
+          {
+            "label": "全因死亡率",
+            "value": "直降 12%",
+            "color": "#15803d"
+          },
+          {
+            "label": "中风发生率",
+            "value": "直降 14%",
+            "color": "#15803d"
+          }
+        ]
       }
     },
     {
       "id": "scene_04",
-      "type": "MinimalHeadline",
-      "startFrame": 258,
-      "durationInFrames": 104,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_04.wav",
-      "text": "具体怎么重置帖子没细说，等落地才知道！",
-      "rawText": "具 体 怎 么 重 置 帖 子 没 细 说 等 落 地 才 知 道",
+      "type": "BinaryBento",
+      "startFrame": 1242,
+      "durationInFrames": 329,
+      "audioPath": "audio/scene_04.mp3",
+      "text": "口味几乎没有区别，一袋盐只贵两三块钱，却能无痛降低一成多的猝死风险，这是普通人性价比极高的保命操作。",
+      "rawText": "口 味 几 乎 没 有 区 别 一 袋 盐 汁 贵 两 三 块 钱 却 能 无 痛 降 低 一 成 多 的 猝 死 风 险 这 是 普 通 人 性 价 比 极 高 的 保 命 操 作",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "具体怎么重置帖子没细说",
-          "startFrame": 5,
-          "endFrame": 59,
-          "globalStartFrame": 263,
-          "globalEndFrame": 317,
-          "startMs": 170,
-          "endMs": 1970
+          "text": "口味几乎没有区别",
+          "startFrame": 6,
+          "endFrame": 53,
+          "globalStartFrame": 1248,
+          "globalEndFrame": 1295,
+          "startMs": 210,
+          "endMs": 1770
         },
         {
-          "text": "等落地才知道",
-          "startFrame": 68,
-          "endFrame": 98,
-          "globalStartFrame": 326,
-          "globalEndFrame": 356,
-          "startMs": 2250,
-          "endMs": 3265
+          "text": "一袋盐只贵两三块钱",
+          "startFrame": 60,
+          "endFrame": 116,
+          "globalStartFrame": 1302,
+          "globalEndFrame": 1358,
+          "startMs": 2010,
+          "endMs": 3850
+        },
+        {
+          "text": "却能无痛降低一成多的猝死风险",
+          "startFrame": 123,
+          "endFrame": 208,
+          "globalStartFrame": 1365,
+          "globalEndFrame": 1450,
+          "startMs": 4090,
+          "endMs": 6950
+        },
+        {
+          "text": "这是普通人性价比极高的保命操作",
+          "startFrame": 214,
+          "endFrame": 315,
+          "globalStartFrame": 1456,
+          "globalEndFrame": 1557,
+          "startMs": 7150,
+          "endMs": 10495
         }
       ],
-      "title": "具体怎么重置帖子没细说，等落地才知道！",
-      "inverted": true,
-      "category": "UNCONFIRMED",
-      "highlightWords": [
-        "没细说",
-        "等落地才知道"
-      ]
+      "title": "餐桌低钠盐对决：二选一生死账本",
+      "binaryBento": {
+        "title": "餐桌换盐决策",
+        "subtitle": "二选一真实账本",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "普通高钠精盐",
+          "desc": "长期高钠推高血压与中风风险",
+          "tag": "传统吃法",
+          "blocksTotal": 5,
+          "blocksActive": 5
+        },
+        "rightCard": {
+          "title": "含钾低钠替代盐",
+          "desc": "口味不变，直接换回生存胜率",
+          "tag": "高性价比",
+          "pill": "全因降死12%"
+        }
+      }
     },
     {
       "id": "scene_05",
-      "type": "MinimalHeadline",
-      "startFrame": 362,
-      "durationInFrames": 79,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_05.wav",
-      "text": "上一次全员重置还是在第二天。",
-      "rawText": "上 一 次 全 员 重 置 还 是 在 第 二 天",
+      "type": "TweetEmbed",
+      "startFrame": 1571,
+      "durationInFrames": 529,
+      "audioPath": "audio/scene_05.mp3",
+      "text": "接下来这个动作更夸张，每天出门多花两秒钟，就能挡掉一半的意外死神。世卫组织统计：系好安全带减少五成致命伤，后排同样必须系好；骑车戴头盔且扣紧卡扣，死亡降四成二！",
+      "rawText": "接 下 来 这 个 动 作 更 夸 张 每 天 出 门 多 花 两 秒 钟 就 能 挡 掉 一 半 的 意 外 死 神 世 卫 组 织 统 计 系 好 安 全 带 减 少 五 成 致 命 伤 后 排 同 样 必 须 系 好 骑 车 戴 头 盔 且 扣 紧 卡 扣 死 亡 降 四 乘 二",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "上一次全员重置还是在第二天",
-          "startFrame": 8,
-          "endFrame": 73,
-          "globalStartFrame": 370,
-          "globalEndFrame": 435,
-          "startMs": 250,
-          "endMs": 2425
+          "text": "接下来这个动作更夸张",
+          "startFrame": 6,
+          "endFrame": 60,
+          "globalStartFrame": 1577,
+          "globalEndFrame": 1631,
+          "startMs": 210,
+          "endMs": 2010
+        },
+        {
+          "text": "每天出门多花两秒钟",
+          "startFrame": 68,
+          "endFrame": 120,
+          "globalStartFrame": 1639,
+          "globalEndFrame": 1691,
+          "startMs": 2250,
+          "endMs": 3990
+        },
+        {
+          "text": "就能挡掉一半的意外死神",
+          "startFrame": 126,
+          "endFrame": 191,
+          "globalStartFrame": 1697,
+          "globalEndFrame": 1762,
+          "startMs": 4190,
+          "endMs": 6370
+        },
+        {
+          "text": "世卫组织统计：系好安全带减少五成致命伤",
+          "startFrame": 211,
+          "endFrame": 326,
+          "globalStartFrame": 1782,
+          "globalEndFrame": 1897,
+          "startMs": 7030,
+          "endMs": 10850
+        },
+        {
+          "text": "后排同样必须系好",
+          "startFrame": 332,
+          "endFrame": 384,
+          "globalStartFrame": 1903,
+          "globalEndFrame": 1955,
+          "startMs": 11070,
+          "endMs": 12810
+        },
+        {
+          "text": "骑车戴头盔且扣紧卡扣",
+          "startFrame": 392,
+          "endFrame": 460,
+          "globalStartFrame": 1963,
+          "globalEndFrame": 2031,
+          "startMs": 13050,
+          "endMs": 15330
+        },
+        {
+          "text": "死亡降四成二",
+          "startFrame": 465,
+          "endFrame": 515,
+          "globalStartFrame": 2036,
+          "globalEndFrame": 2086,
+          "startMs": 15510,
+          "endMs": 17155
         }
       ],
-      "title": "上一次全员重置还是在第二天。",
-      "inverted": false,
-      "category": "TIMELINE",
-      "highlightWords": [
-        "第二天",
-        "全员重置"
-      ]
+      "title": "WHO 官方数据：系好安全带挡掉一半死神",
+      "tweet": {
+        "authorName": "World Health Organization (WHO)",
+        "authorHandle": "@WHO",
+        "avatarUrl": "",
+        "isVerified": true,
+        "timeAgo": "Official",
+        "content": "Wearing a seatbelt reduces the risk of fatal injury by 45-50% for drivers and front-seat occupants. Fasten your seatbelt every time you travel.",
+        "highlightWords": [
+          "reduces the risk",
+          "45-50%",
+          "every time you travel"
+        ],
+        "subtitle": "WHO 官方权威数据：系好安全带减少 50% 致命伤害，扣好头盔减少 42% 死亡",
+        "metrics": {
+          "replies": "189",
+          "retweets": "1.4K",
+          "likes": "6.2K",
+          "views": "850K"
+        }
+      }
     },
     {
       "id": "scene_06",
-      "type": "TweetEmbed",
-      "startFrame": 441,
-      "durationInFrames": 103,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_06.wav",
-      "text": "前一天 Tibo 就发推说：一眨眼都周六了。",
-      "rawText": "前 一 天 tiep 就 发 推 说 一 眨 眼 都 周 六 了",
+      "type": "BinaryBento",
+      "startFrame": 2100,
+      "durationInFrames": 375,
+      "audioPath": "audio/scene_06.mp3",
+      "text": "住宅火灾四成遇难者起火时在熟睡，人在深度睡眠中闻不到烟。几十元装个独立烟雾报警器，能把死亡概率硬生生斩断六成！",
+      "rawText": "住 宅 火 灾 四 成 遇 难 者 起 火 时 在 熟 睡 人 在 深 度 睡 眠 中 闻 不 到 烟 几 十 元 装 个 独 立 烟 雾 报 警 器 能 把 死 亡 概 率 硬 生 生 斩 断 六 成",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "前一天 Tibo 就发推说：一眨眼都周六了",
-          "startFrame": 5,
-          "endFrame": 97,
-          "globalStartFrame": 446,
-          "globalEndFrame": 538,
-          "startMs": 170,
-          "endMs": 3235
+          "text": "住宅火灾四成遇难者起火时在熟睡",
+          "startFrame": 6,
+          "endFrame": 94,
+          "globalStartFrame": 2106,
+          "globalEndFrame": 2194,
+          "startMs": 190,
+          "endMs": 3130
+        },
+        {
+          "text": "人在深度睡眠中闻不到烟",
+          "startFrame": 102,
+          "endFrame": 173,
+          "globalStartFrame": 2202,
+          "globalEndFrame": 2273,
+          "startMs": 3390,
+          "endMs": 5770
+        },
+        {
+          "text": "几十元装个独立烟雾报警器",
+          "startFrame": 190,
+          "endFrame": 257,
+          "globalStartFrame": 2290,
+          "globalEndFrame": 2357,
+          "startMs": 6330,
+          "endMs": 8570
+        },
+        {
+          "text": "能把死亡概率硬生生斩断六成",
+          "startFrame": 262,
+          "endFrame": 359,
+          "globalStartFrame": 2362,
+          "globalEndFrame": 2459,
+          "startMs": 8730,
+          "endMs": 11965
         }
       ],
-      "title": "前一天 Tibo 预热发推",
-      "tweet": {
-        "authorName": "Tibo",
-        "authorHandle": "@tibo_maker",
-        "avatarUrl": "",
-        "isVerified": true,
-        "timeAgo": "1d",
-        "content": "Can't believe it's already Saturday. Time flies when building in public.",
-        "highlightWords": [
-          "Saturday",
-          "Time flies"
-        ],
-        "metrics": {
-          "replies": "86",
-          "retweets": "190",
-          "likes": "1.8K",
-          "views": "82K"
+      "title": "睡梦中的隐形杀手：报警器二选一",
+      "binaryBento": {
+        "title": "夜间住宅火灾防范",
+        "subtitle": "生命守护二选一",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "无警报熟睡盲区",
+          "desc": "睡眠嗅觉休眠，41%遇难死于未觉察",
+          "tag": "致命盲区",
+          "blocksTotal": 5,
+          "blocksActive": 4
         },
-        "subtitle": "此前周五晚间的微妙预热"
+        "rightCard": {
+          "title": "独立烟雾报警器",
+          "desc": "几十块钱装上，刺耳蜂鸣唤醒逃生",
+          "tag": "火灾克星",
+          "pill": "降低60%死亡"
+        }
       }
     },
     {
       "id": "scene_07",
-      "type": "MinimalHeadline",
-      "startFrame": 544,
-      "durationInFrames": 98,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_07.wav",
-      "text": "合着功能没影子，这是又要重置啊！",
-      "rawText": "合 着 这 个 功 能 没 影 子 这 是 又 要 重 置 啊",
+      "type": "WebBrowserMockup",
+      "startFrame": 2475,
+      "durationInFrames": 464,
+      "audioPath": "audio/scene_07.mp3",
+      "text": "这绝不是让人焦虑打卡的任务清单。六百多条实证建议，你只要挑走一两条照着做，就抓住了人生最大的确定性。关注我们，下期继续解锁高性价比生活黑客！",
+      "rawText": "这 绝 不 是 让 人 焦 虑 打 卡 的 任 务 清 单 六 百 多 条 实 证 建 议 你 只 要 挑 走 一 两 条 照 着 做 就 抓 住 了 人 生 最 大 的 确 定 性 关 注 我 们 下 期 继 续 解 锁 高 性 价 比 生 活 黑 客",
       "emotion": "<|NEUTRAL|>",
       "words": [
         {
-          "text": "合着功能没影子",
-          "startFrame": 6,
-          "endFrame": 34,
-          "globalStartFrame": 550,
-          "globalEndFrame": 578,
-          "startMs": 210,
-          "endMs": 1150
+          "text": "这绝不是让人焦虑打卡的任务清单",
+          "startFrame": 5,
+          "endFrame": 96,
+          "globalStartFrame": 2480,
+          "globalEndFrame": 2571,
+          "startMs": 170,
+          "endMs": 3210
         },
         {
-          "text": "这是又要重置啊",
-          "startFrame": 34,
-          "endFrame": 95,
-          "globalStartFrame": 578,
-          "globalEndFrame": 639,
-          "startMs": 1150,
-          "endMs": 3175
-        }
-      ],
-      "title": "合着功能没影子，这是又要重置啊！",
-      "inverted": false,
-      "category": "INSIGHT",
-      "highlightWords": [
-        "没影子",
-        "又要重置"
-      ]
-    },
-    {
-      "id": "scene_08",
-      "type": "MinimalHeadline",
-      "startFrame": 642,
-      "durationInFrames": 112,
-      "audioPath": "projects/codex_day6_reset_demo/audio/scene_08.wav",
-      "text": "第七天到底会有什么新功能？明天接着看！",
-      "rawText": "第 七 天 到 底 会 有 什 么 新 功 能 明 天 接 着 看",
-      "emotion": "<|NEUTRAL|>",
-      "words": [
-        {
-          "text": "第七天到底会有什么新功能",
-          "startFrame": 32,
-          "endFrame": 90,
-          "globalStartFrame": 674,
-          "globalEndFrame": 732,
-          "startMs": 1050,
-          "endMs": 2990
+          "text": "六百多条实证建议",
+          "startFrame": 112,
+          "endFrame": 159,
+          "globalStartFrame": 2587,
+          "globalEndFrame": 2634,
+          "startMs": 3750,
+          "endMs": 5290
         },
         {
-          "text": "明天接着看",
-          "startFrame": 90,
-          "endFrame": 112,
-          "globalStartFrame": 732,
-          "globalEndFrame": 754,
-          "startMs": 3010,
-          "endMs": 3720
+          "text": "你只要挑走一两条照着做",
+          "startFrame": 166,
+          "endFrame": 228,
+          "globalStartFrame": 2641,
+          "globalEndFrame": 2703,
+          "startMs": 5530,
+          "endMs": 7610
+        },
+        {
+          "text": "就抓住了人生最大的确定性",
+          "startFrame": 232,
+          "endFrame": 308,
+          "globalStartFrame": 2707,
+          "globalEndFrame": 2783,
+          "startMs": 7750,
+          "endMs": 10250
+        },
+        {
+          "text": "关注我们",
+          "startFrame": 321,
+          "endFrame": 343,
+          "globalStartFrame": 2796,
+          "globalEndFrame": 2818,
+          "startMs": 10710,
+          "endMs": 11430
+        },
+        {
+          "text": "下期继续解锁高性价比生活黑客",
+          "startFrame": 350,
+          "endFrame": 449,
+          "globalStartFrame": 2825,
+          "globalEndFrame": 2924,
+          "startMs": 11650,
+          "endMs": 14965
         }
       ],
-      "title": "第七天到底会有什么新功能？明天接着看！",
-      "inverted": true,
-      "category": "STAY TUNED",
-      "highlightWords": [
-        "第七天",
-        "明天接着看"
-      ]
+      "title": "挑走一两条照着做，你就是人生赢家！",
+      "badge": "ACTIONABLE LIFE · 落地实操",
+      "subtitle": "HowToLiveBetter 在线自查手册 · 挑选属于你自己的高性价比清单",
+      "browser": {
+        "url": "eternity4719.github.io/HowToLiveBetter",
+        "image": "images/repo_web_screenshot.png",
+        "cameraMotion": "push-in",
+        "highlights": [
+          {
+            "label": "操作原则",
+            "value": "非任务打卡清单"
+          },
+          {
+            "label": "执行策略",
+            "value": "挑 1~2 条照做即稳赚",
+            "color": "#15803d"
+          }
+        ]
+      }
     }
   ],
   "bgmVolume": 0.035,

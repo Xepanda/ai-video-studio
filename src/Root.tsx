@@ -414,10 +414,19 @@ export const MasterVideo: React.FC<MainCompositionProps> = (props = {}) => {
 
   const enableDucking = (currentTimelineData as any).enableDucking !== false;
   const duckRatio = (currentTimelineData as any).bgmDuckRatio ?? 0.20;
-  const duckFrames = Math.max(5, Math.round(fps * 0.5)); // 帧率自适应 ~500ms 阻尼过渡
+  const duckFrames = Math.max(5, Math.round(fps * 0.5));
+  const currentTheme = getTheme((currentTimelineData as any).theme);
+  const isLight = currentTheme.isLight ?? true;
 
   return (
-    <AbsoluteFill style={{ backgroundColor: '#090d16', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <AbsoluteFill
+      style={{
+        backgroundColor: isLight ? '#faf7f0' : '#090d16',
+        background: isLight ? currentTheme.background : '#090d16',
+        color: isLight ? '#0f172a' : '#fff',
+        fontFamily: 'system-ui, -apple-system, sans-serif',
+      }}
+    >
       {/* 全局极客科技氛围背景音乐 (轻柔垫乐 + 自动循环 + 首尾淡入淡出 + 语音智能闪避) */}
       {enableBgm && isRemotionContext && (
         <Audio
@@ -477,12 +486,7 @@ export const MasterVideo: React.FC<MainCompositionProps> = (props = {}) => {
               />
             )}
 
-            {/* 场景起幅转场高科技音效 (从第二镜开始触发，layout="none" 杜绝无意义绝对定位 DOM 污染) */}
-            {isRemotionContext && enableSfx && idx > 0 && (
-              <SafeSequence from={0} durationInFrames={transitionFrames} layout="none">
-                <Audio src={staticFile('audio/sfx_transition.wav')} volume={0.18} />
-              </SafeSequence>
-            )}
+            {/* 场景转场音效已按需完全移除，保持纯净叙事聆听体验 */}
 
             {/* 场景画面呈现：如果有自定义标题或分镜超过5个，使用通用高质感分镜渲染器，否则回退到经典演示场景 */}
             {(scene as any).title ? (

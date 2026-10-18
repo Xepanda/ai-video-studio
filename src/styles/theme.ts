@@ -1,4 +1,6 @@
 export type ThemeName =
+  | 'editorial-paper-light'// 雅致暖纸白 (米白暖纸底 + 纯白卡片 + 墨黑文字，清爽高级)
+  | 'spring-sage-light'    // 晨曦暖绿白 (薄荷绿微光 + 白玉质感)
   | 'linear-graphite'       // Linear.app 旗舰极客冷灰风 (深沉微紫/蓝光晕，顶级精英开发工具)
   | 'vercel-geist'         // Vercel Geist / Next.js 极简高反差金属风 (纯净银黑，硬核前沿技术)
   | 'motion-canvas-warm'   // Motion Canvas / 3B1B 温暖工科粉彩风 (温润深灰底，柔和琥珀与薄荷绿)
@@ -26,6 +28,7 @@ export interface ThemeConfig {
   displayName: string;
   description: string;
   background: string;
+  isLight?: boolean;
   spotlight?: SpotlightConfig;
   gridOverlay?: GridOverlayConfig;
   titleGradient: string;
@@ -46,6 +49,78 @@ export interface ThemeConfig {
 }
 
 export const THEMES: Record<ThemeName, ThemeConfig> = {
+  // 0. 【首选浅色】雅致暖纸白 (米白暖纸底 + 纯白卡片 + 墨黑文字，清爽高级)
+  'editorial-paper-light': {
+    name: 'editorial-paper-light',
+    displayName: 'Editorial Paper Light (雅致暖纸白)',
+    description: '温润米白暖纸底 + 纯净白玉卡片 + 墨黑文字 + 蓝紫高光，护眼舒适，出版物与深度科普首选',
+    isLight: true,
+    background: 'linear-gradient(180deg, #faf7f0 0%, #f4ede2 100%)',
+    spotlight: {
+      color: 'rgba(99, 102, 241, 0.05)',
+      opacity: 0.25,
+      size: '80% 50%',
+      position: '50% -10%',
+    },
+    gridOverlay: {
+      type: 'none',
+      color: 'transparent',
+      size: 0,
+      opacity: 0,
+    },
+    titleGradient: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)',
+    titleColor: '#0f172a',
+    badgeBg: 'rgba(99, 102, 241, 0.08)',
+    badgeColor: '#4f46e5',
+    badgeBorder: '1px solid rgba(99, 102, 241, 0.20)',
+    cardBg: '#ffffff',
+    cardBorder: '1px solid rgba(0, 0, 0, 0.08)',
+    cardShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04)',
+    cardTitleColor: '#0f172a',
+    cardDescColor: '#475569',
+    accentColor: '#4f46e5',
+    subtitleBarBg: '#ffffff',
+    subtitleBorder: '1px solid rgba(0, 0, 0, 0.08)',
+    subtitleTextColor: '#0f172a',
+    subtitleHighlightColor: '#4f46e5',
+  },
+
+  // 0.1 晨曦暖绿白
+  'spring-sage-light': {
+    name: 'spring-sage-light',
+    displayName: 'Spring Sage Light (晨曦暖绿白)',
+    description: '薄荷鼠尾草柔光 + 纯净白底，充满生命力与健康感',
+    isLight: true,
+    background: 'linear-gradient(180deg, #f5f8f5 0%, #edf3ee 100%)',
+    spotlight: {
+      color: 'rgba(16, 185, 129, 0.08)',
+      opacity: 0.3,
+      size: '80% 50%',
+      position: '50% -10%',
+    },
+    gridOverlay: {
+      type: 'none',
+      color: 'transparent',
+      size: 0,
+      opacity: 0,
+    },
+    titleGradient: 'linear-gradient(180deg, #064e3b 0%, #065f46 100%)',
+    titleColor: '#064e3b',
+    badgeBg: 'rgba(16, 185, 129, 0.10)',
+    badgeColor: '#047857',
+    badgeBorder: '1px solid rgba(16, 185, 129, 0.25)',
+    cardBg: '#ffffff',
+    cardBorder: '1px solid rgba(0, 0, 0, 0.07)',
+    cardShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.03)',
+    cardTitleColor: '#0f172a',
+    cardDescColor: '#334155',
+    accentColor: '#059669',
+    subtitleBarBg: '#ffffff',
+    subtitleBorder: '1px solid rgba(0, 0, 0, 0.08)',
+    subtitleTextColor: '#0f172a',
+    subtitleHighlightColor: '#059669',
+  },
+
   // 1. 【首选推荐】Linear 旗舰极客冷灰风 (Linear.app / Raycast 顶级精英质感)
   'linear-graphite': {
     name: 'linear-graphite',
@@ -296,7 +371,7 @@ export const getTheme = (name?: string): ThemeConfig => {
   if (name && Object.prototype.hasOwnProperty.call(THEMES, name)) {
     return THEMES[name as ThemeName];
   }
-  return THEMES['linear-graphite'];
+  return THEMES['editorial-paper-light'];
 };
 
 export const safeColorWithAlpha = (color: string | undefined, alphaHex: string, fallback: string = '#38bdf8'): string => {

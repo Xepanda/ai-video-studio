@@ -378,6 +378,7 @@ runTest('Test 6: File-level converter writes valid JSON and default CLI files', 
 
   try {
     // Convert public/timeline.json -> tmpProjectFile
+    const origTimeline = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../public/timeline.json'), 'utf-8'));
     const project = convertTimelineToChatcutFile('public/timeline.json', tmpProjectFile);
     assert.ok(fs.existsSync(tmpProjectFile), 'chatcut_project_test_tmp.json must be written to disk');
 
@@ -385,8 +386,8 @@ runTest('Test 6: File-level converter writes valid JSON and default CLI files', 
     const timeline = convertChatcutToTimelineFile(tmpProjectFile, tmpTimelineFile);
     assert.ok(fs.existsSync(tmpTimelineFile), 'timeline_test_tmp.json must be written to disk');
 
-    assert.strictEqual(timeline.scenes.length, 8, 'Converted file must have 8 scenes');
-    assert.strictEqual(timeline.totalDurationInFrames, 754, 'Converted file must have 754 frames');
+    assert.strictEqual(timeline.scenes.length, origTimeline.scenes.length, 'Converted file must match original scene count');
+    assert.strictEqual(timeline.totalDurationInFrames, origTimeline.totalDurationInFrames, 'Converted file must match original total frames');
   } finally {
     // Cleanup temporary test files
     if (fs.existsSync(tmpProjectFile)) fs.unlinkSync(tmpProjectFile);
