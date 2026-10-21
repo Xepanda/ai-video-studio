@@ -48,4 +48,4 @@ description: Use when producing high-retention technical explainer videos, codin
 
 ## 3. 配音与音色推荐
 - **主力引擎**：本地 ChatTTS，锁定 **Seed 4444（随和生活男声）** 或 **Seed 2222（极客男声）**；
-- **声音母带**：双遍 EBU R128 标准化压制，综合响度 **-11.0 LUFS ~ -14.0 LUFS**，真峰值 $\le -0.5\text{ dBFS}$。
+- **声音母带**：双遍 EBU R128 标准化压制，响度目标由 `scripts/audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 单一事实源按发布平台取值——默认 web（YouTube / B站 / 小红书）**-14.0 LUFS**，短视频（抖音 / 快手 / Reels）`--platform short_video` **-11.0 LUFS**，真峰值统一 $\le -1.5\text{ dBTP}$。

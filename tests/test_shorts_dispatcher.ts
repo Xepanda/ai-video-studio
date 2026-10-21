@@ -135,12 +135,15 @@ function testTechNewsShortsSceneDispatcher() {
   });
   const tweetHtml = ReactDOMServer.renderToStaticMarkup(tweetElem);
 
-  // 验证 1080x1920 容器尺寸、220px 底部安全区与推文内容渲染
-  if (!tweetHtml.includes('width:1080px') || !tweetHtml.includes('height:1920px')) {
-    throw new Error('TechNewsShortsScene container missing 1080x1920 vertical canvas constraints');
+  // 验证容器满填充画布与底部安全区避让:
+  // 1080x1920 竖屏尺寸由 Remotion Composition 提供, 组件以 width/height:100% + inset:0 满填充承接;
+  // SSR (renderToStaticMarkup) 环境下 useVideoConfig 回退横屏 1920x1080,
+  // 故安全区走横屏分支 padding-bottom:100px (竖屏 220px 由 Composition 竖屏尺寸驱动, 此处无法构造)。
+  if (!tweetHtml.includes('width:100%') || !tweetHtml.includes('height:100%')) {
+    throw new Error('TechNewsShortsScene container missing full-fill canvas constraints');
   }
-  if (!tweetHtml.includes('padding-bottom:220px')) {
-    throw new Error('TechNewsShortsScene missing 220px bottom safe-area padding');
+  if (!tweetHtml.includes('padding-bottom:100px')) {
+    throw new Error('TechNewsShortsScene missing bottom safe-area padding (SSR landscape fallback)');
   }
   if (!tweetHtml.includes('Guillermo Rauch') || !tweetHtml.includes('@rauchg')) {
     throw new Error('TechNewsShortsScene failed to route TweetEmbedCard');
@@ -234,11 +237,12 @@ function testTechNewsShortsSceneDispatcher() {
   });
   const invertedHeadlineHtml = ReactDOMServer.renderToStaticMarkup(invertedHeadlineElem);
 
-  if (!invertedHeadlineHtml.includes('background-color:#ffffff')) {
-    throw new Error('Inverted TechNewsShortsScene container must be white background (#ffffff)');
+  // 深色主题 (linear-graphite) + inverted: 容器为高亮纯白底爆破 (#fbf8f1), 文本深岩黑 (#0f172a)
+  if (!invertedHeadlineHtml.includes('background-color:#fbf8f1')) {
+    throw new Error('Inverted TechNewsShortsScene container must be white paper background (#fbf8f1)');
   }
-  if (!invertedHeadlineHtml.includes('color:#09090b')) {
-    throw new Error('Inverted TechNewsShortsScene text must be dark (#09090b)');
+  if (!invertedHeadlineHtml.includes('color:#0f172a')) {
+    throw new Error('Inverted TechNewsShortsScene text must be dark slate (#0f172a)');
   }
   if (!invertedHeadlineHtml.includes('BREAKING')) {
     throw new Error('Inverted TechNewsShortsScene missing category');

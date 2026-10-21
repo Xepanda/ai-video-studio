@@ -3,38 +3,36 @@
 """
 scripts/pipeline.py
 全链路视频自动化端到端中枢调度脚本 (One-Click Pipeline)
-支持双渲染引擎 (Remotion & HyperFrames) 调度与 EBU R128 -11.0 LUFS 广播级商业母带压制
+支持双渲染引擎 (Remotion & HyperFrames) 调度与 EBU R128 网络平台标准母带压制
+(默认 -14 LUFS / -1.5 dBTP, 详见 scripts/audio_mastering.py PLATFORM_LOUDNESS_PRESETS;
+ 短视频平台可设 AVS_PLATFORM=short_video 或 AVS_LOUDNESS_LUFS=-11 切换)
 """
 
 import os
 import sys
 import argparse
-import subprocess
 from typing import List, Dict, Any
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # 保障 utils 包可导入
+from utils.runtime import resolve_python, run_command
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LIVECLIP_PYTHON = r"C:\Users\ePanda\.workbuddy\binaries\python\envs\liveclip\Scripts\python.exe"
-PYTHON_EXE = LIVECLIP_PYTHON if os.path.exists(LIVECLIP_PYTHON) else sys.executable
+PYTHON_EXE = resolve_python()
 
 
 def run_step(step_name: str, cmd):
-    """跨平台执行流水线子步骤，健壮支持字符串命令与列表命令"""
+    """跨平台执行流水线子步骤，健壮支持字符串命令与列表命令。
+
+    统一经 utils.runtime.run_command 分发：内置超时 (AVS_CMD_TIMEOUT) 与
+    有限重试 (AVS_CMD_RETRIES)，子进程挂起不再无限阻塞整条流水线。
+    """
     print(f"\n=======================================================")
     print(f"🚀 [Pipeline Step] 正在执行: {step_name}")
     print(f"=======================================================\n")
-    if isinstance(cmd, str):
-        ret = subprocess.run(cmd, shell=True, cwd=PROJECT_ROOT)
-    elif isinstance(cmd, list):
-        if sys.platform == "win32" and cmd and cmd[0] in ("npx", "hyperframes", "remotion"):
-            actual_cmd = ["cmd.exe", "/c"] + cmd
-        else:
-            actual_cmd = cmd
-        ret = subprocess.run(actual_cmd, cwd=PROJECT_ROOT)
-    else:
-        ret = subprocess.run(cmd, cwd=PROJECT_ROOT)
+    ret = run_command(cmd, cwd=PROJECT_ROOT, desc=step_name)
     if ret.returncode != 0:
         print(f"\n❌ [Pipeline Failed] 步骤 [{step_name}] 执行失败，错误码: {ret.returncode}")
         sys.exit(ret.returncode)
@@ -197,14 +195,14 @@ def main():
             if step.get("output_mp4"):
                 rendered_mp4s.append(step["output_mp4"])
 
-        # 步骤 4: 成品视频商业级广播响度标准化 (-11 LUFS / -0.5 True Peak)
+        # 步骤 4: 成品视频平台级响度标准化 (默认 -14 LUFS / -1.5 dBTP, 平台表见 audio_mastering.py)
         master_script = os.path.join(PROJECT_ROOT, "scripts", "audio_mastering.py")
         if not args.no_master_video:
             for mp4_rel in rendered_mp4s:
                 mp4_abs = os.path.join(PROJECT_ROOT, mp4_rel) if not os.path.isabs(mp4_rel) else mp4_rel
                 if os.path.exists(mp4_abs):
                     run_step(
-                        f"成品视频音轨商业广播响度标准化 (EBU R128 -11 LUFS): {os.path.basename(mp4_abs)}",
+                        f"成品视频音轨平台响度标准化 (默认 -14 LUFS / -1.5 dBTP): {os.path.basename(mp4_abs)}",
                         [PYTHON_EXE, master_script, "--video", mp4_abs]
                     )
                 else:

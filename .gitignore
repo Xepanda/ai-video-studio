@@ -63,6 +63,8 @@ projects_hf/*/assets/audio/*
 # Temporary test artifacts
 temp_*
 *.tmp
+tests/.build/
+.pytest_cache/
 inputs/extracted_live/
 inputs/transcripts/
 

@@ -358,20 +358,13 @@
         "authorHandle": "@WHO",
         "avatarUrl": "",
         "isVerified": true,
-        "timeAgo": "Official",
         "content": "Wearing a seatbelt reduces the risk of fatal injury by 45-50% for drivers and front-seat occupants. Fasten your seatbelt every time you travel.",
         "highlightWords": [
           "reduces the risk",
           "45-50%",
           "every time you travel"
         ],
-        "subtitle": "WHO 官方权威数据：系好安全带减少 50% 致命伤害，扣好头盔减少 42% 死亡",
-        "metrics": {
-          "replies": "189",
-          "retweets": "1.4K",
-          "likes": "6.2K",
-          "views": "850K"
-        }
+        "subtitle": "WHO 官方权威数据：系好安全带减少 50% 致命伤害，扣好头盔减少 42% 死亡"
       }
     },
     {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useCurrentFrame, useVideoConfig, interpolate, spring, staticFile } from 'remotion';
+import { useCurrentFrame, useVideoConfig, interpolate, spring, staticFile, Img } from 'remotion';
 import { ThemeConfig, getTheme } from '../../styles/theme';
 
 export interface WebBrowserMockupSceneProps {
@@ -236,7 +236,7 @@ export const WebBrowserMockupScene: React.FC<WebBrowserMockupSceneProps> = ({
           }}
         >
           {resolvedImg ? (
-            <img
+            <Img
               src={resolvedImg}
               alt={title || 'Screenshot'}
               style={{

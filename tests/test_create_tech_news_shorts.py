@@ -168,11 +168,11 @@ class TestCodexDay6Preset(unittest.TestCase):
         self.assertEqual(tweet1["authorName"], "Tibo")
         self.assertEqual(tweet1["authorHandle"], "@tibo_maker")
         self.assertTrue(tweet1["isVerified"])
-        self.assertEqual(tweet1["timeAgo"], "14h")
+        # 数据诚信 (审计 A3): 预设不得编造 timeAgo 与互动量, 字段应整体缺席
+        self.assertNotIn("timeAgo", tweet1)
+        self.assertNotIn("metrics", tweet1)
         self.assertIn("Day 6: Reset", tweet1["content"])
         self.assertIn("Reset", tweet1["highlightWords"])
-        self.assertEqual(tweet1["metrics"]["replies"], "128")
-        self.assertEqual(tweet1["metrics"]["views"], "150K")
 
         # Scene 3: BinaryBento
         self.assertEqual(scenes[2]["id"], "scene_03")
@@ -206,9 +206,10 @@ class TestCodexDay6Preset(unittest.TestCase):
         self.assertEqual(scenes[5]["type"], "TweetEmbed")
         tweet2 = scenes[5]["tweet"]
         self.assertEqual(tweet2["authorName"], "Tibo")
-        self.assertEqual(tweet2["timeAgo"], "1d")
+        # 数据诚信 (审计 A3): 预设不得编造 timeAgo 与互动量, 字段应整体缺席
+        self.assertNotIn("timeAgo", tweet2)
+        self.assertNotIn("metrics", tweet2)
         self.assertIn("Saturday", tweet2["highlightWords"])
-        self.assertEqual(tweet2["metrics"]["likes"], "1.8K")
 
         # Scene 7: MinimalHeadline (inverted: false)
         self.assertEqual(scenes[6]["id"], "scene_07")

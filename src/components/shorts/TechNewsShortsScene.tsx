@@ -210,11 +210,13 @@ export const TechNewsShortsScene: React.FC<TechNewsShortsSceneProps> = ({
   }
 
   // 6. 容器背景与样式设置
+  // 浅色主题: 正常模式用主题纸底, inverted 沉浸深色;
+  // 深色主题: 正常模式用主题极客黑, inverted 高亮纯白底爆破 (不得误用深色主题背景, 否则白底冲击失效)
   const defaultDarkBg =
     'radial-gradient(ellipse 90% 70% at 50% 25%, #181825 0%, #0c0d14 60%, #050508 100%)';
-  const containerBg = isLightMode
-    ? (activeTheme?.background || '#fbf8f1')
-    : (themeIsLight ? '#1e232d' : (activeTheme?.background || defaultDarkBg));
+  const containerBg = themeIsLight
+    ? (isInverted ? '#1e232d' : (activeTheme?.background || '#fbf8f1'))
+    : (isInverted ? '#fbf8f1' : (activeTheme?.background || defaultDarkBg));
 
   return (
     <div

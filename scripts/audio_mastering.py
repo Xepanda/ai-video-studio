@@ -10,8 +10,9 @@ scripts/audio_mastering.py
 2. 辅音咬字能量微弱：在 20%~30% 手机音量下，人耳等响度曲线下沉。若 2.5k~4.5kHz 齿音/辅音能量不足，听觉上只能听到
    含混沉闷的低频嗡嗡声，字词咬字彻底被淹没；
 3. 动态跨度过大：轻声尾音与句子起伏相差 15dB，在安静环境或手机低音量下，弱读字词直接跌入底噪阈值以下；
-4. 商业短视频响度标准：抖音/快手/Reels 头部科技博主主流音频标准并非保守的电视 -24 LUFS 或 YouTube -14 LUFS，
-   而是 -10.0 ~ -11.5 LUFS，LRA <= 3.5 LU，确保小音量下每一句台词字字清晰、极具冲击力。
+4. 商业短视频响度标准：全仓统一由 PLATFORM_LOUDNESS_PRESETS 单一事实源管理——
+   网络平台 (YouTube/B站/小红书) 默认 -14.0 LUFS / -1.5 dBTP 全平台安全值；
+   抖音/快手/Reels 头部科技博主更偏好 -10.0 ~ -11.5 LUFS 的冲击声压，可经 --platform short_video 一键切换。
 
 本模块提供完整的商业级短视频声学母带链条：
 1. 110Hz~120Hz 四阶 Butterworth 高通滤波 (HPF)：强力切除无意义低频轰鸣，解放 35% 以上扬声器动态空间，同时保留耳机听音男声温暖基频；
@@ -30,15 +31,70 @@ import sys
 import json
 import shutil
 import argparse
-import subprocess
 import numpy as np
 import scipy.signal as signal
 import soundfile as sf
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # 保障 utils 包可导入
+from utils.runtime import run_command
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# FFmpeg 子进程超时 (秒): 单音频母带短任务 / 整片视频双遍长任务
+FFMPEG_AUDIO_TIMEOUT = int(os.environ.get("AVS_FFMPEG_AUDIO_TIMEOUT", "600"))
+FFMPEG_VIDEO_TIMEOUT = int(os.environ.get("AVS_FFMPEG_VIDEO_TIMEOUT", "1800"))
+
+# ============================================================
+# 响度标准单一事实源 (审计 C4: 消灭 -16 / -11 / -10 三套矛盾标准)
+# ------------------------------------------------------------
+# 行业参考:
+#   YouTube / Spotify / B站 / 小红书  → -14 LUFS (网络平台通用安全值)
+#   抖音 / 快手 / Reels               → -11 LUFS (更响更抓耳)
+#   广电 EBU R128                     → -23 LUFS
+# 真实峰值统一 <= -1.5 dBTP (留出 AAC 编码与平台二次转码余量)。
+# 解析优先级: CLI --target_i/--target_tp > 环境变量 > 平台预设 > web 默认。
+# ============================================================
+PLATFORM_LOUDNESS_PRESETS = {
+    "web": (-14.0, -1.5),          # YouTube / B站 / 小红书 / Spotify (默认)
+    "short_video": (-11.0, -1.5),  # 抖音 / 快手 / Reels
+    "broadcast": (-23.0, -2.0),    # EBU R128 广电
+}
+DEFAULT_LOUDNESS_I = -14.0
+DEFAULT_LOUDNESS_TP = -1.5
+
+
+def resolve_loudness_targets(
+    platform: str = "",
+    target_i: float = None,
+    target_tp: float = None
+) -> dict:
+    """解析最终响度目标 (LUFS / dBTP)。
+
+    优先级: 显式传入参数 > AVS_LOUDNESS_LUFS / AVS_LOUDNESS_TP 环境变量 > 平台预设 > 内置默认。
+    """
+    key = (platform or os.environ.get("AVS_PLATFORM") or "web").lower()
+    preset_i, preset_tp = PLATFORM_LOUDNESS_PRESETS.get(key, PLATFORM_LOUDNESS_PRESETS["web"])
+
+    if target_i is None:
+        env_i = os.environ.get("AVS_LOUDNESS_LUFS")
+        try:
+            target_i = float(env_i) if env_i else preset_i
+        except ValueError:
+            print(f"⚠️ [Loudness] AVS_LOUDNESS_LUFS 非法 ({env_i!r})，回退平台预设 {preset_i} LUFS")
+            target_i = preset_i
+
+    if target_tp is None:
+        env_tp = os.environ.get("AVS_LOUDNESS_TP")
+        try:
+            target_tp = float(env_tp) if env_tp else preset_tp
+        except ValueError:
+            print(f"⚠️ [Loudness] AVS_LOUDNESS_TP 非法 ({env_tp!r})，回退平台预设 {preset_tp} dBTP")
+            target_tp = preset_tp
+
+    return {"target_i": target_i, "target_tp": target_tp}
 
 def find_ffmpeg() -> str:
     """
@@ -199,8 +255,8 @@ def master_audio_file(
     target_rms_db: float = -10.0,
     target_peak_db: float = -0.4,
     use_loudnorm: bool = True,
-    target_i: float = -11.0,
-    target_tp: float = -0.5,
+    target_i: float = DEFAULT_LOUDNESS_I,
+    target_tp: float = DEFAULT_LOUDNESS_TP,
     target_lra: float = 2.8,
     hpf_freq: float = 120.0
 ) -> bool:
@@ -245,7 +301,11 @@ def master_audio_file(
                     "-ar", str(sr),
                     tmp_loudnorm
                 ]
-                subprocess.run(cmd, capture_output=True, check=True)
+                run_command(
+                    cmd, capture_output=True, check=True, retries=0,
+                    timeout=FFMPEG_AUDIO_TIMEOUT, encoding="utf-8", errors="replace",
+                    desc=f"ffmpeg loudnorm 二次校正 {os.path.basename(target_save_path)}",
+                )
                 # 校验时长完全一致
                 info_orig = sf.info(target_save_path)
                 info_norm = sf.info(tmp_loudnorm)
@@ -265,7 +325,11 @@ def master_audio_file(
         if is_mp3_target and ffmpeg_bin:
             try:
                 cmd_mp3 = [ffmpeg_bin, "-y", "-i", target_save_path, "-b:a", "320k", out_path]
-                subprocess.run(cmd_mp3, capture_output=True, check=True)
+                run_command(
+                    cmd_mp3, capture_output=True, check=True, retries=0,
+                    timeout=FFMPEG_AUDIO_TIMEOUT, encoding="utf-8", errors="replace",
+                    desc=f"ffmpeg MP3 320k 回写 {os.path.basename(out_path)}",
+                )
             except Exception:
                 pass
 
@@ -290,14 +354,15 @@ def master_audio_file(
 def master_video_file(
     mp4_path: str,
     out_mp4_path: str = None,
-    target_i: float = -11.0,
-    target_tp: float = -0.5,
+    target_i: float = DEFAULT_LOUDNESS_I,
+    target_tp: float = DEFAULT_LOUDNESS_TP,
     target_lra: float = 3.0
 ) -> bool:
     """
     对已渲染的 MP4 视频执行无损视频直通 + 音频轨 EBU R128 双遍广播母带处理 (Two-Pass Stream Copy Video Loudness Mastering)
     Pass 1 测量整体响度，Pass 2 以 linear=true 线性恒定增益应用，彻底消除动态抽吸(Pumping)效应，并利用 aresample=async=1 锁定音画同步。
-    耗时仅约 4~8 秒，100% 保持画面画质与字音打点同步，锁定成片声音为商业短视频黄金标准 -11.0 LUFS。
+    耗时仅约 4~8 秒，100% 保持画面画质与字音打点同步；默认锁定为网络平台安全响度 -14.0 LUFS / -1.5 dBTP
+    (短视频平台可经 --platform short_video 或 AVS_LOUDNESS_LUFS 调整，详见 PLATFORM_LOUDNESS_PRESETS)。
     """
     if not os.path.exists(mp4_path):
         print(f"❌ [Video Mastering] 视频文件不存在: {mp4_path}")
@@ -323,12 +388,13 @@ def master_video_file(
             "-af", f"loudnorm=I={target_i}:TP={target_tp}:LRA={target_lra}:print_format=json",
             "-f", "null", "-"
         ]
-        res_measure = subprocess.run(
+        res_measure = run_command(
             cmd_measure,
             capture_output=True,
-            text=True,
+            timeout=FFMPEG_VIDEO_TIMEOUT,
             encoding="utf-8",
-            errors="replace"
+            errors="replace",
+            desc="ffmpeg loudnorm Pass-1 声学测量",
         )
         if res_measure.returncode != 0:
             print(f"❌ FFmpeg 第一遍声学测量失败: {res_measure.stderr[-300:]}")
@@ -376,12 +442,13 @@ def master_video_file(
             "-b:a", "320k",
             tmp_mp4
         ]
-        res_render = subprocess.run(
+        res_render = run_command(
             cmd_render,
             capture_output=True,
-            text=True,
+            timeout=FFMPEG_VIDEO_TIMEOUT,
             encoding="utf-8",
-            errors="replace"
+            errors="replace",
+            desc="ffmpeg loudnorm Pass-2 线性母带渲染",
         )
         if res_render.returncode != 0:
             print(f"❌ FFmpeg 第二遍视频母带处理失败: {res_render.stderr[-300:]}")
@@ -450,15 +517,25 @@ def main():
     parser.add_argument("--video", type=str, default="", help="单个 MP4 视频文件路径 (执行视频音轨广播母带处理)")
     parser.add_argument("--target_rms", type=float, default=-10.0, help="目标 RMS 响度 (dBFS, 默认 -10.0)")
     parser.add_argument("--target_peak", type=float, default=-0.4, help="目标峰值限制 (dBFS, 默认 -0.4)")
-    parser.add_argument("--target_i", type=float, default=-11.0, help="目标综合响度 (LUFS, 默认 -11.0)")
-    parser.add_argument("--target_tp", type=float, default=-0.5, help="目标真实峰值 (dBFS, 默认 -0.5)")
+    parser.add_argument("--target_i", type=float, default=None,
+                        help="目标综合响度 (LUFS; 默认取平台预设: web=-14 / short_video=-11 / broadcast=-23)")
+    parser.add_argument("--target_tp", type=float, default=None,
+                        help="目标真实峰值 (dBTP; 默认取平台预设, 统一 <= -1.5)")
+    parser.add_argument("--platform", type=str, default="", choices=sorted(PLATFORM_LOUDNESS_PRESETS),
+                        help="目标平台响度预设 (web=YouTube/B站/小红书, short_video=抖音/快手/Reels, broadcast=广电)")
     parser.add_argument("--hpf_freq", type=float, default=120.0, help="高通滤波截止频率 (Hz, 默认 120.0)")
     parser.add_argument("--no_loudnorm", action="store_true", help="禁用 FFmpeg EBU R128 二次校正")
     args = parser.parse_args()
 
+    # 响度目标解析: CLI > 环境变量 (AVS_LOUDNESS_LUFS/TP) > 平台预设 (单一事实源)
+    loudness = resolve_loudness_targets(platform=args.platform, target_i=args.target_i, target_tp=args.target_tp)
+    print(f"🎚️ [Loudness Target] 综合响度 {loudness['target_i']} LUFS | 真实峰值 {loudness['target_tp']} dBTP"
+          f" | 平台预设: {args.platform or os.environ.get('AVS_PLATFORM') or 'web'}")
+
     # 严格传递并检查执行返回值，杜绝 pipeline 静默遮蔽错误 (CRIT-02)
     if args.video:
-        success = master_video_file(args.video, args.video, target_i=args.target_i, target_tp=args.target_tp)
+        success = master_video_file(args.video, args.video,
+                                    target_i=loudness["target_i"], target_tp=loudness["target_tp"])
         if not success:
             sys.exit(1)
     elif args.file:
@@ -468,8 +545,8 @@ def main():
             target_rms_db=args.target_rms,
             target_peak_db=args.target_peak,
             use_loudnorm=not args.no_loudnorm,
-            target_i=args.target_i,
-            target_tp=args.target_tp,
+            target_i=loudness["target_i"],
+            target_tp=loudness["target_tp"],
             hpf_freq=args.hpf_freq
         )
         if not success:

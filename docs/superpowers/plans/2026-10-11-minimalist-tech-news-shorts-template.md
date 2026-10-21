@@ -1,5 +1,7 @@
 # 极简科技资讯竖屏短视频模板 (Minimalist Tech News Shorts) 实施计划
 
+> ⚠️ **历史存档标注（2026-10-21，Phase 0 C4）**：本文档为历史实施计划留档。文中「-11 LUFS」母带标准已被 `scripts/audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 平台适配表取代（短视频渠道现对应 `--platform short_video` -11.0 LUFS / TP ≤ -1.5 dBTP），执行时以代码单一事实源为准。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 基于抖音/Twitter 头部科技自媒体（如 `@小猫AI`）爆款风格，在 `ai-video-studio` 中构建一套 30~45 秒纯代码驱动的「极简科技资讯竖屏短视频（Minimalist Tech News Shorts）」生成模板与工业化脚手架，实现零 AI 视频生成依赖、秒级 Remotion 渲染、黑白高对比 Bento 排版与推特截图真实感背书。

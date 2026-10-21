@@ -81,7 +81,8 @@ function sanitizeTimelineGaps(scenes) {
     const startDiff = cloned[0].startFrame;
     if (Math.abs(startDiff) <= 3) {
       cloned[0].startFrame = 0;
-      cloned[0].durationInFrames += startDiff;
+      // Math.max(0, ...) 防护: 负向吸附不得把时长打成负数 (与重叠分支一致)
+      cloned[0].durationInFrames = Math.max(0, cloned[0].durationInFrames + startDiff);
       gapFixesCount++;
     } else if (startDiff > 3) {
       result.push({
@@ -108,7 +109,8 @@ function sanitizeTimelineGaps(scenes) {
 
       if (diff !== 0 && Math.abs(diff) <= 3) {
         // Automatically snap duration to close 1-3 frame gaps or overlaps
-        currentScene.durationInFrames += diff;
+        // Math.max(0, ...) 防护: 负向吸附 (重叠) 不得把时长打成负数 (审计 B2)
+        currentScene.durationInFrames = Math.max(0, currentScene.durationInFrames + diff);
         gapFixesCount++;
       } else if (diff > 3) {
         // Insert filler scene for gaps larger than 3 frames

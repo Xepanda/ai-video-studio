@@ -38,12 +38,7 @@
         "avatar": "",
         "verified": true,
         "dateText": "Just now",
-        "highlightWords": ["HyperFrames", "Pure HTML, CSS, and GSAP", "deterministic"],
-        "metrics": {
-          "likes": "8.2K",
-          "retweets": "1.4K",
-          "views": "285K"
-        }
+        "highlightWords": ["HyperFrames", "Pure HTML, CSS, and GSAP", "deterministic"]
       },
       "estimatedDuration": 6.8
     },

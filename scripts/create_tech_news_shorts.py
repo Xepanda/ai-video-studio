@@ -133,15 +133,8 @@ def build_codex_day6_preset(
                 "authorHandle": "@tibo_maker",
                 "avatarUrl": "",
                 "isVerified": True,
-                "timeAgo": "14h",
                 "content": "Day 6: Reset\n\nNo new features today, just resetting quotas for everyone.",
                 "highlightWords": ["Reset", "No new features"],
-                "metrics": {
-                    "replies": "128",
-                    "retweets": "450",
-                    "likes": "3.4K",
-                    "views": "150K"
-                },
                 "subtitle": "官方确认：第六天无新功能发布，仅执行全局重置"
             },
             "estimatedDuration": 4.5,
@@ -209,15 +202,8 @@ def build_codex_day6_preset(
                 "authorHandle": "@tibo_maker",
                 "avatarUrl": "",
                 "isVerified": True,
-                "timeAgo": "1d",
                 "content": "Can't believe it's already Saturday. Time flies when building in public.",
                 "highlightWords": ["Saturday", "Time flies"],
-                "metrics": {
-                    "replies": "86",
-                    "retweets": "190",
-                    "likes": "1.8K",
-                    "views": "82K"
-                },
                 "subtitle": "此前周五晚间的微妙预热"
             },
             "estimatedDuration": 4.5,
@@ -317,15 +303,8 @@ def generate_tech_news_script(
                 "authorHandle": "@tech_insider",
                 "avatarUrl": "",
                 "isVerified": True,
-                "timeAgo": "2h",
                 "content": f"Official Announcement: {topic}\n\nHere is everything you need to know about this major update.",
                 "highlightWords": hl_words,
-                "metrics": {
-                    "replies": "156",
-                    "retweets": "420",
-                    "likes": "3.8K",
-                    "views": "180K"
-                },
                 "subtitle": "官方权威发布，全网关注"
             },
             "estimatedDuration": estimate_duration_seconds("官方刚刚在推特发布了最新公告，引发全网热议。"),

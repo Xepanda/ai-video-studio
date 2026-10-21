@@ -37,18 +37,11 @@
         "authorHandle": "@hyperframes_io",
         "avatarUrl": "",
         "isVerified": true,
-        "timeAgo": "2h",
         "content": "Excited to launch HyperFrames Headless Renderer. Instant GSAP animation compilation with zero overhead.",
         "highlightWords": [
           "HyperFrames",
           "zero overhead"
         ],
-        "metrics": {
-          "replies": "246",
-          "reposts": "890",
-          "likes": "4.5K",
-          "views": "280K"
-        },
         "subtitle": "官方确认：全新无头渲染架构已全面集成"
       },
       "highlightWords": [

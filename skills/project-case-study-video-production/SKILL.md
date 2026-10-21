@@ -50,5 +50,5 @@ description: Use when producing technical project deep-dives, architectural brea
   - 开源指南、技术白皮书、架构规范类推荐采用 `editorial-paper-light` 浅色暖纸底，阅读舒适、护眼自然。
 - **音效清理**：
   - 严禁在分镜切换处添加尖锐刺耳的科技扫频音效；
-  - 纯净叙事人声配合双遍 EBU R128 (-11.0 LUFS) 广播级母带，保证小音量字字清晰。
+  - 纯净叙事人声配合双遍 EBU R128 平台适配母带（默认 web **-14.0 LUFS**，短视频 `--platform short_video` **-11.0 LUFS**，真峰值统一 ≤ -1.5 dBTP），保证小音量字字清晰。
 

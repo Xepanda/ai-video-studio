@@ -80,6 +80,10 @@ python scripts/validator.py
   * 分辨率：严格对齐目标规格（1920x1080 或 1080x1920）；
   * 像素格式：`yuv420p`（确保所有主流手机与老旧浏览器兼容播放）；
   * 帧率恒定：CFR 30.00 fps，无变帧率音画逐渐漂移现象。
+* [ ] **成品响度门禁（`PLATFORM_LOUDNESS_PRESETS` 单一事实源）**：
+  * 响度目标由 `scripts/audio_mastering.py --platform` 裁决：`web`（默认，YouTube / B站 / 小红书 / 视频号）**-14.0 LUFS**、`short_video`（抖音 / 快手 / Reels）**-11.0 LUFS**、`broadcast`（广电）**-23.0 LUFS**，真峰值统一 ≤ -1.5 dBTP；
+  * 交付前用 `ffmpeg -i "out/xxx.mp4" -af loudnorm=I=-14:TP=-1.5:print_format=summary -f null -` 复测（短视频渠道改用 `I=-11`），实测综合响度与目标偏差 ≤ 0.5 LU；
+  * 严禁脱离平台预设手工指定 `--target_i / --target_tp`（仅限调试用途）。
 * [ ] **成品归档**：
   * 渲染文件按规范输出至 `out/{project_id}_{date}.mp4`；
   * 本次使用的分镜文件归档打标签。

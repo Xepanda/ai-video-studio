@@ -76,18 +76,11 @@
         "authorHandle": "@tibo_maker",
         "avatarUrl": "",
         "isVerified": true,
-        "timeAgo": "14h",
         "content": "Day 6: Reset\n\nNo new features today, just resetting quotas for everyone.",
         "highlightWords": [
           "Reset",
           "No new features"
         ],
-        "metrics": {
-          "replies": "128",
-          "retweets": "450",
-          "likes": "3.4K",
-          "views": "150K"
-        },
         "subtitle": "官方确认：第六天无新功能发布，仅执行全局重置"
       }
     },
@@ -231,18 +224,11 @@
         "authorHandle": "@tibo_maker",
         "avatarUrl": "",
         "isVerified": true,
-        "timeAgo": "1d",
         "content": "Can't believe it's already Saturday. Time flies when building in public.",
         "highlightWords": [
           "Saturday",
           "Time flies"
         ],
-        "metrics": {
-          "replies": "86",
-          "retweets": "190",
-          "likes": "1.8K",
-          "views": "82K"
-        },
         "subtitle": "此前周五晚间的微妙预热"
       }
     },
