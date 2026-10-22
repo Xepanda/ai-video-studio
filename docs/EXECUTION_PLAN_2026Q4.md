@@ -1,9 +1,9 @@
 # AI Video Studio 完善方案执行计划（2026 Q4）
 
 > **依据**：《TECH_AUDIT_AND_GAP_ANALYSIS_2026-10.md》（2026-10-21 全面技术审计报告）
-> **当前分支**：`feature/phase0-stabilization`（基于 master @ f6b166c）
+> **当前分支**：`feature/phase0-stabilization`（Phase 0 已提交 `2d84559`）；Phase 1 W3-4 进行中（分支 `feature/phase1-w3-4-scenario-pipelines`）
 > **目标**：修复 P0 缺陷、补齐工程化基建，为三大场景流水线（知识科普 / GitHub 演示 / 热点快剪）与全链路闭环（选题→发布→复盘）奠定可落地基础。
-> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证（Python 82/82、bridge 6/6、TS 4/4、tsc 0 错误）；Phase 1 待用户确认启动（见文末实施记录）。
+> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4（四组件入主干 + 路由注册表 / GitHub demo 流水线立项 / 多源热点聚合器 v1）已实施完成并通过全量验证（Python 129/129、bridge 6/6、TS 5 文件全过、tsc 0 错误）；W5-10 待用户确认启动（见文末实施记录）。
 
 ---
 
@@ -121,3 +121,8 @@ Docker/Linux 可移植渲染（字体锁定）、任务队列与断点恢复、�
 | 2026-10-21 | 数据诚信延伸：清理 12 个内容/时间轴文件中编造的推文互动量与 timeAgo；Vint Cerf 场景替换为 FCC FIRSTS 访谈可验证引述并标注 source；create_tech_news_shorts.py 预设生成器同步去编造 + 测试断言更新 | ✅ |
 | 2026-10-21 | 验证：Python unittest 82/82 ✅；bridge 6/6 ✅；TS 4/4 ✅；tsc --noEmit 0 错误 ✅；compileall ✅；watcher --once 冒烟（原子写 + 无负时长）✅ | ✅ |
 | 2026-10-21 | C4 文档同步收尾：science-pop/tech-tutorial（含 .agents 副本）、project-case-study、ai_video_engines_playbook、remotion-master-compositor（重构为"分轨混音规整→成品母带"两阶段架构，顺带修复泄漏的个人绝对路径）、AUDIT_CHECKLIST（阶段 5 新增成品响度门禁）全部改引 PLATFORM_LOUDNESS_PRESETS；4 份 superpowers 历史 plans/specs 加注存档说明；audio_normalizer voice/bgm 分轨值（-16/-28）确认保留（混音阶段用途不同） | ✅ |
+| 2026-10-21 | Phase 0 提交 `2d84559`（42 文件：7 新增 + 35 修改）于 `feature/phase0-stabilization`；排除早期会话未跟踪产物与 WIP 四组件（留给 W3-4） | ✅ |
+| 2026-10-22 | W3-4 场景一：ProtocolStackTower/PacketAssemblyPipeline/RouterPacketInspection/WeChatMobileMockup 四组件提交入主干；新增 `src/components/shorts/useSafeFrameConfig.ts` 共享 SSR 安全 hook（四组件 + ProceduralBackground 接入，修复裸 hook 在无 Composition 上下文抛错）；index.ts barrel 导出；UniversalScene 注册四条路由（显式 type 优先 + 嵌套对象隐式推断，与 tweet/binaryBento 同模式）并扩充 SceneMeta 契约；修复 WeChatMobileMockup 的 title prop 被解构但从未渲染的真缺陷；新增 `tests/test_network_scenes.ts`（30 断言：默认/自定义契约、activeLayer 聚焦、双模式、路由优先级、未知类型兜底）并接线 test:ts | ✅ |
+| 2026-10-22 | W3-4 场景二：`scripts/github_demo_pipeline.py` 立项——`.demo.yaml` spec 六段契约（spec_version/project/setup/run/capture/output）+ 完整校验器（可读错误）；幂等 clone（--force 重建）/ install（显式降级不编造）/ run steps（expect_exit 契约校验 + 真实退出码记录）；storyboard.json 输出（开场 MinimalHeadline + 每步 TerminalWindow + 收尾，执行事实元数据进 demoRun 字段）；示例 `inputs/yt-dlp.demo.yaml`；`tests/test_github_demo_pipeline.py` 25 例（含 dry-run CLI 冒烟）；修复跨盘符 relpath 崩溃真 bug | ✅ |
+| 2026-10-22 | W3-4 场景三：`scripts/hotspot_aggregator.py` 多源热点聚合器 v1——微博热搜/抖音热榜/B站热榜/X Trends 四源归一化（rank/title/heat/url/source/tag）；数据诚信延续：单源失败显式记录零编造、heat 缺失一律 null、X Trends 未配置 AVS_X_BEARER_TOKEN 显式跳过；`tests/test_hotspot_aggregator.py` 22 例（伪 session 离线注入） | ✅ |
+| 2026-10-22 | W3-4 验证：Python unittest **129/129** ✅；bridge 6/6 ✅；TS 5 文件全过（15 组断言）✅；tsc --noEmit 0 错误 ✅；compileall ✅ | ✅ |

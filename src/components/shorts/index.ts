@@ -9,3 +9,15 @@ export type { MinimalHeadlineSceneProps } from './MinimalHeadlineScene';
 
 export { TechNewsShortsScene } from './TechNewsShortsScene';
 export type { TechNewsShortsSceneProps, ShortsSceneMeta } from './TechNewsShortsScene';
+
+export { ProtocolStackTower } from './ProtocolStackTower';
+export type { ProtocolTowerProps } from './ProtocolStackTower';
+
+export { PacketAssemblyPipeline } from './PacketAssemblyPipeline';
+export type { PacketAssemblyProps } from './PacketAssemblyPipeline';
+
+export { RouterPacketInspection } from './RouterPacketInspection';
+export type { RouterInspectionProps } from './RouterPacketInspection';
+
+export { WeChatMobileMockup } from './WeChatMobileMockup';
+export type { WeChatMobileProps } from './WeChatMobileMockup';

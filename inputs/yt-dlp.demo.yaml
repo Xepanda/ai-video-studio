@@ -1,0 +1,56 @@
+# .demo.yaml — GitHub 项目深度演示视频流水线规格 (spec_version 1.0)
+# 用法: python scripts/github_demo_pipeline.py --spec inputs/yt-dlp.demo.yaml
+# 字段契约详见 scripts/github_demo_pipeline.py validate_spec()
+
+spec_version: "1.0"
+
+project:
+  name: yt-dlp
+  repo: https://github.com/yt-dlp/yt-dlp.git
+  ref: ""                        # 分支/tag/commit, 留空 = 默认分支
+  title: "yt-dlp：一个命令下载全网视频"
+  subtitle: "从 --help 到真实下载，拆解这个 90k Star 的命令行之王"
+  tags: ["CLI", "开源工具", "Python"]
+
+setup:
+  clone_dir: projects_demo/{name}     # 支持 {name} / {repo} 占位符
+  install:                            # 按序执行; 失败进入显式降级 (不编造成功)
+    - "python -m pip install -e ."
+  env:                                # 安装/运行阶段注入的环境变量
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+run:
+  steps:
+    - id: help
+      title: "先看帮助：它到底能做什么"
+      cmd: "yt-dlp --help"
+      expect_exit: 0
+      capture: terminal               # terminal | screenshot | none
+      narration: "一个命令行工具，第一件事永远是看它的帮助文档。"
+      duration: 8
+
+    - id: version
+      title: "确认版本与运行环境"
+      cmd: "yt-dlp --version"
+      expect_exit: 0
+      capture: terminal
+      narration: "版本号打印正常，说明整个安装链路是通的。"
+      duration: 5
+
+    - id: simulate
+      title: "干跑模式：不下载也能看解析结果"
+      cmd: "yt-dlp --simulate --print '%(title)s | %(duration_string)s | %(uploader)s' https://www.bilibili.com/video/BV1xx411c7mD"
+      expect_exit: 0
+      capture: terminal
+      narration: "simulate 干跑模式只解析元数据，不落盘文件，是排查格式问题的利器。"
+      duration: 12
+
+capture:                              # W5-6 Playwright 真实捕获接入后生效 (截图/录屏/events)
+  viewport:
+    width: 1920
+    height: 1080
+  wait_ms: 1500
+
+output:
+  storyboard: content/scripts/{name}_demo.json
+  fps: 30

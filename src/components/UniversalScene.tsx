@@ -7,7 +7,7 @@ import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
-import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics } from './shorts';
+import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics, ProtocolStackTower, ProtocolTowerProps, PacketAssemblyPipeline, PacketAssemblyProps, RouterPacketInspection, RouterInspectionProps, WeChatMobileMockup, WeChatMobileProps } from './shorts';
 import { WebBrowserMockupScene } from './shorts/WebBrowserMockupScene';
 
 export interface SceneMeta {
@@ -40,6 +40,10 @@ export interface SceneMeta {
   theme?: ThemeName;
   tweet?: Partial<TweetEmbedCardProps>;
   binaryBento?: Partial<BinaryBentoCardProps>;
+  protocolTower?: ProtocolTowerProps;
+  packetAssembly?: PacketAssemblyProps;
+  routerInspection?: RouterInspectionProps;
+  wechat?: WeChatMobileProps;
   inverted?: boolean;
   category?: string;
   highlightWords?: string[];
@@ -101,9 +105,50 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
     return <TechNewsShortsScene scene={scene} activeTheme={theme} />;
   }
 
+  // 网络协议科普组件族路由 (显式 scene.type 绝对优先, 嵌套配置对象隐式推断兜底, 与 tweet/binaryBento 同模式)
+  if (scene.type === 'ProtocolStackTower' || Boolean(scene.protocolTower)) {
+    return (
+      <ProtocolStackTower
+        protocolTower={scene.protocolTower}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  if (scene.type === 'PacketAssemblyPipeline' || Boolean(scene.packetAssembly)) {
+    return (
+      <PacketAssemblyPipeline
+        packetAssembly={scene.packetAssembly}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  if (scene.type === 'RouterPacketInspection' || Boolean(scene.routerInspection)) {
+    return (
+      <RouterPacketInspection
+        routerInspection={scene.routerInspection}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  if (scene.type === 'WeChatMobileMockup' || Boolean(scene.wechat)) {
+    return (
+      <WeChatMobileMockup
+        wechat={scene.wechat}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
   // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage/heroVideo/videoPath，优先光栅化电影级 2.5D 原画或动态视频流
   const hasVisualMedia = Boolean(scene.heroImage || scene.heroVideo || scene.videoPath);
-  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow'].includes(scene.type || '');
+  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow', 'ProtocolStackTower', 'PacketAssemblyPipeline', 'RouterPacketInspection', 'WeChatMobileMockup'].includes(scene.type || '');
   if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && hasVisualMedia)) {
     return (
       <CinematicHeroScene
