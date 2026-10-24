@@ -7,8 +7,9 @@ import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
-import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics, ProtocolStackTower, ProtocolTowerProps, PacketAssemblyPipeline, PacketAssemblyProps, RouterPacketInspection, RouterInspectionProps, WeChatMobileMockup, WeChatMobileProps } from './shorts';
+import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics, ProtocolStackTower, ProtocolTowerProps, PacketAssemblyPipeline, PacketAssemblyProps, RouterPacketInspection, RouterInspectionProps, WeChatMobileMockup, WeChatMobileProps, MathFormulaScene, MathFormulaProps, SequenceDiagramScene, SequenceDiagramProps } from './shorts';
 import { WebBrowserMockupScene } from './shorts/WebBrowserMockupScene';
+import { PinoutStream, PinoutStreamProps } from './PinoutStream';
 
 export interface SceneMeta {
   id: string;
@@ -44,6 +45,9 @@ export interface SceneMeta {
   packetAssembly?: PacketAssemblyProps;
   routerInspection?: RouterInspectionProps;
   wechat?: WeChatMobileProps;
+  mathFormula?: MathFormulaProps;
+  sequenceDiagram?: SequenceDiagramProps;
+  pinoutStream?: PinoutStreamProps;
   inverted?: boolean;
   category?: string;
   highlightWords?: string[];
@@ -146,9 +150,49 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
     );
   }
 
+  // 学科可视化组件族路由 (W7-8 场景一: KaTeX 公式 / 时序图状态机 / 引脚流)
+
+  if (scene.type === 'MathFormula' || Boolean(scene.mathFormula)) {
+    return (
+      <MathFormulaScene
+        formula={scene.mathFormula?.formula || ''}
+        displayMode={scene.mathFormula?.displayMode}
+        title={scene.mathFormula?.title || scene.title}
+        caption={scene.mathFormula?.caption}
+        category={scene.mathFormula?.category || scene.category}
+        highlight={scene.mathFormula?.highlight}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'SequenceDiagram' || Boolean(scene.sequenceDiagram)) {
+    return (
+      <SequenceDiagramScene
+        mode={scene.sequenceDiagram?.mode}
+        title={scene.sequenceDiagram?.title || scene.title}
+        category={scene.sequenceDiagram?.category || scene.category}
+        participants={scene.sequenceDiagram?.participants}
+        messages={scene.sequenceDiagram?.messages}
+        states={scene.sequenceDiagram?.states}
+        transitions={scene.sequenceDiagram?.transitions}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'PinoutStream' || Boolean(scene.pinoutStream)) {
+    return (
+      <PinoutStream
+        pins={scene.pinoutStream?.pins}
+        title={scene.pinoutStream?.title}
+      />
+    );
+  }
+
   // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage/heroVideo/videoPath，优先光栅化电影级 2.5D 原画或动态视频流
   const hasVisualMedia = Boolean(scene.heroImage || scene.heroVideo || scene.videoPath);
-  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow', 'ProtocolStackTower', 'PacketAssemblyPipeline', 'RouterPacketInspection', 'WeChatMobileMockup'].includes(scene.type || '');
+  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow', 'ProtocolStackTower', 'PacketAssemblyPipeline', 'RouterPacketInspection', 'WeChatMobileMockup', 'MathFormula', 'SequenceDiagram', 'PinoutStream'].includes(scene.type || '');
   if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && hasVisualMedia)) {
     return (
       <CinematicHeroScene

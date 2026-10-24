@@ -21,3 +21,15 @@ export type { RouterInspectionProps } from './RouterPacketInspection';
 
 export { WeChatMobileMockup } from './WeChatMobileMockup';
 export type { WeChatMobileProps } from './WeChatMobileMockup';
+
+export { MathFormulaScene } from './MathFormulaScene';
+export type { MathFormulaProps } from './MathFormulaScene';
+
+export { SequenceDiagramScene } from './SequenceDiagramScene';
+export type {
+  SequenceDiagramProps,
+  SequenceParticipant,
+  SequenceMessage,
+  StateNode,
+  StateTransition,
+} from './SequenceDiagramScene';

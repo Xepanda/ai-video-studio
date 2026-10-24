@@ -3,7 +3,7 @@
 > **依据**：《TECH_AUDIT_AND_GAP_ANALYSIS_2026-10.md》（2026-10-21 全面技术审计报告）
 > **当前分支**：Phase 0 已提交 `2d84559`（feature/phase0-stabilization）；Phase 1 W3-4 已提交 `17f2b82`（feature/phase1-w3-4-scenario-pipelines）；W5-6 进行中（分支 `feature/phase1-w5-6-llm-capture`）
 > **目标**：修复 P0 缺陷、补齐工程化基建，为三大场景流水线（知识科普 / GitHub 演示 / 热点快剪）与全链路闭环（选题→发布→复盘）奠定可落地基础。
-> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4（四组件入主干 + 路由注册表 / GitHub demo 流水线立项 / 多源热点聚合器 v1）已实施完成并通过全量验证；W5-6（LLM 脚本生成 + 人工审校门 / Playwright 真实捕获 / LLM 快稿 + 事实核查门）已实施完成并通过全量验证（Python 205/205、bridge 6/6、TS 5 文件全过、tsc 0 错误）；W7-10 待用户确认启动（见文末实施记录）。
+> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4 已实施完成并通过全量验证；W5-6（LLM 脚本生成 + 人工审校门 / Playwright 真实捕获 / LLM 快稿 + 事实核查门）已实施完成并通过全量验证（Python 205/205、bridge 6/6、TS 6 文件全过、tsc 0 错误）；W7-8 场景一（学科可视化三组件）已实施完成，W7-8 场景二/三待续（见文末实施记录）。
 
 ---
 
@@ -131,3 +131,5 @@ Docker/Linux 可移植渲染（字体锁定）、任务队列与断点恢复、�
 | 2026-10-24 | W5-6 场景二：`scripts/demo_capture.py` Playwright 真实捕获——全页截图 + webm 录屏 + events（console/pageerror/requestfailed，50 条上限）；manifest 证据字段失败一律 null 绝不伪造；Playwright 缺失显式 CaptureError；github_demo_pipeline 接入：spec capture.targets 契约校验（唯一 id/http url/wait_until/full_page/duration）、storyboard 生成 BrowserScreenshot 场景（仅成功捕获入画面，browser.image 走 screenshotStatic）+ source.captureResult 完整留痕、--skip-capture；inputs/yt-dlp.demo.yaml 补双目标示例；`tests/test_demo_capture.py` 22 例（伪 playwright 注入 + pipeline 集成；修复跨盘符 relpath 崩溃） | ✅ |
 | 2026-10-24 | W5-6 场景三：`scripts/hotspot_scriptgen.py` LLM 快稿 + 事实核查门——消费 hotspot_aggregator 输出；信源必填（每幕 sources 非空合法 + 整片回链热点 URL）、AI 标注自动附加（autoFix 留痕）、数量声明标记人工核实、违规反馈重试（默认 2 次）耗尽后 FactCheckError 拒绝放行；复用 llm_scriptgen 校验/审校门/披露；`tests/test_hotspot_scriptgen.py` 27 例 | ✅ |
 | 2026-10-24 | W5-6 验证：Python unittest **205/205**（129 旧 + 76 新增）✅；bridge 6/6 ✅；TS 5 文件全过 ✅；tsc --noEmit 0 错误 ✅；compileall ✅ | ✅ |
+| 2026-10-24 | W7-8 场景一：学科可视化三组件——`MathFormulaScene.tsx`（KaTeX 真实渲染，throwOnError=false 降级、双环境 CSS 注入：webpack css-loader / Node 测试静默跳过）；`SequenceDiagramScene.tsx`（sequence/state 双模式数据驱动：参与者框+生命线+逐条入场消息箭头 / 状态节点+转移箭头，frame=0 opacity=0 保留 DOM 保 SSR 可观测）；`PinoutStream.tsx` 数据驱动化重构（props 注入 pins/title，无 props 回退内置演示数据，Root.tsx 零配置用法兼容，接入 useSafeFrameConfig）；UniversalScene 注册三条路由（显式 type + 嵌套隐式推断）+ SceneMeta 三字段 + isDedicatedNonHeroType 扩充 + barrel 导出；`tests/test_visual_components.ts` 新测试文件（4 组：公式渲染/双模式图/数据驱动/路由注册）并接线 test:ts；新增 katex + @types/katex 依赖 | ✅ |
+| 2026-10-24 | W7-8 场景一验证：TS 6 文件全过 ✅；tsc --noEmit 0 错误 ✅；Python 205/205 ✅；bridge 6/6 ✅；compileall ✅ | ✅ |
