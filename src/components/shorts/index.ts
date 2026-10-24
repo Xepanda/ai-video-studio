@@ -33,3 +33,15 @@ export type {
   StateNode,
   StateTransition,
 } from './SequenceDiagramScene';
+
+export { IdeWindowScene } from './IdeWindowScene';
+export type { IdeWindowProps, IdeFile } from './IdeWindowScene';
+
+export { AsciicastPlayer } from './AsciicastPlayer';
+export type { AsciicastProps, AsciicastEvent } from './AsciicastPlayer';
+
+export { CommentThreadScene } from './CommentThreadScene';
+export type { CommentThreadProps, CommentItem } from './CommentThreadScene';
+
+export { TrendingRankCard } from './TrendingRankCard';
+export type { TrendingRankProps } from './TrendingRankCard';

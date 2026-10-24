@@ -3,7 +3,7 @@
 > **依据**：《TECH_AUDIT_AND_GAP_ANALYSIS_2026-10.md》（2026-10-21 全面技术审计报告）
 > **当前分支**：Phase 0 已提交 `2d84559`（feature/phase0-stabilization）；Phase 1 W3-4 已提交 `17f2b82`（feature/phase1-w3-4-scenario-pipelines）；W5-6 进行中（分支 `feature/phase1-w5-6-llm-capture`）
 > **目标**：修复 P0 缺陷、补齐工程化基建，为三大场景流水线（知识科普 / GitHub 演示 / 热点快剪）与全链路闭环（选题→发布→复盘）奠定可落地基础。
-> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4 已实施完成并通过全量验证；W5-6（LLM 脚本生成 + 人工审校门 / Playwright 真实捕获 / LLM 快稿 + 事实核查门）已实施完成并通过全量验证（Python 205/205、bridge 6/6、TS 6 文件全过、tsc 0 错误）；W7-8 场景一（学科可视化三组件）已实施完成，W7-8 场景二/三待续（见文末实施记录）。
+> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4 已实施完成并通过全量验证；W5-6 已实施完成并通过全量验证（Python 205/205、bridge 6/6、TS 8 文件全过、tsc 0 错误）；W7-8 全部场景已实施完成；W9-10 已实施完成（evidence 整改 + 三场景 SKILL 沉淀）；**Phase 1 全部周次完成，具备 PR 条件**（见文末实施记录）。
 
 ---
 
@@ -133,3 +133,6 @@ Docker/Linux 可移植渲染（字体锁定）、任务队列与断点恢复、�
 | 2026-10-24 | W5-6 验证：Python unittest **205/205**（129 旧 + 76 新增）✅；bridge 6/6 ✅；TS 5 文件全过 ✅；tsc --noEmit 0 错误 ✅；compileall ✅ | ✅ |
 | 2026-10-24 | W7-8 场景一：学科可视化三组件——`MathFormulaScene.tsx`（KaTeX 真实渲染，throwOnError=false 降级、双环境 CSS 注入：webpack css-loader / Node 测试静默跳过）；`SequenceDiagramScene.tsx`（sequence/state 双模式数据驱动：参与者框+生命线+逐条入场消息箭头 / 状态节点+转移箭头，frame=0 opacity=0 保留 DOM 保 SSR 可观测）；`PinoutStream.tsx` 数据驱动化重构（props 注入 pins/title，无 props 回退内置演示数据，Root.tsx 零配置用法兼容，接入 useSafeFrameConfig）；UniversalScene 注册三条路由（显式 type + 嵌套隐式推断）+ SceneMeta 三字段 + isDedicatedNonHeroType 扩充 + barrel 导出；`tests/test_visual_components.ts` 新测试文件（4 组：公式渲染/双模式图/数据驱动/路由注册）并接线 test:ts；新增 katex + @types/katex 依赖 | ✅ |
 | 2026-10-24 | W7-8 场景一验证：TS 6 文件全过 ✅；tsc --noEmit 0 错误 ✅；Python 205/205 ✅；bridge 6/6 ✅；compileall ✅ | ✅ |
+| 2026-10-24 | W7-8 场景二：`IdeWindowScene.tsx`（IDE mockup：文件树+标签页+内置轻量语法高亮分词器 js/ts/py/c/go/bash/yaml/json，React span 渲染无注入面）+ `AsciicastPlayer.tsx`（asciicast v2 事件流帧回放、ANSI 控制序列剥离不改写可见字符、首事件始终可见保 SSR 可观测）；场景三：`CommentThreadScene.tsx`（评论串、点赞 null 诚实标注禁 0 填充）+ `TrendingRankCard.tsx`（热点榜卡片+火焰脉冲 trending 动画、heat 缺失不画假条）+ TweetEmbedCard 长文截断（maxLines line-clamp + 截断标记）；UniversalScene 四路由注册 + SceneMeta + isDedicatedNonHeroType + barrel；`tests/test_scene_components_bc.ts`（6 组）接线 | ✅ |
+| 2026-10-24 | W9-10：`generate_evidence_screenshots.py` 数据诚信整改——mock 产物强制 `mock_` 前缀 + `evidence_manifest.json` 单一事实源（type=real/mock）+ 控制台醒目告警；`--url` 真实抓取记 manifest type=real；沉淀 `skills/hotspot-quickcut-video-production/SKILL.md`（时效 SOP + 事实核查门 + 音轨白名单）与 `skills/github-demo-video-production/SKILL.md`（spec 契约 + 失败分级 + 事实画面分离）；`skills/science-pop-explainer-production/references/hooks_and_factcheck.md`（钩子公式库 + 认知张力叙事 + 事实核查清单）；`workflows/README.md` 登记场景五/六 | ✅ |
+| 2026-10-24 | W7-8/W9-10 验证：TS 7 文件全过 ✅；tsc --noEmit 0 错误 ✅；Python 205/205 ✅；bridge 6/6 ✅；compileall ✅；evidence 脚本 --help 冒烟 ✅ | ✅ |

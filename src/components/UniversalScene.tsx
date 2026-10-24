@@ -7,7 +7,7 @@ import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
-import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics, ProtocolStackTower, ProtocolTowerProps, PacketAssemblyPipeline, PacketAssemblyProps, RouterPacketInspection, RouterInspectionProps, WeChatMobileMockup, WeChatMobileProps, MathFormulaScene, MathFormulaProps, SequenceDiagramScene, SequenceDiagramProps } from './shorts';
+import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics, ProtocolStackTower, ProtocolTowerProps, PacketAssemblyPipeline, PacketAssemblyProps, RouterPacketInspection, RouterInspectionProps, WeChatMobileMockup, WeChatMobileProps, MathFormulaScene, MathFormulaProps, SequenceDiagramScene, SequenceDiagramProps, IdeWindowScene, IdeWindowProps, AsciicastPlayer, AsciicastProps, CommentThreadScene, CommentThreadProps, TrendingRankCard, TrendingRankProps } from './shorts';
 import { WebBrowserMockupScene } from './shorts/WebBrowserMockupScene';
 import { PinoutStream, PinoutStreamProps } from './PinoutStream';
 
@@ -48,6 +48,10 @@ export interface SceneMeta {
   mathFormula?: MathFormulaProps;
   sequenceDiagram?: SequenceDiagramProps;
   pinoutStream?: PinoutStreamProps;
+  ide?: IdeWindowProps;
+  asciicast?: AsciicastProps;
+  commentThread?: CommentThreadProps;
+  trending?: TrendingRankProps;
   inverted?: boolean;
   category?: string;
   highlightWords?: string[];
@@ -190,9 +194,61 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
     );
   }
 
+  // 工程演示组件族路由 (W7-8 场景二/三: IDE / asciicast / 评论串 / 热点榜)
+
+  if (scene.type === 'IdeWindow' || Boolean(scene.ide)) {
+    return (
+      <IdeWindowScene
+        files={scene.ide?.files}
+        title={scene.ide?.title || scene.title}
+        category={scene.ide?.category || scene.category}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'Asciicast' || Boolean(scene.asciicast)) {
+    return (
+      <AsciicastPlayer
+        events={scene.asciicast?.events}
+        cols={scene.asciicast?.cols}
+        rows={scene.asciicast?.rows}
+        title={scene.asciicast?.title}
+        category={scene.asciicast?.category || scene.category}
+        speed={scene.asciicast?.speed}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'CommentThread' || Boolean(scene.commentThread)) {
+    return (
+      <CommentThreadScene
+        comments={scene.commentThread?.comments}
+        title={scene.commentThread?.title || scene.title}
+        category={scene.commentThread?.category || scene.category}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'TrendingRank' || Boolean(scene.trending)) {
+    return (
+      <TrendingRankCard
+        rank={scene.trending?.rank}
+        title={scene.trending?.title || scene.title}
+        heat={scene.trending?.heat}
+        source={scene.trending?.source}
+        tag={scene.trending?.tag}
+        category={scene.trending?.category || scene.category}
+        theme={theme}
+      />
+    );
+  }
+
   // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage/heroVideo/videoPath，优先光栅化电影级 2.5D 原画或动态视频流
   const hasVisualMedia = Boolean(scene.heroImage || scene.heroVideo || scene.videoPath);
-  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow', 'ProtocolStackTower', 'PacketAssemblyPipeline', 'RouterPacketInspection', 'WeChatMobileMockup', 'MathFormula', 'SequenceDiagram', 'PinoutStream'].includes(scene.type || '');
+  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow', 'ProtocolStackTower', 'PacketAssemblyPipeline', 'RouterPacketInspection', 'WeChatMobileMockup', 'MathFormula', 'SequenceDiagram', 'PinoutStream', 'IdeWindow', 'Asciicast', 'CommentThread', 'TrendingRank'].includes(scene.type || '');
   if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && hasVisualMedia)) {
     return (
       <CinematicHeroScene
