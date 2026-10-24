@@ -13,7 +13,9 @@ GitHub 项目深度演示视频流水线 (立项版: spec 契约 + clone/install
      - install 失败  -> 标记 degraded, 不阻断 storyboard 生成, 产出仅含介绍/README 分镜
      - run step 失败 -> 如实记录真实退出码与 stderr 摘要, 不伪造成功输出
   6. 输出 storyboard.json (Remotion 分镜契约, 供 scripts/pipeline.py 后续 TTS/打点/渲染消费)
-     W5-6 将接入 Playwright 真实捕获 (截图+录屏+终端 events) 替换 capture 占位元数据。
+     W5-6 起: capture.targets 声明的目标 URL 经 scripts/demo_capture.py 真实捕获
+     (Playwright 截图+录屏+events), 成功捕获生成 BrowserScreenshot 场景 (browser.image
+     引用真实截图), 失败如实记入 source.captureResult, 绝不伪造捕获证据。
 
 用法:
   python scripts/github_demo_pipeline.py --spec .demo.yaml                 # 完整执行
@@ -31,6 +33,8 @@ from typing import Dict, Any, List, Optional, Tuple
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # 保障 utils 包可导入
 from utils.runtime import run_command
+# Playwright 真实捕获 (W5-6): demo_capture 内部延迟导入 playwright, 本导入安全
+from demo_capture import run_captures, CaptureError, summarize_captures
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -47,6 +51,8 @@ DEFAULT_FPS = 30
 DEFAULT_STEP_DURATION = 8  # 秒
 
 VALID_CAPTURE_MODES = ("terminal", "screenshot", "none")
+VALID_WAIT_UNTIL = ("load", "domcontentloaded", "networkidle", "commit")
+DEFAULT_CAPTURE_SCENE_DURATION = 4  # 秒 (BrowserScreenshot 场景默认时长)
 
 
 class DemoPipelineError(Exception):
@@ -129,6 +135,38 @@ def validate_spec(spec: Any) -> Dict[str, Any]:
 
     capture_cfg = spec.get("capture") or {}
     _require_mapping(capture_cfg, "capture")
+    if "enabled" in capture_cfg and not isinstance(capture_cfg["enabled"], bool):
+        raise DemoPipelineError(f"capture.enabled 必须为布尔值，实际为: {capture_cfg['enabled']!r}")
+
+    capture_targets = capture_cfg.get("targets") or []
+    if not isinstance(capture_targets, list):
+        raise DemoPipelineError("capture.targets 必须为列表 (或省略)")
+    seen_target_ids = set()
+    for idx, target in enumerate(capture_targets):
+        target = _require_mapping(target, f"capture.targets[{idx}]")
+        target_id = _require_nonempty_str(target.get("id"), f"capture.targets[{idx}].id")
+        if target_id in seen_target_ids:
+            raise DemoPipelineError(f"capture.targets 存在重复目标 id: {target_id!r}")
+        seen_target_ids.add(target_id)
+        target_url = _require_nonempty_str(target.get("url"), f"capture.targets[{idx}].url")
+        if not (target_url.startswith("http://") or target_url.startswith("https://")):
+            raise DemoPipelineError(
+                f"capture.targets[{idx}].url 必须是 http(s) 地址 (仅支持真实网页捕获)，实际为: {target_url!r}"
+            )
+        wait_until = target.get("wait_until", "networkidle")
+        if wait_until not in VALID_WAIT_UNTIL:
+            raise DemoPipelineError(
+                f"capture.targets[{idx}].wait_until 必须是 {VALID_WAIT_UNTIL} 之一，实际为: {wait_until!r}"
+            )
+        if "full_page" in target and not isinstance(target["full_page"], bool):
+            raise DemoPipelineError(f"capture.targets[{idx}].full_page 必须为布尔值")
+        if "record_video" in target and not isinstance(target["record_video"], bool):
+            raise DemoPipelineError(f"capture.targets[{idx}].record_video 必须为布尔值")
+        target_duration = target.get("duration", DEFAULT_CAPTURE_SCENE_DURATION)
+        if not isinstance(target_duration, (int, float)) or target_duration <= 0:
+            raise DemoPipelineError(
+                f"capture.targets[{idx}].duration 必须为正数 (秒)，实际为: {target_duration!r}"
+            )
 
     output_cfg = spec.get("output") or {}
     _require_mapping(output_cfg, "output")
@@ -328,18 +366,21 @@ def build_storyboard(
     install_result: Dict[str, Any],
     step_records: List[Dict[str, Any]],
     spec_path: str,
+    capture_summary: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """将执行结果编译为 Remotion 分镜契约 (storyboard.json)。
 
     分镜结构:
-      scene_00  MinimalHeadline  开场钩子 (项目标题 + 副标题)
-      scene_xx  TerminalWindow   每个演示步骤一幕 (codeSnippet=真实命令; 降级/失败如实标注)
-      scene_last MinimalHeadline 收尾 (star 引导 / 总结)
+      scene_01        MinimalHeadline      开场钩子 (项目标题 + 副标题)
+      scene_cap_xx    BrowserScreenshot     每个成功捕获的真实网页截图 (W5-6)
+      scene_xx        TerminalWindow       每个演示步骤一幕 (codeSnippet=真实命令; 降级/失败如实标注)
+      scene_last      MinimalHeadline      收尾 (star 引导 / 总结)
     """
     project = spec["project"]
     output_cfg = spec.get("output") or {}
     fps = output_cfg.get("fps", DEFAULT_FPS)
     degraded = install_result.get("degraded", False)
+    capture_targets = {t.get("id"): t for t in (spec.get("capture") or {}).get("targets") or []}
 
     scenes: List[Dict[str, Any]] = []
 
@@ -355,6 +396,34 @@ def build_storyboard(
         "estimatedDuration": 3,
         "durationInFrames": 3 * fps,
     })
+
+    # 2. W5-6: 真实捕获场景 (仅 status=ok 的捕获入画面; 失败只进 source 元数据)
+    for rec in (capture_summary or {}).get("records") or []:
+        if rec.get("status") != "ok":
+            continue
+        target = capture_targets.get(rec.get("id")) or {}
+        duration = target.get("duration", DEFAULT_CAPTURE_SCENE_DURATION)
+        scenes.append({
+            "id": f"scene_cap_{rec['id']}",
+            "type": "BrowserScreenshot",
+            "title": target.get("title") or f"真实捕获: {rec['url']}",
+            "text": target.get("narration") or (
+                f"先看真实界面。这里是 {rec['url']} 的实机运行画面，"
+                "所有截图与录屏均由无头浏览器真实捕获，未做任何伪造。"
+            ),
+            "browser": {
+                "url": rec["url"],
+                "image": rec.get("screenshotStatic") or "",
+            },
+            "estimatedDuration": duration,
+            "durationInFrames": int(duration * fps),
+            # 捕获事实元数据 (供质检与人工审校, 不进画面)
+            "demoCapture": {
+                "screenshot": rec.get("screenshot"),
+                "video": rec.get("video"),
+                "events": rec.get("events"),
+            },
+        })
 
     # 2. 每个演示步骤一幕终端场景
     for idx, rec in enumerate(step_records):
@@ -430,6 +499,8 @@ def build_storyboard(
                 "failed": install_result.get("failed", []),
             },
         },
+        # W5-6: 真实捕获汇总 (失败目标仅在此留痕, 绝不入画面伪造)
+        "captureResult": capture_summary or {"attempted": 0, "ok": 0, "failed": 0, "failedIds": [], "records": []},
         "scenes": scenes,
     }
 
@@ -458,6 +529,8 @@ def get_parser() -> argparse.ArgumentParser:
     parser.add_argument("--force", action="store_true", help="强制重新 clone (清除既有检出目录)")
     parser.add_argument("--skip-install", action="store_true", help="跳过安装阶段 (等同无安装命令)")
     parser.add_argument("--skip-run", action="store_true", help="跳过演示步骤执行 (storyboard 标记 skipped)")
+    parser.add_argument("--skip-capture", action="store_true",
+                        help="跳过 Playwright 真实捕获阶段 (storyboard 不含截图场景)")
     parser.add_argument("--output", type=str, default="",
                         help="覆盖 storyboard 输出路径 (默认取规格 output.storyboard 或 content/scripts/{name}_demo.json)")
     return parser
@@ -521,8 +594,24 @@ def main():
     else:
         step_records = run_steps(spec, clone_dir, install_result)
 
+    # 4.5 W5-6: Playwright 真实捕获 (dry-run/--skip-capture 跳过; 单目标失败不阻断, 如实记录)
+    capture_summary: Optional[Dict[str, Any]] = None
+    capture_cfg = spec.get("capture") or {}
+    capture_targets: List[Dict[str, Any]] = capture_cfg.get("targets") or []
+    if args.dry_run:
+        if capture_targets:
+            print("🧪 [DryRun] 跳过 Playwright 真实捕获阶段 (capture.targets 已声明但未执行)")
+    elif args.skip_capture:
+        print("⏭️ [Capture] --skip-capture 指定，跳过 Playwright 真实捕获阶段")
+    elif not capture_cfg.get("enabled", True):
+        print("ℹ️ [Capture] 规格 capture.enabled=false，跳过真实捕获阶段")
+    elif capture_targets:
+        capture_records = run_captures(capture_targets)
+        capture_summary = summarize_captures(capture_records)
+
     # 5. storyboard 生成与落盘
-    storyboard = build_storyboard(spec, install_result, step_records, args.spec)
+    storyboard = build_storyboard(spec, install_result, step_records, args.spec,
+                                  capture_summary=capture_summary)
     output_cfg = spec.get("output") or {}
     output_path = args.output or render_placeholders(
         output_cfg.get("storyboard") or "content/scripts/{name}_demo.json", context
@@ -538,6 +627,13 @@ def main():
         print(f"   ⚠️ 降级模式: 安装失败或跳过, 演示步骤未执行 (已如实标注)")
     if failed_steps:
         print(f"   ⚠️ 退出码偏离契约的步骤: {', '.join(failed_steps)} (已如实标注)")
+    cap_result = storyboard.get("captureResult") or {}
+    if cap_result.get("attempted"):
+        if cap_result.get("failed"):
+            print(f"   ⚠️ 捕获失败目标: {', '.join(str(i) for i in cap_result['failedIds'])} "
+                  f"(已如实记录, 未伪造证据; {cap_result['ok']}/{cap_result['attempted']} 成功)")
+        else:
+            print(f"   📸 真实捕获: {cap_result['ok']}/{cap_result['attempted']} 个目标成功 (截图+录屏+events)")
     print(f"=======================================================\n")
     try:
         script_rel = os.path.relpath(out_abs, PROJECT_ROOT)

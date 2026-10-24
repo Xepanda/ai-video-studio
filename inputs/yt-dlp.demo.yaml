@@ -45,11 +45,25 @@ run:
       narration: "simulate 干跑模式只解析元数据，不落盘文件，是排查格式问题的利器。"
       duration: 12
 
-capture:                              # W5-6 Playwright 真实捕获接入后生效 (截图/录屏/events)
-  viewport:
-    width: 1920
-    height: 1080
-  wait_ms: 1500
+capture:                              # W5-6 Playwright 真实捕获 (scripts/demo_capture.py)
+  enabled: true                       # false = 跳过捕获阶段
+  targets:                            # 每个目标一幕 BrowserScreenshot 场景 (仅成功捕获入画面)
+    - id: ytdlp_home                  # 产物文件名标识 (唯一)
+      url: https://github.com/yt-dlp/yt-dlp
+      title: "先看门面：90k Star 的仓库主页"
+      narration: "在跑命令之前，先看这个项目的真实门面。九十多 K 的 Star，是社区用脚投出的票。"
+      wait_until: networkidle         # load | domcontentloaded | networkidle | commit
+      full_page: true                 # 全页截图 (false = 仅视口)
+      record_video: true              # 是否录屏 (webm)
+      duration: 4                     # 该场景时长 (秒)
+    - id: ytdlp_wiki
+      url: https://github.com/yt-dlp/yt-dlp/wiki
+      title: "再看文档：支持站点清单"
+      narration: "支持哪些网站，文档里有一份实时维护的清单，这就是它全网通吃的底气。"
+      wait_until: domcontentloaded    # wiki 页有持续轮询, 不等 networkidle 避免超时
+      full_page: false
+      record_video: false
+      duration: 3
 
 output:
   storyboard: content/scripts/{name}_demo.json
