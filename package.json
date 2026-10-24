@@ -25,7 +25,7 @@
     "snapshot:rollback": "python scripts/utils/snapshot_manager.py rollback",
     "test:bridge": "node tests/test_bridge.js",
     "test:ts": "tsc -p tests/tsconfig.test.json && node tests/.build/tests/test_shorts_dispatcher.js && node tests/.build/tests/test_tweet_card.js && node tests/.build/tests/test_binary_bento.js && node tests/.build/tests/test_task4_integration.js && node tests/.build/tests/test_network_scenes.js && node tests/.build/tests/test_visual_components.js && node tests/.build/tests/test_scene_components_bc.js",
-    "test:py": "python -m unittest discover -s tests -p \"test_*.py\"",
+    "test:py": "python -m pytest tests/ -q",
     "test:hf": "python tests/test_hf_builder.py",
     "test:audio": "python tests/test_audio_utils.py",
     "test:qc": "python tests/test_qc_cache.py",

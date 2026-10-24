@@ -8,6 +8,11 @@
 # 安装: pip install -r requirements.txt            (仅核心层)
 #       pip install -r requirements.txt -e ...     (暂不支持; 引擎层请手动按需解除注释)
 
+# ---------------------------------------------------------------- 测试层 (tests)
+pytest>=8.0                # 统一测试入口 (收集 unittest.TestCase 与 pytest 风格函数;
+                           # tests/ 下含 tmp_path/capsys/monkeypatch 等 pytest 专属夹具的用例,
+                           # unittest discover 无法收集, 详见 CI python-tests job)
+
 # ---------------------------------------------------------------- 核心层 (core)
 numpy>=1.24                # audio_mastering / visual_qc / audio_normalizer DSP
 scipy>=1.10                # audio_mastering Butterworth/biquad 滤波器

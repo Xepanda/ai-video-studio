@@ -31,8 +31,11 @@ jobs:
       - name: Syntax check (compileall)
         run: python -m compileall -q scripts tests
 
+      # pytest 为统一入口: 同时收集 unittest.TestCase 与 pytest 风格用例
+      # (tests/ 下 test_ingest_material / test_pipeline_engine_render 使用
+      #  tmp_path/capsys/monkeypatch 夹具, unittest discover 无法收集)
       - name: Python unit tests
-        run: python -m unittest discover -s tests -p "test_*.py" -v
+        run: python -m pytest tests/ -q
 
   node-tests:
     name: Node (tsc typecheck + TS/JS tests)
