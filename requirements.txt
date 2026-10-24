@@ -16,6 +16,7 @@ Pillow>=10.0               # create_video_cover 封面合成
 requests>=2.31             # x_fetcher (FxTwitter/oEmbed), generate_audio 探测
 edge-tts>=6.1              # generate_audio.py 默认 TTS 引擎 (Edge 神经网络语音, 轻量)
 PyYAML>=6.0                # audio_engines/start_local_sovits.py 配置解析
+pypinyin>=0.50             # create_tech_news_shorts.py slugify 拼音化 / generate_audio.py 多音字兜底
 yt-dlp>=2024.1.0           # ingest_material.py 流媒体素材采集 (python -m yt_dlp)
 
 # ---------------------------------------------------------------- 引擎层 (engines, 按需解除注释)
@@ -28,4 +29,3 @@ yt-dlp>=2024.1.0           # ingest_material.py 流媒体素材采集 (python -m
 # gradio-client>=0.10       # audio_engines 远程推理服务客户端
 # onnxruntime>=1.17         # kokoro 等 ONNX 推理后端
 # playwright>=1.44          # generate_evidence_screenshots.py 官网截图/录屏 (需 playwright install chromium)
-# pypinyin>=0.50            # generate_audio.py 中文多音字发音规范化兜底
