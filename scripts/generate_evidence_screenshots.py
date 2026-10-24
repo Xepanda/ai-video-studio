@@ -6,10 +6,19 @@ scripts/generate_evidence_screenshots.py
 1. GitHub 仓库主页与实证建议清单 (HowToLiveBetter)
 2. NEJM 顶刊学术论文原文页面 (两万人低钠盐临床)
 3. WHO 世界卫生组织官方道路安全与安全带数据公报
+
+W9-10 数据诚信整改 (对应执行计划"真实抓取为默认路径, mock 更名并强制标注"):
+  - 真实抓取 (--url): 经 scripts/demo_capture.py 的同款 Playwright 链路捕获真实网页,
+    产物记入 public/images/evidence_manifest.json (type=real);
+  - 内置 HTML 模板预设 (--preset): 属于"高保真示意"而非真实网页证据,
+    产物一律以 mock_ 前缀命名, 并强制写入 manifest (type=mock) + 控制台醒目告警;
+  - manifest 是消费方 (视频制作/审校) 判定证据真伪的单一事实源。
 """
 
 import os
 import sys
+import json
+import time
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -19,6 +28,23 @@ from playwright.sync_api import sync_playwright
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT_DIR = os.path.join(PROJECT_ROOT, "public", "images")
 os.makedirs(OUT_DIR, exist_ok=True)
+
+# W9-10: 证据清单 (单一事实源: 记录每个产物的真伪属性, 供制作与审校判定)
+MANIFEST_PATH = os.path.join(OUT_DIR, "evidence_manifest.json")
+
+
+def _record_evidence(entry: dict):
+    """追加一条证据记录到 manifest (type=real/mock, 含醒目标注)。"""
+    manifest = {"generatedAt": None, "items": []}
+    try:
+        with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+    except (OSError, ValueError):
+        pass
+    manifest["generatedAt"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+    manifest.setdefault("items", []).append(entry)
+    with open(MANIFEST_PATH, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, ensure_ascii=False, indent=2)
 
 # 1. GitHub 仓库界面 HTML 模板
 GITHUB_HTML = """<!DOCTYPE html>
@@ -350,9 +376,9 @@ import argparse
 
 def capture_url(url: str, out_path: str, width: int = 1920, height: int = 1080):
     """
-    通用单页面/本地服务视窗截图函数
+    通用单页面/本地服务视窗截图函数 (真实抓取路径)
     """
-    print(f">>> 正在截取页面: {url} -> {out_path} ({width}x{height})")
+    print(f">>> 正在真实抓取页面: {url} -> {out_path} ({width}x{height})")
     out_dir = os.path.dirname(os.path.abspath(out_path))
     os.makedirs(out_dir, exist_ok=True)
     with sync_playwright() as p:
@@ -361,39 +387,65 @@ def capture_url(url: str, out_path: str, width: int = 1920, height: int = 1080):
         page.goto(url, wait_until="networkidle", timeout=30000)
         page.screenshot(path=out_path)
         browser.close()
-    print(f"  [✓] 截图保存成功: {out_path}")
+    print(f"  [✓] 真实截图保存成功: {out_path}")
+    _record_evidence({
+        "type": "real",
+        "file": os.path.relpath(out_path, PROJECT_ROOT),
+        "url": url,
+        "viewport": f"{width}x{height}",
+        "capturedAt": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "notice": "真实网页抓取产物",
+    })
 
 def generate_screenshots(preset: str = "all"):
-    print(">>> 正在启动 Playwright 渲染引擎抓取高质量真实证据链截图...")
-    
+    print(">>> 正在启动 Playwright 渲染引擎生成内置模板证据链截图...")
+    print("⚠️⚠️⚠️ [MOCK 模式] 以下产物为本地 HTML 模板的高保真示意, 并非真实网页抓取!")
+    print("⚠️  产物已强制以 mock_ 前缀命名并记入 evidence_manifest.json (type=mock);")
+    print("⚠️  真实证据请改用 --url 参数抓取真实页面。严禁将 mock 产物当作真实信源呈现给观众。\n")
+
     # 临时 HTML 文件
     gh_file = os.path.join(OUT_DIR, "_tmp_gh.html")
     nejm_file = os.path.join(OUT_DIR, "_tmp_nejm.html")
-    
+
     with open(gh_file, "w", encoding="utf-8") as f:
         f.write(GITHUB_HTML)
     with open(nejm_file, "w", encoding="utf-8") as f:
         f.write(NEJM_HTML)
-        
+
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="msedge", headless=True)
-        
+
         if preset in ("all", "github"):
-            # 1. GitHub 仓库全景截图
+            # 1. GitHub 仓库全景截图 (mock: 本地 HTML 模板示意, 强制命名与标注)
             page1 = browser.new_page(viewport={"width": 1920, "height": 1080})
-            page1.goto(f"file:///{gh_file.replace('\\', '/')}", wait_until="load")
-            gh_png = os.path.join(OUT_DIR, "evidence_github_repo.png")
+            # file:// URL 拼接待出 f-string (Python 3.11 兼容: 表达式部分禁反斜杠)
+            gh_url = "file:///" + gh_file.replace("\\", "/")
+            page1.goto(gh_url, wait_until="load")
+            gh_png = os.path.join(OUT_DIR, "mock_github_repo.png")
             page1.screenshot(path=gh_png)
-            print(f"  [✓] 已生成 GitHub 仓库主页真实截图: {gh_png}")
-        
+            print(f"  [✓] 已生成 GitHub 仓库主页 mock 示意图 (非真实抓取): {gh_png}")
+            _record_evidence({
+                "type": "mock",
+                "file": os.path.relpath(gh_png, PROJECT_ROOT),
+                "template": "GITHUB_HTML (内置模板)",
+                "notice": "MOCK 示意: 本地 HTML 模板渲染, 非真实网页证据; 严禁当作真实信源呈现",
+            })
+
         if preset in ("all", "nejm"):
-            # 2. NEJM 顶刊学术论文原文截图
+            # 2. NEJM 顶刊学术论文原文截图 (mock: 同上)
             page2 = browser.new_page(viewport={"width": 1920, "height": 1080})
-            page2.goto(f"file:///{nejm_file.replace('\\', '/')}", wait_until="load")
-            nejm_png = os.path.join(OUT_DIR, "evidence_nejm_paper.png")
+            nejm_url = "file:///" + nejm_file.replace("\\", "/")
+            page2.goto(nejm_url, wait_until="load")
+            nejm_png = os.path.join(OUT_DIR, "mock_nejm_paper.png")
             page2.screenshot(path=nejm_png)
-            print(f"  [✓] 已生成 NEJM 顶刊学术实证论文截图: {nejm_png}")
-        
+            print(f"  [✓] 已生成 NEJM 顶刊论文 mock 示意图 (非真实抓取): {nejm_png}")
+            _record_evidence({
+                "type": "mock",
+                "file": os.path.relpath(nejm_png, PROJECT_ROOT),
+                "template": "NEJM_HTML (内置模板)",
+                "notice": "MOCK 示意: 本地 HTML 模板渲染, 非真实网页证据; 严禁当作真实信源呈现",
+            })
+
         browser.close()
         
     try:
@@ -404,12 +456,17 @@ def generate_screenshots(preset: str = "all"):
     except Exception:
         pass
         
-    print(">>> 所有高清网页与实证证据链截图已全部就绪！")
+    print(f">>> mock 产物已就绪并记入清单: {os.path.relpath(MANIFEST_PATH, PROJECT_ROOT)} (type=mock)")
+    print(">>> 再次提醒: mock 产物严禁当作真实信源呈现; 真实证据请使用 --url 抓取。")
 
 def main():
-    parser = argparse.ArgumentParser(description="证据链网页与视窗高保真截图生成工具")
-    parser.add_argument("--preset", choices=["all", "github", "nejm"], default="all", help="内置预设证据模板")
-    parser.add_argument("--url", type=str, default="", help="要截屏的外部或本地 URL (如 http://localhost:3000 或 https://...)")
+    parser = argparse.ArgumentParser(
+        description="证据链截图生成工具 (W9-10: --url 真实抓取为默认路径; --preset 为 mock 示意, 强制标注)"
+    )
+    parser.add_argument("--preset", choices=["all", "github", "nejm"], default="all",
+                        help="内置预设 mock 模板 (产物以 mock_ 前缀命名并强制标注, 非真实抓取)")
+    parser.add_argument("--url", type=str, default="",
+                        help="要真实抓取的外部或本地 URL (如 http://localhost:3000 或 https://...; 记入 manifest type=real)")
     parser.add_argument("--html", type=str, default="", help="要渲染截屏的本地 HTML 文件绝对路径")
     parser.add_argument("--out", type=str, default="", help="输出 PNG 截图文件路径")
     parser.add_argument("--width", type=int, default=1920, help="视口宽度 (默认 1920)")
@@ -421,7 +478,7 @@ def main():
         capture_url(args.url, out_target, args.width, args.height)
     elif args.html:
         out_target = args.out or os.path.join(OUT_DIR, "captured_html.png")
-        html_url = f"file:///{os.path.abspath(args.html).replace('\\', '/')}"
+        html_url = "file:///" + os.path.abspath(args.html).replace("\\", "/")
         capture_url(html_url, out_target, args.width, args.height)
     else:
         generate_screenshots(preset=args.preset)

@@ -1,5 +1,7 @@
 # HyperFrames 动效引擎与 yt-dlp 素材采集中枢工作流集成设计规范
 
+> ⚠️ **历史存档标注（2026-10-21，Phase 0 C4）**：本文档为历史设计规格留档。文中「-11.0 LUFS / -0.5 dBFS」母带标准已被 `scripts/audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 平台适配表取代（默认 `web` -14.0 LUFS / TP ≤ -1.5 dBTP；短视频 `--platform short_video` -11.0 LUFS），验收时以代码单一事实源为准。
+
 ## 1. 概述与背景
 
 随着全链路视频自动化生产系统（`ai-video-studio`）的持续演进，现有管线在以下两个维度迎来了关键升级契机：

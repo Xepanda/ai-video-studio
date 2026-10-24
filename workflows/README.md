@@ -45,3 +45,30 @@
 ## 4. 🌐 Google Flow (flow.google.com) 电影级 AI 镜头生成流
 - **核心工具**：[`scripts/flow_automation/browser_flow_automation.js`](../scripts/flow_automation/browser_flow_automation.js)
 - **核心逻辑**：以 `--remote-debugging-port=9222` 启动本地真实 Chrome 保持 2FA 登录态 ➔ Playwright CDP 自动接管 ➔ 上传首帧、填入运镜 Prompt ➔ 轮询状态并自动下载 1080p MP4。
+
+---
+
+## 5. 🔥 热点快剪短视频工作流 (W3-4/W5-6 新建, 2026-10-24 登记)
+- **对应技能**：[`skills/hotspot-quickcut-video-production/SKILL.md`](../skills/hotspot-quickcut-video-production/SKILL.md)
+- **核心逻辑**：多源热点聚合 (`hotspot_aggregator.py`: 微博/抖音/B站/X Trends) ➔ LLM 快稿 (`hotspot_scriptgen.py`) ➔ **事实核查门** (信源必填 + AI 标注自动附加 + 违规反馈重试) ➔ 人工审校门 (`llm_scriptgen.py --approve`) ➔ 成片 ≤2h。
+- **执行命令**：
+  ```bash
+  python scripts/hotspot_aggregator.py --top 10 --output inputs/hotspots/latest.json
+  python scripts/hotspot_scriptgen.py --hotspots inputs/hotspots/latest.json --rank 1 --project hotspot_demo
+  python scripts/llm_scriptgen.py --approve --input content/scripts/hotspot_demo_hotspot.json --reviewer <你的名字>
+  python scripts/pipeline.py --script content/scripts/hotspot_demo_hotspot.json --project hotspot_demo --render
+  ```
+- **数据诚信红线**：无真实热点输入不生成 (拒绝凭空编造话题); 单源抓取失败零编造条目; 热度缺失一律 null; X Trends 需 `AVS_X_BEARER_TOKEN`, 未配置显式跳过。
+- **时效 SOP**：热点窗口通常 2-6 小时, 聚合→成片全链路目标 ≤2h; 超过窗口的热点降级为"复盘解读"形态, 不得伪装时效。
+
+---
+
+## 6. 🐙 GitHub 开源项目深度演示工作流 (W3-4/W5-6 新建, 2026-10-24 登记)
+- **对应技能**：[`skills/github-demo-video-production/SKILL.md`](../skills/github-demo-video-production/SKILL.md)
+- **核心逻辑**：`.demo.yaml` 规格 (六段契约) ➔ 幂等 clone ➔ install (失败显式降级) ➔ run steps (expect_exit 契约 + 真实退出码) ➔ **Playwright 真实捕获** (截图+录屏+events, 禁伪造) ➔ storyboard.json (真实命令/真实截图入画, 执行事实进元数据)。
+- **执行命令**：
+  ```bash
+  python scripts/github_demo_pipeline.py --spec inputs/yt-dlp.demo.yaml
+  python scripts/pipeline.py --script content/scripts/yt-dlp_demo.json --project yt-dlp --render
+  ```
+- **失败策略分级**：clone 失败 = 硬错误 (无仓库即无演示); install 失败 = 显式降级 (仅介绍分镜 + degraded 标注); run step 退出码偏离契约 = 如实记录不篡改; 捕获失败 = 证据字段 null 不入画面。

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Img, staticFile } from 'remotion';
+import { staticFile } from 'remotion';
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share } from 'lucide-react';
 import { ThemeConfig } from '../../styles/theme';
+import { SafeImage } from './SafeImage';
 
 export interface TweetMetrics {
   replies?: string | number;
@@ -22,6 +23,7 @@ export interface TweetEmbedCardProps {
   metrics?: TweetMetrics;        // 底部互动量：转推、点赞、浏览量
   theme?: ThemeConfig | Partial<ThemeConfig> | string;  // 当前主题配色
   maxWidth?: number;             // 最大宽度，默认 880px
+  maxLines?: number;             // 正文最大显示行数，超出截断并附截断标记（默认 0 = 不截断）
   className?: string;
   style?: React.CSSProperties;
 }
@@ -145,12 +147,16 @@ export const TweetEmbedCard: React.FC<TweetEmbedCardProps> = ({
   metrics,
   theme,
   maxWidth = 880,
+  maxLines = 0,
   className,
   style,
 }) => {
   // 判断当前主题是浅色还是深色
   const themeObj: Partial<ThemeConfig> | undefined =
     theme && typeof theme === 'object' ? theme : undefined;
+
+  // 长文截断 (W7-8 场景三): 超过 maxLines 行时 clamp + 截断标记 (不静默吞内容)
+  const isTruncated = maxLines > 0 && content.split('\n').length > maxLines;
 
   const isLight =
     themeObj &&
@@ -237,7 +243,7 @@ export const TweetEmbedCard: React.FC<TweetEmbedCardProps> = ({
             }}
           >
             {resolvedAvatar ? (
-              <Img
+              <SafeImage
                 src={resolvedAvatar}
                 alt={authorName}
                 style={{
@@ -320,10 +326,32 @@ export const TweetEmbedCard: React.FC<TweetEmbedCardProps> = ({
           letterSpacing: '-0.015em',
           wordBreak: 'break-word',
           whiteSpace: 'pre-wrap',
+          ...(isTruncated
+            ? {
+                display: '-webkit-box',
+                WebkitLineClamp: maxLines,
+                WebkitBoxOrient: 'vertical' as const,
+                overflow: 'hidden',
+              }
+            : {}),
         }}
       >
         {renderContentWithHighlights(content, highlightWords, highlightColor, highlightBg)}
       </div>
+
+      {/* 长文截断标记 (诚实标注: 提示观众完整内容所在, 不伪装全文) */}
+      {isTruncated && (
+        <div
+          style={{
+            marginTop: 8,
+            fontSize: 20,
+            color: isLight ? '#64748b' : '#94a3b8',
+            fontWeight: 600,
+          }}
+        >
+          … 长文已截断 (仅展示前 {maxLines} 行)
+        </div>
+      )}
 
       {/* 3. 中文解读/翻译小字 (可选) */}
       {subtitle && (

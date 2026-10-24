@@ -1,5 +1,7 @@
 # HyperFrames 动效引擎与 yt-dlp 素材采集中枢工作流集成实施计划
 
+> ⚠️ **历史存档标注（2026-10-21，Phase 0 C4）**：本文档为历史实施计划留档。文中「-11.0 LUFS / -0.5 dBFS」母带标准已被 `scripts/audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 平台适配表取代（默认 `web` -14.0 LUFS / TP ≤ -1.5 dBTP；短视频 `--platform short_video` -11.0 LUFS），执行时以代码单一事实源为准。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 构建并整合两大关键子系统：上游流媒体素材/B-Roll/干声音频智能切片采集中枢（基于 `yt-dlp` 与 `ffmpeg`），以及下游确定性 HTML/CSS/GSAP 轻量化动效渲染中枢（基于 `HyperFrames`），并统一由 `scripts/pipeline.py` 实现双轨调度与 EBU R128 -11.0 LUFS 广播级商业母带压制。

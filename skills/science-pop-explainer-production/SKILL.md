@@ -120,9 +120,12 @@ python scripts/x_fetcher.py --url "https://x.com/WHO/status/..."
 
 ### 4.3 纯净商业音频母带处理 (`scripts/audio_mastering.py`)
 - **音效清理**：剔除画面切换时的科技音效，保持叙事专注。
-- **两遍双轨 EBU R128 标准化**：
+- **两遍双轨 EBU R128 标准化**（响度目标由 `scripts/audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 单一事实源裁决）：
   ```bash
-  python scripts/audio_mastering.py --video out/how_to_live_better_ep01_horizontal.mp4 --target_i -11.0 --target_tp -0.5
+  # 默认 web 预设（YouTube / B站 / 小红书）：-14.0 LUFS / TP ≤ -1.5 dBTP
+  python scripts/audio_mastering.py --video out/how_to_live_better_ep01_horizontal.mp4 --platform web
+  # 发布抖音 / 快手 / Reels 时切换短视频预设（-11.0 LUFS / TP ≤ -1.5 dBTP）：
+  # python scripts/audio_mastering.py --video out/how_to_live_better_ep01_horizontal.mp4 --platform short_video
   ```
   - `120Hz` 四阶 Butterworth 高通滤波：切除扬声器次声波轰鸣；
   - `3.2kHz` 齿音微提升：保证小音量下咬字清晰；
@@ -137,6 +140,16 @@ python scripts/x_fetcher.py --url "https://x.com/WHO/status/..."
 | **背景色调** | `#090d16` 黑客暗黑底，四周带重度黑边 | `editorial-paper-light` 浅暖纸底，四周透亮温润 |
 | **开场台词** | “今天我们来读第一章，第一节是关于买盐……” | 从“搞钱内卷、健康归零”的生活痛点切入，引发共鸣再点题 |
 | **画面呈现** | 全片只有几行居中 PPT 文字或者一段终端代码 | 调取真实 GitHub 仓库、学术期刊论文、Bento 对比视窗 |
-| **声音质感** | 每次镜头切换都响一下激光科技音效，音量忽大忽小 | 移除切换杂音；音频跑 EBU R128 母带锁定 -11.0 LUFS |
+| **声音质感** | 每次镜头切换都响一下激光科技音效，音量忽大忽小 | 移除切换杂音；音频跑 EBU R128 母带，响度按发布平台取值（默认 web -14.0 LUFS / 短视频 -11.0 LUFS，TP ≤ -1.5 dBTP） |
 | **素材引用** | 引用外链图片未加 try-catch 导致 Remotion 404 挂掉 | 本地生成或下载至 `public/images/`，使用 `staticFile(...)` 渲染 |
 | **画幅选择** | 强行套用竖屏短视频模板导致代码/表格截断 | 科普深度解析统一采用 **16:9 横屏**（1920×1080）原生分辨率 |
+
+---
+
+## 附: 钩子公式库 · 认知张力叙事 · 事实核查清单
+
+发布前必查的参考库见 [`references/hooks_and_factcheck.md`](references/hooks_and_factcheck.md)：
+
+- **钩子公式库**：反常识断言 / 具象化尺度 / 身份代入 / 代价悬念 / 时间压力 (前 3 秒完播率决胜);
+- **认知张力叙事**：建立张力 → 维持张力 → 释放张力的三段式管理, 每幕结尾钩句承接;
+- **事实核查清单**：三源核查 + 引用快照 + 数字三对照 + LLM 草稿疑点清除 (审校门 `--approve` 后放行)。

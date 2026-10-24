@@ -1,0 +1,36 @@
+# ai-video-studio Python 依赖 (分层声明, 审计 Phase 0 C1)
+#
+# 核心层 (core): 全链路流水线 (pipeline / validator / audio_mastering / ingest /
+#   x_fetcher / utils/*) 的硬性依赖, 体积小, 任何机器装完即可跑通数据契约与母带链条。
+# 引擎层 (engines): TTS/ASR/截图等重依赖, 按需注释解除; torch 系体积巨大且与
+#   CUDA 版本强绑定, 统一放在最后并按注释分组, 避免污染核心环境。
+#
+# 安装: pip install -r requirements.txt            (仅核心层)
+#       pip install -r requirements.txt -e ...     (暂不支持; 引擎层请手动按需解除注释)
+
+# ---------------------------------------------------------------- 测试层 (tests)
+pytest>=8.0                # 统一测试入口 (收集 unittest.TestCase 与 pytest 风格函数;
+                           # tests/ 下含 tmp_path/capsys/monkeypatch 等 pytest 专属夹具的用例,
+                           # unittest discover 无法收集, 详见 CI python-tests job)
+
+# ---------------------------------------------------------------- 核心层 (core)
+numpy>=1.24                # audio_mastering / visual_qc / audio_normalizer DSP
+scipy>=1.10                # audio_mastering Butterworth/biquad 滤波器
+soundfile>=0.12            # WAV 读写 (audio_mastering / validator / aligner)
+Pillow>=10.0               # create_video_cover 封面合成
+requests>=2.31             # x_fetcher (FxTwitter/oEmbed), generate_audio 探测
+edge-tts>=6.1              # generate_audio.py 默认 TTS 引擎 (Edge 神经网络语音, 轻量)
+PyYAML>=6.0                # audio_engines/start_local_sovits.py 配置解析
+pypinyin>=0.50             # create_tech_news_shorts.py slugify 拼音化 / generate_audio.py 多音字兜底
+yt-dlp>=2024.1.0           # ingest_material.py 流媒体素材采集 (python -m yt_dlp)
+
+# ---------------------------------------------------------------- 引擎层 (engines, 按需解除注释)
+# funasr>=1.0               # sensevoice_aligner.py SenseVoice ASR 毫秒打点 (依赖 torch/torchaudio)
+# torchaudio>=2.1           # validator.py / sensevoice_aligner.py 音频重采样
+# faster-whisper>=1.0       # 备选 ASR 引擎 (--engine paraformer 之外的轻量路线)
+# ChatTTS>=0.2              # audio_engines/tts_chattts.py (对话式 TTS, 依赖 torch)
+# f5-tts>=0.1               # audio_engines/tts_f5tts.py (流匹配 TTS, 依赖 torch)
+# misaki>=0.1               # TTS 多语言音素规范化 (f5-tts 前置)
+# gradio-client>=0.10       # audio_engines 远程推理服务客户端
+# onnxruntime>=1.17         # kokoro 等 ONNX 推理后端
+# playwright>=1.44          # generate_evidence_screenshots.py 官网截图/录屏 (需 playwright install chromium)

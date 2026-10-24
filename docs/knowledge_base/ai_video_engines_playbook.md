@@ -93,4 +93,4 @@
 2. **人声与 BGM 动态闪避（Audio Ducking）**：
    - 旁白说话期间，背景音乐音量必须自动衰减至基础值的 20%（约 -40dBFS ~ -43dBFS），说话停顿 0.3s 后平滑拉回。
 3. **平台响度标准化（EBU R128 标准）**：
-   - 抖音/TikTok/视频号推荐整体综合响度：**-11.0 LUFS ~ -14.0 LUFS**，真峰值（True Peak）必须小于 **-0.5 dBFS**，防止平台播放器二次压缩造成声音破音炸麦。
+   - 平台响度由 `scripts/audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 统一裁决：抖音 / TikTok / 快手 / Reels 走 `--platform short_video`（**-11.0 LUFS**）；YouTube / B站 / 小红书 / 视频号走默认 `web`（**-14.0 LUFS**）；真峰值（True Peak）统一 ≤ **-1.5 dBTP**，防止平台播放器二次压缩造成声音破音炸麦。

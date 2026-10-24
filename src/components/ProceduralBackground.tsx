@@ -1,9 +1,11 @@
 import React from 'react';
-import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion';
+import { AbsoluteFill, interpolate } from 'remotion';
 import { ThemeConfig } from '../styles/theme';
+import { useSafeFrameConfig } from './shorts/useSafeFrameConfig';
 
 export const ProceduralBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
-  const frame = useCurrentFrame();
+  // SSR / 契约测试环境无 Remotion 上下文, 统一安全回退 frame=0 (初始网格位)
+  const { frame } = useSafeFrameConfig();
 
   const gridSize = theme.gridOverlay?.size && theme.gridOverlay.size > 0 ? theme.gridOverlay.size : 32;
   // 按照实际网格大小执行严格周期取模，杜绝模数错位造成的跳跃卡顿

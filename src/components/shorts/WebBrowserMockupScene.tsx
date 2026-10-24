@@ -1,6 +1,8 @@
 import React from 'react';
-import { useCurrentFrame, useVideoConfig, interpolate, spring, staticFile } from 'remotion';
+import { interpolate, spring, staticFile } from 'remotion';
 import { ThemeConfig, getTheme } from '../../styles/theme';
+import { useSafeFrameConfig } from './useSafeFrameConfig';
+import { SafeImage } from './SafeImage';
 
 export interface WebBrowserMockupSceneProps {
   url?: string;
@@ -27,14 +29,8 @@ export const WebBrowserMockupScene: React.FC<WebBrowserMockupSceneProps> = ({
   theme: themeProp,
   style,
 }) => {
-  const frame = useCurrentFrame();
-  const { fps, width = 1920, height = 1080 } = (() => {
-    try {
-      return useVideoConfig();
-    } catch {
-      return { fps: 30, width: 1920, height: 1080 };
-    }
-  })();
+  // SSR 安全帧配置 (无 Composition 上下文时回退 frame=0/fps=30, 不抛错)
+  const { frame, fps, width = 1920, height = 1080 } = useSafeFrameConfig();
   const isVertical = width < height;
   const theme = themeProp || getTheme('editorial-paper-light');
   const isLight = theme.isLight ?? true;
@@ -236,7 +232,7 @@ export const WebBrowserMockupScene: React.FC<WebBrowserMockupSceneProps> = ({
           }}
         >
           {resolvedImg ? (
-            <img
+            <SafeImage
               src={resolvedImg}
               alt={title || 'Screenshot'}
               style={{

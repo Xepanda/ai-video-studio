@@ -1,0 +1,213 @@
+{
+  "project": "network_layers_deepdive",
+  "title": "微信发一句'在吗'底层经历了什么？计算机网络五层协议与数据包套娃",
+  "theme": "linear-graphite",
+  "voice": "2222",
+  "engine": "chattts",
+  "fps": 30,
+  "bgm": "bgm_cyber_ambient.wav",
+  "bgmPath": "audio/bgm_cyber_ambient.wav",
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": false,
+  "totalDurationInFrames": 2250,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "WeChatMobileMockup",
+      "title": "微信发一句'在吗'，底层经历了什么？",
+      "text": "在微信发一句在吗，这句短短两个字的消息，底层究竟经历了怎样惊心动魄的星际航行？",
+      "category": "NETWORKING 101",
+      "highlightWords": ["在吗", "星际航行"],
+      "wechat": {
+        "mode": "send",
+        "senderName": "好友",
+        "messageText": "在吗",
+        "sentTime": "21:30",
+        "avatarUrl": ""
+      },
+      "estimatedDuration": 6.8,
+      "estimatedFrames": 204
+    },
+    {
+      "id": "scene_02",
+      "type": "ProtocolStackTower",
+      "title": "五层分工解耦模型",
+      "text": "计算机网络通过五层分工模型，将庞大的系统解耦为五道精密工序。",
+      "category": "TCP/IP STACK",
+      "highlightWords": ["五层分工", "五道精密工序"],
+      "protocolTower": {
+        "activeLayer": 0,
+        "showAllLayers": true,
+        "title": "TCP/IP 五层协议大厦"
+      },
+      "estimatedDuration": 6.2,
+      "estimatedFrames": 186
+    },
+    {
+      "id": "scene_03",
+      "type": "PacketAssemblyPipeline",
+      "title": "L5 应用层：原始载荷 Payload",
+      "text": "第一步，应用层。微信将文字编码为数据载荷，准备向下移交给操作系统内核。",
+      "category": "LAYER 5 · APPLICATION",
+      "highlightWords": ["应用层", "数据载荷"],
+      "packetAssembly": {
+        "stage": "payload",
+        "layerName": "L5 应用层 (Application)",
+        "payloadText": "在吗",
+        "payloadHex": "e5 9c a8 e5 90 97",
+        "headerBadge": "App Data",
+        "color": "#10b981"
+      },
+      "estimatedDuration": 6.5,
+      "estimatedFrames": 195
+    },
+    {
+      "id": "scene_04",
+      "type": "PacketAssemblyPipeline",
+      "title": "L4 传输层：套上 TCP 端口报头",
+      "text": "第二步，传输层。操作系统给它套上TCP报头，贴上端口号与序列号，保证消息绝不丢包。",
+      "category": "LAYER 4 · TRANSPORT",
+      "highlightWords": ["传输层", "TCP报头", "绝不丢包"],
+      "packetAssembly": {
+        "stage": "tcp",
+        "layerName": "L4 传输层 (TCP)",
+        "payloadText": "在吗",
+        "tcpHeader": "Src: 52144 -> Dst: 443 | SEQ=1001 ACK=0",
+        "headerBadge": "TCP 443",
+        "color": "#38bdf8"
+      },
+      "estimatedDuration": 7.8,
+      "estimatedFrames": 234
+    },
+    {
+      "id": "scene_05",
+      "type": "PacketAssemblyPipeline",
+      "title": "L3 网络层：贴上 IP 跨网身份证",
+      "text": "第三步，网络层。贴上IP地址作为跨网身份证，告诉沿途路由器目标机房的具体坐标。",
+      "category": "LAYER 3 · NETWORK",
+      "highlightWords": ["网络层", "IP地址", "具体坐标"],
+      "packetAssembly": {
+        "stage": "ip",
+        "layerName": "L3 网络层 (IP)",
+        "payloadText": "在吗",
+        "tcpHeader": "TCP :443",
+        "ipHeader": "192.168.1.100 -> 120.232.145.88",
+        "headerBadge": "IPv4 寻址",
+        "color": "#a855f7"
+      },
+      "estimatedDuration": 7.5,
+      "estimatedFrames": 225
+    },
+    {
+      "id": "scene_06",
+      "type": "PacketAssemblyPipeline",
+      "title": "L2 链路层：以太网 MAC 跳步封箱",
+      "text": "第四步，数据链路层。套上下一站路由器的MAC物理地址，并在尾部加上校验码防止损坏。",
+      "category": "LAYER 2 · DATA LINK",
+      "highlightWords": ["数据链路层", "MAC物理地址", "校验码"],
+      "packetAssembly": {
+        "stage": "mac",
+        "layerName": "L2 数据链路层 (Ethernet)",
+        "payloadText": "在吗",
+        "tcpHeader": "TCP",
+        "ipHeader": "IP",
+        "macHeader": "MAC: 7A:9C -> B4:2E",
+        "crcTrailer": "CRC32 [OK]",
+        "headerBadge": "以太网帧",
+        "color": "#f59e0b"
+      },
+      "estimatedDuration": 7.8,
+      "estimatedFrames": 234
+    },
+    {
+      "id": "scene_07",
+      "type": "PacketAssemblyPipeline",
+      "title": "L1 物理层：激光比特轰击发射",
+      "text": "第五步，物理层。调制解调器将数据包轰击为高频光电脉冲，顺着光纤网线激射而出！",
+      "category": "LAYER 1 · PHYSICAL",
+      "highlightWords": ["物理层", "光电脉冲", "激射而出"],
+      "packetAssembly": {
+        "stage": "bits",
+        "layerName": "L1 物理层 (Physical)",
+        "payloadText": "在吗",
+        "bitstream": "01101001 01101110 01100101 01110100",
+        "headerBadge": "PHY 光电比特",
+        "color": "#06b6d4"
+      },
+      "estimatedDuration": 6.8,
+      "estimatedFrames": 204
+    },
+    {
+      "id": "scene_08",
+      "type": "RouterPacketInspection",
+      "title": "中继一站：二层交换机安检",
+      "text": "抵达交换机，它像高速检票闸机，只看最外层MAC地址，直接精准推向出口。",
+      "category": "HOP 1 · L2 SWITCH",
+      "highlightWords": ["交换机", "最外层MAC地址", "精准推向出口"],
+      "routerInspection": {
+        "mode": "switch",
+        "deviceName": "二层以太网交换机",
+        "action": "只读取最外层 MAC 帧头，不拆包秒级转发",
+        "macMatch": "端口 #03 -> 匹配下一跳网卡",
+        "ipStatus": "IP 报头保持封闭保护"
+      },
+      "estimatedDuration": 6.8,
+      "estimatedFrames": 204
+    },
+    {
+      "id": "scene_09",
+      "type": "RouterPacketInspection",
+      "title": "中继二站：三层路由器拆包重封",
+      "text": "而跨网路由器则会拆掉旧外壳，读取IP重新规划路线，套上新MAC重新打包发往骨干光纤。",
+      "category": "HOP 2 · L3 ROUTER",
+      "highlightWords": ["路由器", "拆掉旧外壳", "重新规划路线", "套上新MAC"],
+      "routerInspection": {
+        "mode": "router",
+        "deviceName": "三层骨干路由器",
+        "action": "剥除旧 MAC 外壳 -> 查路由表匹配 IP -> 套上新 MAC 封箱",
+        "macMatch": "替换 MAC: B4:2E -> 00:1A:E8",
+        "ipStatus": "路由表命中: 120.232.0.0/16 via 骨干光纤"
+      },
+      "estimatedDuration": 8.5,
+      "estimatedFrames": 255
+    },
+    {
+      "id": "scene_10",
+      "type": "PacketAssemblyPipeline",
+      "title": "终点接收：自底向上拆箱还原",
+      "text": "穿过数千公里，好友手机收到电信号，自底向上层层撕开报头拆箱还原，提取出纯净的文字。",
+      "category": "DESTINATION · UNPACKING",
+      "highlightWords": ["好友手机", "自底向上", "层层撕开报头", "纯净的文字"],
+      "packetAssembly": {
+        "stage": "unpack",
+        "layerName": "接收端逆向解包 (Unpacking)",
+        "payloadText": "在吗",
+        "headerBadge": "剥离报头 还原纯净数据",
+        "color": "#10b981"
+      },
+      "estimatedDuration": 7.8,
+      "estimatedFrames": 234
+    },
+    {
+      "id": "scene_11",
+      "type": "WeChatMobileMockup",
+      "title": "0.08秒送达！五层解耦的数字奇迹",
+      "text": "仅耗时零点零八秒！每一层只做一件事，却让全世界数以亿计的设备紧密相连。",
+      "category": "DELIVERY COMPLETE · 0.08s",
+      "highlightWords": ["零点零八秒", "每一层只做一件事", "紧密相连"],
+      "wechat": {
+        "mode": "receive",
+        "senderName": "好友",
+        "messageText": "在吗",
+        "sentTime": "21:30:00.080",
+        "avatarUrl": "",
+        "latencyText": "耗时: 80ms · 跨越 1200km"
+      },
+      "estimatedDuration": 7.2,
+      "estimatedFrames": 216
+    }
+  ]
+}

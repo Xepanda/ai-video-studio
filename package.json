@@ -24,10 +24,12 @@
     "snapshot:list": "python scripts/utils/snapshot_manager.py list",
     "snapshot:rollback": "python scripts/utils/snapshot_manager.py rollback",
     "test:bridge": "node tests/test_bridge.js",
+    "test:ts": "tsc -p tests/tsconfig.test.json && node tests/.build/tests/test_shorts_dispatcher.js && node tests/.build/tests/test_tweet_card.js && node tests/.build/tests/test_binary_bento.js && node tests/.build/tests/test_task4_integration.js && node tests/.build/tests/test_network_scenes.js && node tests/.build/tests/test_visual_components.js && node tests/.build/tests/test_scene_components_bc.js",
+    "test:py": "python -m pytest tests/ -q",
     "test:hf": "python tests/test_hf_builder.py",
     "test:audio": "python tests/test_audio_utils.py",
     "test:qc": "python tests/test_qc_cache.py",
-    "test:all": "node tests/test_bridge.js && python tests/test_hf_builder.py && python tests/test_audio_utils.py && python tests/test_qc_cache.py"
+    "test:all": "npm run test:ts && npm run test:bridge && npm run test:py"
   },
   "keywords": [
     "remotion",
@@ -41,6 +43,7 @@
   "type": "commonjs",
   "dependencies": {
     "@remotion/cli": "^4.0.517",
+    "katex": "^0.19.1",
     "lucide-react": "^1.34.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -49,6 +52,7 @@
   "devDependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^2.1.2",
+    "@types/katex": "^0.16.8",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "hyperframes": "^0.8.147",

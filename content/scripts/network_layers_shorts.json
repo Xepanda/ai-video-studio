@@ -1,0 +1,188 @@
+{
+  "project": "network_layers_shorts",
+  "title": "微信发一句'在吗'底层经历了什么？计算机网络分层与数据包套娃",
+  "theme": "linear-graphite",
+  "voice": "4444",
+  "engine": "chattts",
+  "fps": 30,
+  "bgm": "bgm_cyber_ambient.wav",
+  "bgmPath": "audio/bgm_cyber_ambient.wav",
+  "bgmVolume": 0.035,
+  "bgmDuckRatio": 0.2,
+  "voiceVolume": 1.0,
+  "enableBgm": true,
+  "enableSfx": true,
+  "totalDurationInFrames": 1150,
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "MinimalHeadline",
+      "title": "发一句'在吗'，底层经历了什么？",
+      "text": "在微信发一句在吗，底层究竟经历了什么？",
+      "category": "NETWORKING 101",
+      "highlightWords": [
+        "在吗",
+        "底层究竟经历了什么"
+      ],
+      "inverted": false,
+      "estimatedDuration": 3.8,
+      "estimatedFrames": 114
+    },
+    {
+      "id": "scene_02",
+      "type": "TweetEmbed",
+      "title": "计算机网络核心哲学：分层解耦",
+      "text": "互联网之父表示，分层是网络扩展的基石。",
+      "tweet": {
+        "authorName": "Vint Cerf",
+        "authorHandle": "@vgcerf",
+        "avatarUrl": "",
+        "isVerified": true,
+        "content": "If you look at the Internet architecture, it's a layered structure. This layering was infinitely extensible - you could add new protocols at any layer.",
+        "highlightWords": [
+          "layered structure",
+          "infinitely extensible",
+          "new protocols"
+        ],
+        "subtitle": "互联网之父 Vint Cerf: 分层结构让互联网可无限扩展, 随时插入新协议",
+        "source": "FCC FIRSTS podcast interview with Vint Cerf"
+      },
+      "estimatedDuration": 4.5,
+      "estimatedFrames": 135
+    },
+    {
+      "id": "scene_03",
+      "type": "BinaryBento",
+      "title": "单层混乱 vs 五层解耦",
+      "text": "网络分层就像寄快递，写信与运输互不干扰。",
+      "binaryBento": {
+        "title": "为什么网络需要分层？",
+        "subtitle": "快递分工模型",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "单层强耦合",
+          "desc": "软件改动导致硬件推倒重来，系统极其脆弱",
+          "tag": "传统痛点",
+          "blocksTotal": 6,
+          "blocksActive": 1
+        },
+        "rightCard": {
+          "title": "五层分工解耦",
+          "desc": "应用管内容，网络管路线，物理管光电传输",
+          "pill": "现代标准",
+          "tag": "TCP/IP 模型",
+          "blocksTotal": 6,
+          "blocksActive": 6
+        }
+      },
+      "estimatedDuration": 5.0,
+      "estimatedFrames": 150
+    },
+    {
+      "id": "scene_04",
+      "type": "BinaryBento",
+      "title": "应用层与传输层协作",
+      "text": "应用层产生消息，传输层贴上端口防丢重传。",
+      "binaryBento": {
+        "title": "主机内部处理",
+        "subtitle": "上两层协议分工",
+        "dividerText": "向下递交",
+        "leftCard": {
+          "title": "应用层 Payload",
+          "desc": "微信产生原始文本在吗，封装为应用层报文",
+          "tag": "L5 应用层"
+        },
+        "rightCard": {
+          "title": "传输层 TCP",
+          "desc": "套上源端口与目的端口，三次握手保证不丢包",
+          "pill": "端口寻址",
+          "tag": "L4 传输层",
+          "blocksTotal": 5,
+          "blocksActive": 5
+        }
+      },
+      "estimatedDuration": 4.8,
+      "estimatedFrames": 144
+    },
+    {
+      "id": "scene_05",
+      "type": "BinaryBento",
+      "title": "网络层与链路层寻址",
+      "text": "网络层规划全局IP，链路层负责局域网转发。",
+      "binaryBento": {
+        "title": "寻址与跳步",
+        "subtitle": "核心路由与交换",
+        "dividerText": "物理推进",
+        "leftCard": {
+          "title": "网络层 IP",
+          "desc": "贴上寄件人与收件人IP地址，路由器全靠它导航",
+          "tag": "L3 网络层"
+        },
+        "rightCard": {
+          "title": "数据链路层 MAC",
+          "desc": "给相邻设备贴上MAC地址，尾部加校验码防损坏",
+          "pill": "跳步转发",
+          "tag": "L2 链路层",
+          "blocksTotal": 6,
+          "blocksActive": 4
+        }
+      },
+      "estimatedDuration": 5.0,
+      "estimatedFrames": 150
+    },
+    {
+      "id": "scene_06",
+      "type": "MinimalHeadline",
+      "title": "数据包的俄罗斯套娃封装！",
+      "text": "数据自顶向下不断加报头，变成一个巨大的套娃！",
+      "category": "ENCAPSULATION",
+      "highlightWords": [
+        "俄罗斯套娃",
+        "自顶向下"
+      ],
+      "inverted": false,
+      "estimatedDuration": 4.2,
+      "estimatedFrames": 126
+    },
+    {
+      "id": "scene_07",
+      "type": "BinaryBento",
+      "title": "交换机与路由器的解包逻辑",
+      "text": "交换机只看外层MAC，路由器拆包看IP重新封箱。",
+      "binaryBento": {
+        "title": "沿途网络设备行为",
+        "subtitle": "二层 vs 三层",
+        "dividerText": "VS",
+        "leftCard": {
+          "title": "二层交换机",
+          "desc": "只检查最外层以太网MAC地址，递交给下一个路口",
+          "tag": "只看外壳"
+        },
+        "rightCard": {
+          "title": "三层路由器",
+          "desc": "剥掉外壳读取目标IP，换上新MAC重新打包发出",
+          "pill": "拆包重封",
+          "tag": "核心路由",
+          "blocksTotal": 6,
+          "blocksActive": 5
+        }
+      },
+      "estimatedDuration": 5.2,
+      "estimatedFrames": 156
+    },
+    {
+      "id": "scene_08",
+      "type": "MinimalHeadline",
+      "title": "自底向上剥洋葱，0.1秒送达！",
+      "text": "对方手机自底向上拆箱还原，零点一秒送达聊天框！",
+      "category": "DELIVERY COMPLETE",
+      "highlightWords": [
+        "自底向上拆箱",
+        "零点一秒送达"
+      ],
+      "inverted": true,
+      "estimatedDuration": 4.5,
+      "estimatedFrames": 135
+    }
+  ]
+}

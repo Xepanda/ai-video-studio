@@ -1,0 +1,70 @@
+# .demo.yaml — GitHub 项目深度演示视频流水线规格 (spec_version 1.0)
+# 用法: python scripts/github_demo_pipeline.py --spec inputs/yt-dlp.demo.yaml
+# 字段契约详见 scripts/github_demo_pipeline.py validate_spec()
+
+spec_version: "1.0"
+
+project:
+  name: yt-dlp
+  repo: https://github.com/yt-dlp/yt-dlp.git
+  ref: ""                        # 分支/tag/commit, 留空 = 默认分支
+  title: "yt-dlp：一个命令下载全网视频"
+  subtitle: "从 --help 到真实下载，拆解这个 90k Star 的命令行之王"
+  tags: ["CLI", "开源工具", "Python"]
+
+setup:
+  clone_dir: projects_demo/{name}     # 支持 {name} / {repo} 占位符
+  install:                            # 按序执行; 失败进入显式降级 (不编造成功)
+    - "python -m pip install -e ."
+  env:                                # 安装/运行阶段注入的环境变量
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+run:
+  steps:
+    - id: help
+      title: "先看帮助：它到底能做什么"
+      cmd: "yt-dlp --help"
+      expect_exit: 0
+      capture: terminal               # terminal | screenshot | none
+      narration: "一个命令行工具，第一件事永远是看它的帮助文档。"
+      duration: 8
+
+    - id: version
+      title: "确认版本与运行环境"
+      cmd: "yt-dlp --version"
+      expect_exit: 0
+      capture: terminal
+      narration: "版本号打印正常，说明整个安装链路是通的。"
+      duration: 5
+
+    - id: simulate
+      title: "干跑模式：不下载也能看解析结果"
+      cmd: "yt-dlp --simulate --print '%(title)s | %(duration_string)s | %(uploader)s' https://www.bilibili.com/video/BV1xx411c7mD"
+      expect_exit: 0
+      capture: terminal
+      narration: "simulate 干跑模式只解析元数据，不落盘文件，是排查格式问题的利器。"
+      duration: 12
+
+capture:                              # W5-6 Playwright 真实捕获 (scripts/demo_capture.py)
+  enabled: true                       # false = 跳过捕获阶段
+  targets:                            # 每个目标一幕 BrowserScreenshot 场景 (仅成功捕获入画面)
+    - id: ytdlp_home                  # 产物文件名标识 (唯一)
+      url: https://github.com/yt-dlp/yt-dlp
+      title: "先看门面：90k Star 的仓库主页"
+      narration: "在跑命令之前，先看这个项目的真实门面。九十多 K 的 Star，是社区用脚投出的票。"
+      wait_until: networkidle         # load | domcontentloaded | networkidle | commit
+      full_page: true                 # 全页截图 (false = 仅视口)
+      record_video: true              # 是否录屏 (webm)
+      duration: 4                     # 该场景时长 (秒)
+    - id: ytdlp_wiki
+      url: https://github.com/yt-dlp/yt-dlp/wiki
+      title: "再看文档：支持站点清单"
+      narration: "支持哪些网站，文档里有一份实时维护的清单，这就是它全网通吃的底气。"
+      wait_until: domcontentloaded    # wiki 页有持续轮询, 不等 networkidle 避免超时
+      full_page: false
+      record_video: false
+      duration: 3
+
+output:
+  storyboard: content/scripts/{name}_demo.json
+  fps: 30

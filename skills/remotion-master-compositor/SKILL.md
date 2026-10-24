@@ -48,15 +48,31 @@ const isCurrentWord = currentMs >= word.startMs && currentMs <= word.endMs;
 
 ---
 
-## 2. 国际广播级音频母带标准 (EBU R128)
+## 2. 音频工程标准（分轨混音规整 → 成品节目母带）
 
-所有配音和背景音乐必须经过 [`scripts/utils/audio_normalizer.py`](file:///C:/Users/ePanda/WorkBuddy/Worktrees/ai-video-studio/master-0d8c5b2f/scripts/utils/audio_normalizer.py) 进行标准化规整：
+### 2.1 分轨混音规整（`scripts/utils/audio_normalizer.py`）
+
+所有配音和背景音乐在合成前必须经过 `scripts/utils/audio_normalizer.py` 按分轨模式标准化规整。注意：下表是**混音阶段的分轨相对电平**，不是成片交付响度：
 
 | 音轨类型 | 目标综合响度 (Integrated Loudness) | 真峰值上限 (True Peak) | 响度范围 (LRA) | 说明 |
 | :--- | :--- | :--- | :--- | :--- |
 | **主配音轨 (Voiceover)** | **-16.0 LUFS** | $\le -1.0\text{ dBFS}$ | $\le 7.0\text{ LU}$ | 保证人声饱满清晰、音量恒定 |
 | **背景音乐轨 (BGM)** | **-28.0 LUFS** | $\le -3.0\text{ dBFS}$ | — | 弱化为氛围底垫，避免喧宾夺主 |
 | **音效轨 (SFX)** | **-20.0 LUFS** | $\le -2.0\text{ dBFS}$ | — | 短促打击感，禁用过高频刺耳音 |
+
+### 2.2 成品节目母带（`scripts/audio_mastering.py`，响度唯一事实源）
+
+分轨规整只解决混音比例；**成片交付的综合响度由 `audio_mastering.py` 的 `PLATFORM_LOUDNESS_PRESETS` 平台适配表统一裁决**，渲染完成后必须执行：
+
+| 平台预设 | 综合响度 (I) | 真峰值 (TP) | 适用发布渠道 |
+| :--- | :--- | :--- | :--- |
+| `web`（默认） | **-14.0 LUFS** | ≤ -1.5 dBTP | YouTube / B站 / 小红书 / 视频号 |
+| `short_video` | **-11.0 LUFS** | ≤ -1.5 dBTP | 抖音 / 快手 / Reels |
+| `broadcast` | **-23.0 LUFS** | ≤ -2.0 dBTP | EBU R128 广电 |
+
+```bash
+python scripts/audio_mastering.py --video out/xxx.mp4 --platform web
+```
 
 ---
 

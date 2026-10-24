@@ -12,15 +12,20 @@ import sys
 import re
 import json
 import argparse
-import subprocess
 from pathlib import Path
 from typing import Tuple, Dict, Any, Optional, List
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # 保障 utils 包可导入
+from utils.runtime import resolve_python, run_command
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# 优先探测 LiveClip 专用 Python（内置完整 yt-dlp 与音视频编解码环境），否则回退至当前解释器
-LIVECLIP_PYTHON = r"C:\Users\ePanda\.workbuddy\binaries\python\envs\liveclip\Scripts\python.exe"
-PYTHON_EXE = LIVECLIP_PYTHON if os.path.exists(LIVECLIP_PYTHON) else sys.executable
+# 解释器解析: AVS_PYTHON 环境变量优先，回退当前解释器 (原硬编码 LiveClip 路径已移除)
+PYTHON_EXE = resolve_python()
+
+# yt-dlp 元数据探测/下载的超时: 元数据探测短超时快失败，下载给足网络超时
+YTDLP_PROBE_TIMEOUT = int(os.environ.get("AVS_YTDLP_PROBE_TIMEOUT", "60"))
+YTDLP_DOWNLOAD_TIMEOUT = int(os.environ.get("AVS_YTDLP_DOWNLOAD_TIMEOUT", "1800"))
 
 
 def parse_time_to_seconds(t_str: str) -> float:
@@ -181,7 +186,7 @@ def standardize_video(input_path: str, output_path: str, fps: int = 30) -> str:
         output_path,
     ]
 
-    ret = subprocess.run(ffmpeg_cmd, capture_output=True, text=True)
+    ret = run_command(ffmpeg_cmd, capture_output=True, desc=f"ffmpeg 标准化转码 {os.path.basename(input_path)}")
     if ret.returncode != 0:
         raise RuntimeError(f"FFmpeg 转码失败 (code {ret.returncode}): {ret.stderr}")
 
@@ -210,7 +215,10 @@ def ingest_asset(
     if not clean_name:
         try:
             info_cmd = [PYTHON_EXE, "-m", "yt_dlp", url, "--dump-json", "--no-download"]
-            probe_ret = subprocess.run(info_cmd, capture_output=True, text=True, check=True)
+            probe_ret = run_command(
+                info_cmd, capture_output=True, check=True, retries=0,
+                timeout=YTDLP_PROBE_TIMEOUT, desc=f"yt-dlp 元数据探测 {url}",
+            )
             cached_info = json.loads(probe_ret.stdout)
             clean_name = normalize_name(cached_info.get("title", "material"))
         except Exception:
@@ -234,7 +242,10 @@ def ingest_asset(
             info_json = cached_info
         else:
             cmd = build_ytdlp_command(url=url, out_path="", extract_info=True)
-            ret = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            ret = run_command(
+                cmd, capture_output=True, check=True, retries=0,
+                timeout=YTDLP_PROBE_TIMEOUT, desc=f"yt-dlp 元数据提取 {url}",
+            )
             info_json = json.loads(ret.stdout)
         with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(info_json, f, ensure_ascii=False, indent=2)
@@ -257,7 +268,8 @@ def ingest_asset(
             section=section,
             audio_only=True,
         )
-        ret = subprocess.run(cmd, capture_output=True, text=True)
+        ret = run_command(cmd, capture_output=True, timeout=YTDLP_DOWNLOAD_TIMEOUT,
+                          desc=f"yt-dlp 音频提取 {url}")
         if ret.returncode != 0:
             raise RuntimeError(f"yt-dlp 音频提取失败: {ret.stderr}")
         return {
@@ -280,7 +292,8 @@ def ingest_asset(
         audio_only=False,
         subtitles=subtitles,
     )
-    ret = subprocess.run(cmd, capture_output=True, text=True)
+    ret = run_command(cmd, capture_output=True, timeout=YTDLP_DOWNLOAD_TIMEOUT,
+                      desc=f"yt-dlp 视频下载 {url}")
     if ret.returncode != 0:
         raise RuntimeError(f"yt-dlp 视频下载失败: {ret.stderr}")
 

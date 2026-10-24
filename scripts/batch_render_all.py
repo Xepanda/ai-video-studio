@@ -9,14 +9,15 @@ import os
 import sys
 import json
 import time
-import subprocess
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # 保障 utils 包可导入
+from utils.runtime import resolve_python, run_command
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LIVECLIP_PYTHON = r"C:\Users\ePanda\.workbuddy\binaries\python\envs\liveclip\Scripts\python.exe"
-PYTHON_EXE = LIVECLIP_PYTHON if os.path.exists(LIVECLIP_PYTHON) else sys.executable
+PYTHON_EXE = resolve_python()
 SCRIPTS_DIR = os.path.join(PROJECT_ROOT, "content", "scripts")
 OUT_DIR = os.path.join(PROJECT_ROOT, "out")
 MANIFEST_FILE = os.path.join(OUT_DIR, "production_manifest.json")
@@ -142,7 +143,7 @@ def save_manifest(manifest):
 def run_cmd(cmd_list, desc=""):
     print(f"\n>>> [RUN] {desc} ...")
     t0 = time.time()
-    ret = subprocess.run(cmd_list, cwd=PROJECT_ROOT)
+    ret = run_command(cmd_list, cwd=PROJECT_ROOT, desc=desc)
     elapsed = time.time() - t0
     if ret.returncode != 0:
         print(f"❌ 步骤失败，返回码: {ret.returncode} (耗时: {elapsed:.1f}s)")
@@ -237,8 +238,15 @@ def process_video_item(item, skip_render=False, concurrency=4, force=False):
 
     # 获取时间轴元数据
     tl_path = os.path.join(PROJECT_ROOT, "public", "timeline.json")
-    with open(tl_path, "r", encoding="utf-8") as f:
-        tl_data = json.load(f)
+    if not os.path.exists(tl_path):
+        print(f"❌ [FAILED_TL] 时间轴契约文件缺失: {tl_path} (打点步骤应生成该文件)")
+        return {"id": item["id"], "title": item["title"], "status": "FAILED_TL"}
+    try:
+        with open(tl_path, "r", encoding="utf-8") as f:
+            tl_data = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"❌ [FAILED_TL] 时间轴契约文件损坏或不可读: {tl_path} ({e})")
+        return {"id": item["id"], "title": item["title"], "status": "FAILED_TL"}
     frames = tl_data.get("totalDurationInFrames", 0)
     dur_sec = frames / 30.0
 

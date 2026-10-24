@@ -7,8 +7,9 @@ import { MetricComparison, MetricCategory } from './MetricComparison';
 import { ProceduralBackground } from './ProceduralBackground';
 import { CinematicHeroScene } from './CinematicHeroScene';
 import { getTheme, ThemeName, ThemeConfig, safeColorWithAlpha } from '../styles/theme';
-import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics } from './shorts';
+import { TechNewsShortsScene, TweetEmbedCardProps, BinaryBentoCardProps, TweetMetrics, ProtocolStackTower, ProtocolTowerProps, PacketAssemblyPipeline, PacketAssemblyProps, RouterPacketInspection, RouterInspectionProps, WeChatMobileMockup, WeChatMobileProps, MathFormulaScene, MathFormulaProps, SequenceDiagramScene, SequenceDiagramProps, IdeWindowScene, IdeWindowProps, AsciicastPlayer, AsciicastProps, CommentThreadScene, CommentThreadProps, TrendingRankCard, TrendingRankProps } from './shorts';
 import { WebBrowserMockupScene } from './shorts/WebBrowserMockupScene';
+import { PinoutStream, PinoutStreamProps } from './PinoutStream';
 
 export interface SceneMeta {
   id: string;
@@ -40,6 +41,17 @@ export interface SceneMeta {
   theme?: ThemeName;
   tweet?: Partial<TweetEmbedCardProps>;
   binaryBento?: Partial<BinaryBentoCardProps>;
+  protocolTower?: ProtocolTowerProps;
+  packetAssembly?: PacketAssemblyProps;
+  routerInspection?: RouterInspectionProps;
+  wechat?: WeChatMobileProps;
+  mathFormula?: MathFormulaProps;
+  sequenceDiagram?: SequenceDiagramProps;
+  pinoutStream?: PinoutStreamProps;
+  ide?: IdeWindowProps;
+  asciicast?: AsciicastProps;
+  commentThread?: CommentThreadProps;
+  trending?: TrendingRankProps;
   inverted?: boolean;
   category?: string;
   highlightWords?: string[];
@@ -101,9 +113,142 @@ export const UniversalScene: React.FC<{ scene: SceneMeta }> = ({ scene }) => {
     return <TechNewsShortsScene scene={scene} activeTheme={theme} />;
   }
 
+  // 网络协议科普组件族路由 (显式 scene.type 绝对优先, 嵌套配置对象隐式推断兜底, 与 tweet/binaryBento 同模式)
+  if (scene.type === 'ProtocolStackTower' || Boolean(scene.protocolTower)) {
+    return (
+      <ProtocolStackTower
+        protocolTower={scene.protocolTower}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  if (scene.type === 'PacketAssemblyPipeline' || Boolean(scene.packetAssembly)) {
+    return (
+      <PacketAssemblyPipeline
+        packetAssembly={scene.packetAssembly}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  if (scene.type === 'RouterPacketInspection' || Boolean(scene.routerInspection)) {
+    return (
+      <RouterPacketInspection
+        routerInspection={scene.routerInspection}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  if (scene.type === 'WeChatMobileMockup' || Boolean(scene.wechat)) {
+    return (
+      <WeChatMobileMockup
+        wechat={scene.wechat}
+        title={scene.title}
+        category={scene.category}
+      />
+    );
+  }
+
+  // 学科可视化组件族路由 (W7-8 场景一: KaTeX 公式 / 时序图状态机 / 引脚流)
+
+  if (scene.type === 'MathFormula' || Boolean(scene.mathFormula)) {
+    return (
+      <MathFormulaScene
+        formula={scene.mathFormula?.formula || ''}
+        displayMode={scene.mathFormula?.displayMode}
+        title={scene.mathFormula?.title || scene.title}
+        caption={scene.mathFormula?.caption}
+        category={scene.mathFormula?.category || scene.category}
+        highlight={scene.mathFormula?.highlight}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'SequenceDiagram' || Boolean(scene.sequenceDiagram)) {
+    return (
+      <SequenceDiagramScene
+        mode={scene.sequenceDiagram?.mode}
+        title={scene.sequenceDiagram?.title || scene.title}
+        category={scene.sequenceDiagram?.category || scene.category}
+        participants={scene.sequenceDiagram?.participants}
+        messages={scene.sequenceDiagram?.messages}
+        states={scene.sequenceDiagram?.states}
+        transitions={scene.sequenceDiagram?.transitions}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'PinoutStream' || Boolean(scene.pinoutStream)) {
+    return (
+      <PinoutStream
+        pins={scene.pinoutStream?.pins}
+        title={scene.pinoutStream?.title}
+      />
+    );
+  }
+
+  // 工程演示组件族路由 (W7-8 场景二/三: IDE / asciicast / 评论串 / 热点榜)
+
+  if (scene.type === 'IdeWindow' || Boolean(scene.ide)) {
+    return (
+      <IdeWindowScene
+        files={scene.ide?.files}
+        title={scene.ide?.title || scene.title}
+        category={scene.ide?.category || scene.category}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'Asciicast' || Boolean(scene.asciicast)) {
+    return (
+      <AsciicastPlayer
+        events={scene.asciicast?.events}
+        cols={scene.asciicast?.cols}
+        rows={scene.asciicast?.rows}
+        title={scene.asciicast?.title}
+        category={scene.asciicast?.category || scene.category}
+        speed={scene.asciicast?.speed}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'CommentThread' || Boolean(scene.commentThread)) {
+    return (
+      <CommentThreadScene
+        comments={scene.commentThread?.comments}
+        title={scene.commentThread?.title || scene.title}
+        category={scene.commentThread?.category || scene.category}
+        theme={theme}
+      />
+    );
+  }
+
+  if (scene.type === 'TrendingRank' || Boolean(scene.trending)) {
+    return (
+      <TrendingRankCard
+        rank={scene.trending?.rank}
+        title={scene.trending?.title || scene.title}
+        heat={scene.trending?.heat}
+        source={scene.trending?.source}
+        tag={scene.trending?.tag}
+        category={scene.trending?.category || scene.category}
+        theme={theme}
+      />
+    );
+  }
+
   // 若分镜声明为 CinematicHero 或非特异组件类型且配置了 heroImage/heroVideo/videoPath，优先光栅化电影级 2.5D 原画或动态视频流
   const hasVisualMedia = Boolean(scene.heroImage || scene.heroVideo || scene.videoPath);
-  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow'].includes(scene.type || '');
+  const isDedicatedNonHeroType = ['ArchitectureTopology', 'TopologyFlow', 'MetricComparison', 'MetricChart', 'TerminalWindow', 'ProtocolStackTower', 'PacketAssemblyPipeline', 'RouterPacketInspection', 'WeChatMobileMockup', 'MathFormula', 'SequenceDiagram', 'PinoutStream', 'IdeWindow', 'Asciicast', 'CommentThread', 'TrendingRank'].includes(scene.type || '');
   if (scene.type === 'CinematicHero' || (!isDedicatedNonHeroType && hasVisualMedia)) {
     return (
       <CinematicHeroScene

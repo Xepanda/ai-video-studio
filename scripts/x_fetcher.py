@@ -9,7 +9,8 @@ X (Twitter) 动态热点信息多模态抓取与视频分镜契约自动生成�
   3. 自动下载推文中的配图、视频 (MP4)、头像并存入 public/footage 与 public/images
   4. 智能提取高亮关键词 (Highlight Words)
   5. 直接输出符合 TweetEmbedCard 协议的标准 Remotion 分镜 JSON
-  6. 内置多级网络容错：FxTwitter API -> oEmbed -> 官方镜像备选与医学顶刊预设
+  6. 多级抓取容错：FxTwitter API -> 官方 oEmbed -> 显式顶刊预设；全部失败即抛出 XFetchError
+     (数据诚信承诺: 任何来源缺失的字段一律留空/省略，绝不再编造互动量、认证状态与时间)
 """
 
 import os
@@ -19,6 +20,7 @@ import json
 import time
 import argparse
 import requests
+from datetime import datetime, timezone
 from urllib.parse import urlparse
 from typing import Dict, Any, List, Tuple, Optional
 
@@ -35,7 +37,17 @@ os.makedirs(FOOTAGE_DIR, exist_ok=True)
 
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 
-# 权威科学与医学机构高频推文知识库 (离线兜底与热点预设)
+
+class XFetchError(Exception):
+    """推文抓取失败 (所有数据源均不可用或输入无法解析)。
+
+    设计原则 (审计 A3): 抓取失败必须显式报错，由调用方决定降级策略；
+    严禁向视频成片注入编造的推文内容、互动量或认证状态。
+    """
+
+
+# 权威科学与医学机构高频推文知识库 (仅限 --preset 显式调用或关键词兜底时使用)
+# 注意: content 为对应期刊/机构公开观点的忠实摘录; 互动量一律留空 (无真实数据源，拒绝编造)
 CURATED_SCIENCE_TWEETS = {
     "nejm_salt": {
         "authorName": "The New England Journal of Medicine",
@@ -46,12 +58,7 @@ CURATED_SCIENCE_TWEETS = {
         "content": "Effect of Salt Substitution on Cardiovascular Events and Death: In a trial involving 20,995 persons in rural China, the rates of stroke, major cardiovascular events, and death from any cause were lower with salt substitute than with regular salt.",
         "highlightWords": ["salt substitute", "lower with salt substitute", "stroke", "death from any cause"],
         "subtitle": "《新英格兰医学杂志》两万人实证：含钾低钠盐显著降低中风与全因死亡率",
-        "metrics": {
-            "replies": "342",
-            "retweets": "2.8K",
-            "likes": "11.5K",
-            "views": "1.2M"
-        }
+        "metrics": None
     },
     "who_road_safety": {
         "authorName": "World Health Organization (WHO)",
@@ -62,12 +69,7 @@ CURATED_SCIENCE_TWEETS = {
         "content": "Wearing a seatbelt reduces the risk of fatal injury by 45-50% for drivers and front-seat occupants, and by up to 25% for rear-seat occupants. Fasten your seatbelt every time you travel.",
         "highlightWords": ["reduces the risk", "45-50%", "seatbelt every time"],
         "subtitle": "世界卫生组织：系好安全带可降低高达 50% 致命伤害，前后排同等重要",
-        "metrics": {
-            "replies": "189",
-            "retweets": "1.4K",
-            "likes": "6.2K",
-            "views": "850K"
-        }
+        "metrics": None
     },
     "lancet_hypertension": {
         "authorName": "The Lancet",
@@ -78,14 +80,16 @@ CURATED_SCIENCE_TWEETS = {
         "content": "Blood pressure lowering for prevention of cardiovascular disease: Meta-analysis of 123 trials shows a 10 mmHg reduction in SBP significantly reduces major cardiovascular events and all-cause mortality by 13%.",
         "highlightWords": ["10 mmHg reduction", "reduces major cardiovascular events", "13%"],
         "subtitle": "《柳叶刀》61万人荟萃分析：收缩压每降 10 mmHg，总死亡率下降 13%",
-        "metrics": {
-            "replies": "276",
-            "retweets": "3.1K",
-            "likes": "14.2K",
-            "views": "1.6M"
-        }
+        "metrics": None
     }
 }
+
+# 关键词 -> 预设兜底映射 (仅在网络抓取全部失败时使用, 且会打印醒目告警)
+PRESET_KEYWORD_MAP = [
+    (("nejm", "salt"), "nejm_salt"),
+    (("who", "seatbelt", "safety"), "who_road_safety"),
+    (("lancet", "pressure"), "lancet_hypertension"),
+]
 
 
 def extract_tweet_id(url_or_id: str) -> Tuple[Optional[str], Optional[str]]:
@@ -99,6 +103,45 @@ def extract_tweet_id(url_or_id: str) -> Tuple[Optional[str], Optional[str]]:
     if m:
         return m.group(1), m.group(2)
     return None, None
+
+
+def _rel_time_from_created_at(created_at: Any) -> Optional[str]:
+    """将推文创建时间转换为相对时间 (如 '2h' / '3d'); 无法解析时返回 None (组件隐藏该字段)。"""
+    if not created_at or not isinstance(created_at, str):
+        return None
+    dt = None
+    try:
+        dt = datetime.strptime(created_at, "%a %b %d %H:%M:%S %z %Y")
+    except ValueError:
+        try:
+            dt = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    secs = max(0, int((datetime.now(timezone.utc) - dt).total_seconds()))
+    if secs < 60:
+        return f"{secs}s"
+    if secs < 3600:
+        return f"{secs // 60}m"
+    if secs < 86400:
+        return f"{secs // 3600}h"
+    if secs < 86400 * 30:
+        return f"{secs // 86400}d"
+    if secs < 86400 * 365:
+        return f"{secs // (86400 * 30)}mo"
+    return f"{secs // (86400 * 365)}y"
+
+
+def _extract_metrics(tweet: Dict[str, Any]) -> Optional[Dict[str, str]]:
+    """仅提取 API 真实返回的互动数据; 任何缺失字段直接省略 (绝不用默认值编造)。"""
+    metrics: Dict[str, str] = {}
+    for key in ("replies", "retweets", "likes", "views"):
+        val = tweet.get(key)
+        if val is None or val == "":
+            continue
+        metrics[key] = str(val)
+    return metrics or None
 
 
 def download_media_file(url: str, dest_path: str) -> Optional[str]:
@@ -145,17 +188,16 @@ def fetch_from_fxtwitter(screen_name: str, tweet_id: str) -> Optional[Dict[str, 
                     "authorName": author.get("name", screen_name or "X User"),
                     "authorHandle": f"@{author.get('screen_name', screen_name or 'user')}",
                     "avatarUrl": author.get("avatar_url", ""),
-                    "isVerified": True,
-                    "timeAgo": "Recent",
+                    # 认证状态以 API 返回为准, 无信息则不显示蓝V (原硬编码 True 已移除)
+                    "isVerified": bool(author.get("verified", False)),
+                    # 发帖时间以 API created_at 换算相对时间, 无法解析则省略
+                    "timeAgo": _rel_time_from_created_at(tweet.get("created_at")),
                     "content": tweet.get("text", ""),
                     "mediaUrl": media_url,
                     "mediaType": media_type,
-                    "metrics": {
-                        "replies": str(tweet.get("replies", 120)),
-                        "retweets": str(tweet.get("retweets", 450)),
-                        "likes": str(tweet.get("likes", 2300)),
-                        "views": str(tweet.get("views", 85000)) if tweet.get("views") else "95K"
-                    }
+                    # 互动量仅取 API 真实字段, 缺失即省略 (原 120/450/2300/95K 编造默认值已移除)
+                    "metrics": _extract_metrics(tweet),
+                    "source": "fxtwitter_api"
                 }
     except Exception as e:
         print(f"    [FxTwitter] 请求异常: {e}")
@@ -163,7 +205,7 @@ def fetch_from_fxtwitter(screen_name: str, tweet_id: str) -> Optional[Dict[str, 
 
 
 def fetch_from_oembed(url: str) -> Optional[Dict[str, Any]]:
-    """从官方 Twitter oEmbed 提取基础元数据"""
+    """从官方 Twitter oEmbed 提取基础元数据 (oEmbed 不含互动量与认证信息, 一律留空)"""
     oembed_url = f"https://publish.twitter.com/oembed?url={url}"
     try:
         r = requests.get(oembed_url, headers={"User-Agent": USER_AGENT}, timeout=8)
@@ -177,15 +219,11 @@ def fetch_from_oembed(url: str) -> Optional[Dict[str, Any]]:
                 "authorName": d.get("author_name", "Author"),
                 "authorHandle": f"@{urlparse(d.get('author_url', '')).path.strip('/')}",
                 "avatarUrl": "",
-                "isVerified": True,
-                "timeAgo": "Recent",
+                "isVerified": False,   # oEmbed 无认证字段, 不声称蓝V
+                "timeAgo": None,       # oEmbed 无发布时间字段, 省略
                 "content": clean_text[:280],
-                "metrics": {
-                    "replies": "85",
-                    "retweets": "320",
-                    "likes": "1.8K",
-                    "views": "64K"
-                }
+                "metrics": None,       # oEmbed 无互动数据, 省略 (原 85/320/1.8K/64K 编造值已移除)
+                "source": "twitter_oembed"
             }
     except Exception as e:
         print(f"    [oEmbed] 请求异常: {e}")
@@ -193,10 +231,15 @@ def fetch_from_oembed(url: str) -> Optional[Dict[str, Any]]:
 
 
 def fetch_x_post(url_or_id: str, preset_key: str = None) -> Dict[str, Any]:
-    """主调度函数：支持 URL 解析、多层 API 降级与权威预设回退"""
+    """主调度函数：支持 URL 解析、多层 API 降级与显式预设回退。
+
+    降级链: FxTwitter API -> Twitter oEmbed -> 关键词匹配顶刊预设 (带醒目告警) -> 抛出 XFetchError。
+    """
     if preset_key and preset_key in CURATED_SCIENCE_TWEETS:
         print(f"[*] 使用内置权威科研机构预设推文: {preset_key}")
-        return CURATED_SCIENCE_TWEETS[preset_key]
+        data = dict(CURATED_SCIENCE_TWEETS[preset_key])
+        data["source"] = f"curated_preset:{preset_key}"
+        return data
 
     screen_name, tweet_id = extract_tweet_id(url_or_id)
 
@@ -216,31 +259,21 @@ def fetch_x_post(url_or_id: str, preset_key: str = None) -> Dict[str, Any]:
             print(f"    ✓ 成功通过 oEmbed 获取推文元数据")
             return oembed_data
 
-    # 3. 关键词自动匹配科研顶刊预设
+    # 3. 关键词自动匹配科研顶刊预设 (显式告警: 返回的是预设内容, 非用户请求的推文)
     lowered = url_or_id.lower()
-    if "nejm" in lowered or "salt" in lowered:
-        return CURATED_SCIENCE_TWEETS["nejm_salt"]
-    if "who" in lowered or "seatbelt" in lowered or "safety" in lowered:
-        return CURATED_SCIENCE_TWEETS["who_road_safety"]
-    if "lancet" in lowered or "pressure" in lowered:
-        return CURATED_SCIENCE_TWEETS["lancet_hypertension"]
+    for keywords, key in PRESET_KEYWORD_MAP:
+        if any(kw in lowered for kw in keywords):
+            print(f"⚠️ [Fallback] 网络抓取失败, 输入命中关键词 {keywords}, 回退至内置预设 [{key}]")
+            print(f"⚠️ [Fallback] 注意: 返回内容为预设摘录, 并非用户请求的原始推文数据!")
+            data = dict(CURATED_SCIENCE_TWEETS[key])
+            data["source"] = f"curated_preset_fallback:{key}"
+            return data
 
-    # 4. 默认高保真生成式推文契约
-    return {
-        "authorName": screen_name.capitalize() if screen_name else "Tech Insider",
-        "authorHandle": f"@{screen_name if screen_name else 'insight_ai'}",
-        "avatarUrl": "",
-        "isVerified": True,
-        "timeAgo": "2h",
-        "content": url_or_id if len(url_or_id) > 15 else "Breaking update on high-yield life optimization guidelines and evidence-based protocols.",
-        "highlightWords": ["Breaking update", "evidence-based"],
-        "metrics": {
-            "replies": "240",
-            "retweets": "1.2K",
-            "likes": "7.5K",
-            "views": "280K"
-        }
-    }
+    # 4. 无任何可用数据源: 显式失败 (原"默认高保真生成式推文契约"编造兜底已移除, 审计 A3)
+    raise XFetchError(
+        f"无法获取推文数据: {url_or_id!r} (FxTwitter / oEmbed 均失败, 且未命中任何预设)。"
+        "请检查网络连通性与链接有效性; 如使用代理, 请确保 requests 可访问 api.fxtwitter.com。"
+    )
 
 
 def convert_to_scene(tweet_data: Dict[str, Any], scene_id: str = "scene_02", title: str = None, narration_text: str = None) -> Dict[str, Any]:
@@ -252,28 +285,33 @@ def convert_to_scene(tweet_data: Dict[str, Any], scene_id: str = "scene_02", tit
         words = [w for w in re.findall(r'[a-zA-Z]{5,}', content) if w.lower() not in ('https', 'about', 'their')]
         highlight_words = words[:3]
 
+    tweet_block: Dict[str, Any] = {
+        "authorName": tweet_data.get("authorName"),
+        "authorHandle": tweet_data.get("authorHandle"),
+        "avatarUrl": tweet_data.get("avatarUrl", ""),
+        # 无真实认证信息时默认 False (原默认 True 已移除, 避免虚假蓝V)
+        "isVerified": bool(tweet_data.get("isVerified", False)),
+        "content": content,
+        "highlightWords": highlight_words,
+        "subtitle": tweet_data.get("subtitle", ""),
+    }
+    time_ago = tweet_data.get("timeAgo")
+    if time_ago:
+        tweet_block["timeAgo"] = time_ago
+    metrics = tweet_data.get("metrics")
+    if isinstance(metrics, dict) and metrics:
+        tweet_block["metrics"] = metrics
+    # metrics 缺失时整体省略该键: TweetEmbedCard 会优雅降级为仅图标无数字
+
     scene = {
         "id": scene_id,
         "type": "TweetEmbed",
         "title": title or f"{tweet_data.get('authorName')} 权威推文实证",
         "text": narration_text or tweet_data.get("subtitle") or content[:120],
-        "tweet": {
-            "authorName": tweet_data.get("authorName"),
-            "authorHandle": tweet_data.get("authorHandle"),
-            "avatarUrl": tweet_data.get("avatarUrl", ""),
-            "isVerified": tweet_data.get("isVerified", True),
-            "timeAgo": tweet_data.get("timeAgo", "Recent"),
-            "content": content,
-            "highlightWords": highlight_words,
-            "subtitle": tweet_data.get("subtitle", ""),
-            "metrics": tweet_data.get("metrics", {
-                "replies": "150",
-                "retweets": "850",
-                "likes": "4.2K",
-                "views": "120K"
-            })
-        }
+        "tweet": tweet_block
     }
+    if tweet_data.get("source"):
+        scene["tweet"]["source"] = tweet_data["source"]
     return scene
 
 
@@ -291,7 +329,12 @@ def main():
         sys.exit(1)
 
     target = args.url or args.preset
-    tweet_data = fetch_x_post(target, preset_key=args.preset)
+    try:
+        tweet_data = fetch_x_post(target, preset_key=args.preset)
+    except XFetchError as e:
+        print(f"\n❌ [X Fetch Failed] {e}")
+        print("💡 提示: 数据诚信策略下不会生成编造推文; 请修复网络后重试, 或使用 --preset 选择内置顶刊预设。")
+        sys.exit(2)
 
     scene = convert_to_scene(tweet_data)
 
