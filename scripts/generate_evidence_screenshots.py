@@ -418,7 +418,9 @@ def generate_screenshots(preset: str = "all"):
         if preset in ("all", "github"):
             # 1. GitHub 仓库全景截图 (mock: 本地 HTML 模板示意, 强制命名与标注)
             page1 = browser.new_page(viewport={"width": 1920, "height": 1080})
-            page1.goto(f"file:///{gh_file.replace('\\', '/')}", wait_until="load")
+            # file:// URL 拼接待出 f-string (Python 3.11 兼容: 表达式部分禁反斜杠)
+            gh_url = "file:///" + gh_file.replace("\\", "/")
+            page1.goto(gh_url, wait_until="load")
             gh_png = os.path.join(OUT_DIR, "mock_github_repo.png")
             page1.screenshot(path=gh_png)
             print(f"  [✓] 已生成 GitHub 仓库主页 mock 示意图 (非真实抓取): {gh_png}")
@@ -432,7 +434,8 @@ def generate_screenshots(preset: str = "all"):
         if preset in ("all", "nejm"):
             # 2. NEJM 顶刊学术论文原文截图 (mock: 同上)
             page2 = browser.new_page(viewport={"width": 1920, "height": 1080})
-            page2.goto(f"file:///{nejm_file.replace('\\', '/')}", wait_until="load")
+            nejm_url = "file:///" + nejm_file.replace("\\", "/")
+            page2.goto(nejm_url, wait_until="load")
             nejm_png = os.path.join(OUT_DIR, "mock_nejm_paper.png")
             page2.screenshot(path=nejm_png)
             print(f"  [✓] 已生成 NEJM 顶刊论文 mock 示意图 (非真实抓取): {nejm_png}")
@@ -475,7 +478,7 @@ def main():
         capture_url(args.url, out_target, args.width, args.height)
     elif args.html:
         out_target = args.out or os.path.join(OUT_DIR, "captured_html.png")
-        html_url = f"file:///{os.path.abspath(args.html).replace('\\', '/')}"
+        html_url = "file:///" + os.path.abspath(args.html).replace("\\", "/")
         capture_url(html_url, out_target, args.width, args.height)
     else:
         generate_screenshots(preset=args.preset)

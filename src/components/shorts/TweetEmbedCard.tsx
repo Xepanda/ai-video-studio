@@ -1,7 +1,8 @@
 import React from 'react';
-import { Img, staticFile } from 'remotion';
+import { staticFile } from 'remotion';
 import { MessageCircle, Repeat2, Heart, BarChart2, Bookmark, Share } from 'lucide-react';
 import { ThemeConfig } from '../../styles/theme';
+import { SafeImage } from './SafeImage';
 
 export interface TweetMetrics {
   replies?: string | number;
@@ -242,7 +243,7 @@ export const TweetEmbedCard: React.FC<TweetEmbedCardProps> = ({
             }}
           >
             {resolvedAvatar ? (
-              <Img
+              <SafeImage
                 src={resolvedAvatar}
                 alt={authorName}
                 style={{

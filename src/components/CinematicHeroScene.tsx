@@ -1,6 +1,7 @@
 import React from 'react';
-import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Img, OffthreadVideo, Loop, staticFile } from 'remotion';
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, OffthreadVideo, Loop, staticFile } from 'remotion';
 import { ThemeConfig, safeColorWithAlpha } from '../styles/theme';
+import { SafeImage } from './shorts/SafeImage';
 
 export interface CinematicHeroProps {
   heroImage?: string;
@@ -133,7 +134,7 @@ export const CinematicHeroScene: React.FC<CinematicHeroProps> = ({
             />
           </Loop>
         ) : (
-          <Img
+          <SafeImage
             src={resolvedSrc}
             style={{
               width: '100%',

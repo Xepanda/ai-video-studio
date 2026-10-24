@@ -11,14 +11,15 @@ import {
 import { getTheme } from '../../styles/theme';
 import { ProceduralBackground } from '../ProceduralBackground';
 import { DynamicSubtitles } from '../DynamicSubtitles';
-import fireshipTimeline from '../../../public/projects/demo_style_fireship/timeline.json';
+import { safeLoadDemoTimeline } from '../../utils/safeDemoTimeline';
+const fireshipTimeline = safeLoadDemoTimeline('demo_style_fireship');
 
 export const FireshipKineticView: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const theme = getTheme('linear-graphite');
 
-  const scene = fireshipTimeline.scenes[0];
+  const scene = fireshipTimeline.scenes[0] || { words: [] };
   const words = scene.words || [];
 
   // Phase 1: 0 - 82 痛点大字冲击 (Manual Timeline Glitch & Strike)

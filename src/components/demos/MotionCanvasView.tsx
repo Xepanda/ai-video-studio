@@ -11,14 +11,15 @@ import {
 import { getTheme } from '../../styles/theme';
 import { ProceduralBackground } from '../ProceduralBackground';
 import { DynamicSubtitles } from '../DynamicSubtitles';
-import motionTimeline from '../../../public/projects/demo_style_motion/timeline.json';
+import { safeLoadDemoTimeline } from '../../utils/safeDemoTimeline';
+const motionTimeline = safeLoadDemoTimeline('demo_style_motion');
 
 export const MotionCanvasView: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const theme = getTheme('motion-canvas-warm');
 
-  const scene = motionTimeline.scenes[0];
+  const scene = motionTimeline.scenes[0] || { words: [] };
   const words = scene.words || [];
 
   // 镜头微动

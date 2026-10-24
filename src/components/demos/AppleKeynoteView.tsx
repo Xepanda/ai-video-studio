@@ -11,14 +11,15 @@ import {
 import { getTheme } from '../../styles/theme';
 import { ProceduralBackground } from '../ProceduralBackground';
 import { DynamicSubtitles } from '../DynamicSubtitles';
-import appleTimeline from '../../../public/projects/demo_style_apple/timeline.json';
+import { safeLoadDemoTimeline } from '../../utils/safeDemoTimeline';
+const appleTimeline = safeLoadDemoTimeline('demo_style_apple');
 
 export const AppleKeynoteView: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const theme = getTheme('vercel-geist');
 
-  const scene = appleTimeline.scenes[0];
+  const scene = appleTimeline.scenes[0] || { words: [] };
   const words = scene.words || [];
 
   // 运镜推移与微距景深

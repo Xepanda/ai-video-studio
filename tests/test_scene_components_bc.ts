@@ -13,6 +13,8 @@ import type {
   TrendingRankProps,
 } from '../src/components/shorts';
 import { TweetEmbedCard } from '../src/components/shorts';
+import { SafeImage } from '../src/components/shorts/SafeImage';
+import { safeLoadDemoTimeline } from '../src/utils/safeDemoTimeline';
 import { UniversalScene } from '../src/components/UniversalScene';
 import type { SceneMeta } from '../src/components/UniversalScene';
 
@@ -328,6 +330,54 @@ function testUniversalSceneBcRouting() {
 }
 
 /**
+ * 7. SSR 安全基建回归 (CI 曝光缺陷的防复发测试)
+ *    - SafeImage: 裸 SSR 无 Remotion 上下文时回退原生 <img> (Remotion <Img>
+ *      内部 usePremounting->useCurrentFrame 必抛, 曾导致 task4 集成测试在
+ *      干净检出下崩溃)
+ *    - safeDemoTimeline: 无 require.context (Node 测试) 或文件缺失时降级
+ *      空时间轴不抛错 (public/projects 被 gitignore, 静态 import 曾使
+ *      tsc --noEmit 在干净检出下 TS2307 失败)
+ */
+function testSsrSafetyInfrastructure() {
+  console.log('Testing SSR safety infrastructure (SafeImage / safeDemoTimeline)...');
+
+  // 7.1 SafeImage 裸 SSR 回退原生 img (不抛错)
+  const imgHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(SafeImage, { src: 'images/demo_capture/x.png', alt: '回归测试' })
+  );
+  if (!imgHtml.includes('<img')) {
+    throw new Error('SafeImage must fall back to native img in bare SSR');
+  }
+  if (!imgHtml.includes('images/demo_capture/x.png')) {
+    throw new Error('SafeImage lost src');
+  }
+
+  // 7.2 safeDemoTimeline 在 Node 测试环境降级为空时间轴 (不抛错)
+  const timeline = safeLoadDemoTimeline('demo_style_apple');
+  if (!Array.isArray(timeline.scenes) || timeline.scenes.length !== 0) {
+    throw new Error('safeDemoTimeline must degrade to empty scenes without require.context');
+  }
+
+  // 7.3 WebBrowserMockup 场景经 UniversalScene 渲染不抛 (曾因裸 useCurrentFrame 崩)
+  const browserHtml = ReactDOMServer.renderToStaticMarkup(
+    React.createElement(UniversalScene, {
+      scene: {
+        id: 'scene_browser',
+        type: 'WebBrowserMockup',
+        durationInFrames: 90,
+        text: '浏览器场景回归',
+        browser: { url: 'https://example.com', image: 'images/x.png' },
+      } as SceneMeta,
+    })
+  );
+  if (!browserHtml.includes('浏览器场景回归') && !browserHtml.includes('example.com')) {
+    throw new Error('UniversalScene WebBrowserMockup SSR regression');
+  }
+
+  console.log('✓ SSR safety infrastructure tests passed.');
+}
+
+/**
  * 执行全量验证测试
  */
 function runAllBcComponentTests() {
@@ -341,6 +391,7 @@ function runAllBcComponentTests() {
   testTrendingRankCard();
   testTweetTruncation();
   testUniversalSceneBcRouting();
+  testSsrSafetyInfrastructure();
 
   console.log('====================================================');
   console.log('✓ All W7-8 B/C Component & Routing tests passed cleanly!');
