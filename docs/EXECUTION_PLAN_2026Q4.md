@@ -1,9 +1,9 @@
 # AI Video Studio 完善方案执行计划（2026 Q4）
 
 > **依据**：《TECH_AUDIT_AND_GAP_ANALYSIS_2026-10.md》（2026-10-21 全面技术审计报告）
-> **当前分支**：Phase 0 已提交 `2d84559`（feature/phase0-stabilization）；Phase 1 W3-4 已提交 `17f2b82`（feature/phase1-w3-4-scenario-pipelines）；W5-6 进行中（分支 `feature/phase1-w5-6-llm-capture`）
+> **当前分支**：Phase 0 已提交 `2d84559`（feature/phase0-stabilization）；Phase 1 W3-4 已提交 `17f2b82`（feature/phase1-w3-4-scenario-pipelines）；W5-6 已合入 master `54b8586`（PR #7，2026-10-24，CI 全绿）
 > **目标**：修复 P0 缺陷、补齐工程化基建，为三大场景流水线（知识科普 / GitHub 演示 / 热点快剪）与全链路闭环（选题→发布→复盘）奠定可落地基础。
-> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4 已实施完成并通过全量验证；W5-6 已实施完成并通过全量验证（Python 205/205、bridge 6/6、TS 8 文件全过、tsc 0 错误）；W7-8 全部场景已实施完成；W9-10 已实施完成（evidence 整改 + 三场景 SKILL 沉淀）；**Phase 1 全部周次完成，具备 PR 条件**（见文末实施记录）。
+> **本计划状态**：Phase 0（任务组 A/B/C）已实施完成并通过全量验证；Phase 1 W3-4 已实施完成并通过全量验证；W5-6 已实施完成并通过全量验证（Python 205/205、bridge 6/6、TS 5 文件全过、tsc 0 错误）；W7-8 全部场景已实施完成；W9-10 已实施完成（evidence 整改 + 三场景 SKILL 沉淀）；**Phase 1 全部周次完成，PR #7 已合并入 master（CI 全绿，pytest 219/219）**；待办：三场景端到端样例视频出口验收（需 LLM 凭证与渲染环境）+ Phase 2 启动（见文末实施记录）。
 
 ---
 
